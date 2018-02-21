@@ -29,8 +29,9 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "CD Crush";
-		public const string PROGRAM_VERSION = "1.3.0";
-		public const string PROGRAM_SHORT_DESC = "Dramatically reduce the filesize of CD image games";
+		public const string PROGRAM_VERSION = "1.2.0";
+		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
+		public const string WEB_SITE = "https://github.com/johndimi/cdcrush.net";
 		public const string CDCRUSH_SETTINGS = "crushdata.json";
 		public const string CDCRUSH_COVER = "cover.jpg";
 		public const string CDCRUSH_EXTENSION = ".arc";
@@ -69,25 +70,25 @@ namespace cdcrush.prog
 			LOG.log("{0}, {1}" + Environment.NewLine + "{2}", PROGRAM_NAME, PROGRAM_VERSION, PROGRAM_SHORT_DESC); ;
 			LOG.log("------------------");
 			
-			// - Set Temp Folder
-			if (!setTempFolder(Path.GetTempPath())) return false;
+			// - Set Temp Folder to default
+			if (!setTempFolder()) return false;
 
-			// - Check for ffmpeg, freearc and ecm/unecm
+			// TODO: Check for ffmpeg, freearc and ecm/unecm
 			isInited = true;
 			ERROR = null;
 			LOCKED = false;
-
 			return true;
 		}// -----------------------------------------
 
-		
 
 		/// <summary>
 		/// Set program global temp folder, unique every time the program starts
 		/// </summary>
 		/// <param name="path"></param>
-		public static bool setTempFolder(string path)
+		public static bool setTempFolder(string path = null)
 		{
+			if(path == null) path = Path.GetTempPath();
+
 			try{
 				TEMP_FOLDER = Path.Combine(path, TEMP_FOLDER_NAME);
 			}catch(ArgumentException){

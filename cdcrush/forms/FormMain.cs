@@ -2,30 +2,24 @@
 using cdcrush.lib.task;
 using cdcrush.prog;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace cdcrush.forms
 {
 
+	// The four main tabs of the main form
+	enum TAB_ID:int {
+		RESTORE=0,
+		COMPRESS,
+		OPTIONS,
+		INFO
+	};
 
-enum TAB_ID:int {
-	RESTORE=0,
-	COMPRESS,
-	OPTIONS,
-	INFO
-};
 
-public partial class FormMain : Form
-{
+public partial class FormMain : Form {
 
-	// GLOBAL ACCESS ::
+	// GLOBAL ACCESS
 	// ----------------
 	
 	// Write a status message from everywhere
@@ -44,7 +38,6 @@ public partial class FormMain : Form
 	// First tab to go when loading the program
 	const int STARTING_TAB = (int)TAB_ID.COMPRESS;
 
-
 	// =========================================================
 	// --
 	public FormMain() 
@@ -56,29 +49,33 @@ public partial class FormMain : Form
 		CDCRUSH.jobStatusHandler = genericJobProgressReport;
 	}// -----------------------------------------
 
-	// --
+	// :: Initialize things:
 	private void FormMain_Load(object sender, EventArgs e)
 	{
-		// :: Initialize Forms and such :
-				
-		// Drag Drop -> TODO:
+		// -- Enable drag and drop
 		FormTools.dragDropFormEnable(this, (string[] files) => {
 			if (CDCRUSH.LOCKED) return;
 			if (files == null) return;
-			// foreach (string file in files) LOG.log("- Dropped file {0}", file);
 			handle_dropped_file(files[0]);
 		});
 	
 		// -- Engine
 		if(!CDCRUSH.init()) {
+			// For some reason the engine couldn't initialize
 			form_setText(CDCRUSH.ERROR, 3);
 			form_lockAll(true);
 			return;
 		}
 
-		// --
+		// - Init Form Things 
 		form_setProgress(0);
 		form_setText("Ready.", 1);
+
+		info_ver.Text = CDCRUSH.PROGRAM_VERSION;
+		link_web.LinkClicked += new LinkLabelLinkClickedEventHandler((a, b) => {
+				link_web.LinkVisited = true;
+				System.Diagnostics.Process.Start(CDCRUSH.WEB_SITE);
+		});
 
 		// Set initial tab
 		tabControl1.SelectedIndex = STARTING_TAB;
@@ -90,7 +87,8 @@ public partial class FormMain : Form
 	// FORM INTERACTION
 	// =============================================
 
-	// -- called whenever a file has been dropped
+	// -- AutoCalled whenever a file has been dropped
+	//
 	public void handle_dropped_file(string file)
 	{
 		if(CURRENT_TAB==(int)TAB_ID.COMPRESS)
@@ -103,8 +101,11 @@ public partial class FormMain : Form
 		}
 	}// -----------------------------------------
 
-	// --
-	// ASYNC lock
+	/// <summary>
+	/// Locks/Unlocks the form
+	/// Can be called from threads
+	/// </summary>
+	/// <param name="_lock"></param>
 	public void form_lockAll(bool _lock)
 	{
 		FormTools.invoke(this, () =>
@@ -115,9 +116,10 @@ public partial class FormMain : Form
 
 
 	/// <summary>
-	/// ASYNC
+	/// Can be called from threads
+	/// Updates status message
 	/// </summary>
-	/// <param name="msg"></param>
+	/// <param name="msg">Message</param>
 	/// <param name="type">0:no change, 1:normal, 2:green, 3:red</param>
 	public void form_setText(string msg="", int type=0)
 	{
@@ -134,12 +136,12 @@ public partial class FormMain : Form
 	Color[] FORM_STATUS_COLORS = new[] {SystemColors.GrayText,Color.Green,Color.Red};
 
 
-	// --
+	
 	/// <summary>
-	/// ASYNC
-	/// 
+	/// Updates progress bar
+	/// Can be called from threads
 	/// </summary>
-	/// <param name="per"></param>
+	/// <param name="per">Progress Percent</param>
 	public void form_setProgress(int per)
 	{
 		FormTools.invoke(this, () =>
@@ -168,7 +170,13 @@ public partial class FormMain : Form
 	// == EVENTS
 	// ============================================================
 
-	// --
+	
+	/// <summary>
+	/// Generic progress report of any CJob type object
+	/// Changes progress bar and sets simple status messages
+	/// </summary>
+	/// <param name="s">JobStatus</param>
+	/// <param name="j">Job</param>
 	private void genericJobProgressReport(CJobStatus s,CJob j)
 	{
 		switch(s)
@@ -206,17 +214,31 @@ public partial class FormMain : Form
 		}
 	}// -----------------------------------------
 
-
 	// --
 	// Changed Tab Index
 	private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		CURRENT_TAB = tabControl1.SelectedIndex;
-		// LOG.log("NEW TAB INDEX = " + (TAB_ID) CURRENT_TAB);
 	}// -----------------------------------------
 
+	// -
+	// Set/Unset Default temp folder
+	private void check_tempDef_CheckedChanged(object sender, EventArgs e)
+	{
+		// TODO
 
+		if(check_tempDef.Checked) {
+			
+		} else {
+			
+		}
+	}// -----------------------------------------
 
+	// --
+	private void btn_selectTemp_Click(object sender, EventArgs e)
+	{
+		// TODO
+	}// -----------------------------------------
 
 }// end class
 }// --

@@ -220,7 +220,7 @@ public partial class PanelCompress : UserControl
 					if(cd!=null)
 					{
 						form_set_info_post(new {
-							md5 = cd.tracks[0].md5,
+							cd.tracks[0].md5,
 							size0 = newSize
 						});
 					}
@@ -273,7 +273,8 @@ public partial class PanelCompress : UserControl
 
 	// --
 	private void pictureBox1_Click(object sender, EventArgs e)
-	{
+	{	
+		if (CDCRUSH.LOCKED) return;
 		var files = FormTools.fileLoadDialog("cover");
 		if (files == null)  {
 			form_set_cover(null); // Remove image if cancelled
