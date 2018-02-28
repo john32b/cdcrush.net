@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using cdcrush.lib;
 using cdcrush.prog;
@@ -16,16 +9,12 @@ namespace cdcrush.forms
 /**
  * - Control that offers parameters for CD RESTORING
  * - Displays information for the ARC to be restored from the ENGINE
- * - 
- * 
  */
 public partial class PanelRestore : UserControl
 {
 	// This is the last quick loaded ARC file dropped/opened
 	// It's a valid file everytime, since it is checked
 	public string preparedArcPath;
-
-
 
 	// -----------------------------------------
 
@@ -97,13 +86,14 @@ public partial class PanelRestore : UserControl
 		info_size0.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.size0));
 		info_size1.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.size1));
 		info_audio.Text = cdInfo.audio;
-		info_tracks.Text = String.Format("{0}", cdInfo.tracks);
 		info_md5.Text = cdInfo.md5;
+		info_tracks.Text = String.Format("{0}", cdInfo.tracks);
 	}// -----------------------------------------
 
 
 	/// <summary>
-	/// 
+	/// Sets an image on the cover image placeholder,
+	/// It will default on a predefined graphic if any error or null
 	/// </summary>
 	/// <param name="file">If NULL will set default ICON</param>
 	public void form_setCoverImage(string file)
@@ -121,31 +111,30 @@ public partial class PanelRestore : UserControl
 	/// </summary>
 	void form_quickLoadFile(string file)
 	{
-		Action<Object> onLoad = (o) =>
-		{
-			FormTools.invoke(this,()=>{
+			void onLoad(object o)
+			{
+				FormTools.invoke(this, () => {
 
-				FormMain.sendProgress(0);
-				form_lockSection("all", false);
+					FormMain.sendProgress(0);
+					form_lockSection("all", false);
 
-					if(o==null)
-					{
+					if(o == null) {
 						//form_setText(CDCRUSH.ERROR, 3);
 						LOG.log("ERROR - " + CDCRUSH.ERROR);
 						return;
 					}
 
-				// This file will be restored when the button is clicked
-				preparedArcPath = file;
+					// This file will be restored when the button is clicked
+					preparedArcPath = file;
 
-				input_in.Text = file;
-				form_setCdInfo(o);
-				form_setCoverImage((o as dynamic).cover); // Note: Cover file may not exist
-				FormMain.sendMessage("Ready.", 2);
-				btn_RESTORE.Focus();
-			});
-		}; // --
-		
+					input_in.Text = file;
+					form_setCdInfo(o);
+					form_setCoverImage((o as dynamic).cover); // Note: Cover file may not exist
+					FormMain.sendMessage("Ready.", 2);
+					btn_RESTORE.Focus();
+				});
+			} // --
+
 		if(CDCRUSH.loadQuickInfo(file,onLoad))
 		{
 			// Waiting to load quick info : Lock Form
@@ -182,13 +171,9 @@ public partial class PanelRestore : UserControl
 	// --
 	private void btn_RESTORE_Click(object sender, EventArgs e)
 	{
-		if (CDCRUSH.LOCKED) return; // for any reason
-		form_lockSection("all", true);
-
-		// Starts the job
+		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
-		// I will only handle fail statuses for now
-		CDCRUSH.restoreARC(preparedArcPath, input_out.Text, toggle_subf.Checked, toggle_single.Checked,
+		bool res = CDCRUSH.restoreARC(preparedArcPath, input_out.Text, toggle_subf.Checked, toggle_single.Checked,
 			(complete)=>{
 				FormTools.invoke(this, () =>
 				{
@@ -204,6 +189,13 @@ public partial class PanelRestore : UserControl
 					FormMain.sendMessage(CDCRUSH.ERROR,3);
 				}
 			});
+
+		if(res)
+		{
+			form_lockSection("all", true);
+		}else{
+			FormMain.sendMessage(CDCRUSH.ERROR, 3);
+		}
 	}// -----------------------------------------
 
 	// --

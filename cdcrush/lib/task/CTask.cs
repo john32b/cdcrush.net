@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace cdcrush.lib.task
 {
-
 
 // Some used on callback messages, some for internal step keep
 public enum CTaskStatus
@@ -130,7 +124,7 @@ public class CTask
 		PROGRESS = 100;
 		status = CTaskStatus.complete;
 		onStatus(CTaskStatus.complete, this);
-		if (onComplete != null) onComplete();
+		onComplete?.Invoke();
 	}// -----------------------------------------
 
 	// The task has failed, can be called from a quick run also

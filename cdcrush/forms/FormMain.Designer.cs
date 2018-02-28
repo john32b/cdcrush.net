@@ -35,21 +35,28 @@
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label7;
 			System.Windows.Forms.Label label6;
+			System.Windows.Forms.Label label8;
+			System.Windows.Forms.Label label9;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
 			this.info_status = new System.Windows.Forms.RichTextBox();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabRestore = new System.Windows.Forms.TabPage();
-			this.panelRestore1 = new cdcrush.forms.PanelRestore();
 			this.tabCrush = new System.Windows.Forms.TabPage();
-			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			this.tabSettings = new System.Windows.Forms.TabPage();
+			this.info_ffmpeg_status = new System.Windows.Forms.Label();
+			this.num_threads = new System.Windows.Forms.NumericUpDown();
+			this.btn_temp_def = new System.Windows.Forms.Button();
+			this.btn_ffmpeg_clear = new System.Windows.Forms.Button();
+			this.btn_ffmpeg = new System.Windows.Forms.Button();
+			this.btn_selectTemp = new System.Windows.Forms.Button();
+			this.info_ffmpeg = new System.Windows.Forms.TextBox();
+			this.info_tempFolder = new System.Windows.Forms.TextBox();
 			this.tabInfo = new System.Windows.Forms.TabPage();
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
-			this.info_tempFolder = new System.Windows.Forms.TextBox();
-			this.check_tempDef = new System.Windows.Forms.CheckBox();
-			this.btn_selectTemp = new System.Windows.Forms.Button();
+			this.panelRestore1 = new cdcrush.forms.PanelRestore();
+			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -57,12 +64,103 @@
 			label5 = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
+			label8 = new System.Windows.Forms.Label();
+			label9 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabRestore.SuspendLayout();
 			this.tabCrush.SuspendLayout();
 			this.tabSettings.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.num_threads)).BeginInit();
 			this.tabInfo.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// label1
+			// 
+			label1.AutoSize = true;
+			label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label1.Location = new System.Drawing.Point(142, 44);
+			label1.Name = "label1";
+			label1.Size = new System.Drawing.Size(123, 25);
+			label1.TabIndex = 0;
+			label1.Text = "CDCRUSH";
+			// 
+			// label2
+			// 
+			label2.AutoSize = true;
+			label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label2.Location = new System.Drawing.Point(144, 98);
+			label2.Name = "label2";
+			label2.Size = new System.Drawing.Size(52, 13);
+			label2.TabIndex = 1;
+			label2.Text = "Author :";
+			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label3.Location = new System.Drawing.Point(144, 113);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(57, 13);
+			label3.TabIndex = 1;
+			label3.Text = "Version :";
+			// 
+			// label4
+			// 
+			label4.AutoSize = true;
+			label4.ForeColor = System.Drawing.SystemColors.GrayText;
+			label4.Location = new System.Drawing.Point(144, 69);
+			label4.Name = "label4";
+			label4.Size = new System.Drawing.Size(165, 13);
+			label4.TabIndex = 1;
+			label4.Text = "Highy compress cd-image games ";
+			// 
+			// label5
+			// 
+			label5.AutoSize = true;
+			label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label5.Location = new System.Drawing.Point(202, 98);
+			label5.Name = "label5";
+			label5.Size = new System.Drawing.Size(53, 13);
+			label5.TabIndex = 1;
+			label5.Text = "John Dimi";
+			// 
+			// label7
+			// 
+			label7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			label7.Location = new System.Drawing.Point(147, 88);
+			label7.Name = "label7";
+			label7.Size = new System.Drawing.Size(159, 1);
+			label7.TabIndex = 3;
+			// 
+			// label6
+			// 
+			label6.AutoSize = true;
+			label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label6.Location = new System.Drawing.Point(3, 27);
+			label6.Name = "label6";
+			label6.Size = new System.Drawing.Size(85, 13);
+			label6.TabIndex = 1;
+			label6.Text = "Temp Folder :";
+			// 
+			// label8
+			// 
+			label8.AutoSize = true;
+			label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label8.Location = new System.Drawing.Point(4, 140);
+			label8.Name = "label8";
+			label8.Size = new System.Drawing.Size(142, 13);
+			label8.TabIndex = 1;
+			label8.Text = "Max Concurrent Tasks :";
+			// 
+			// label9
+			// 
+			label9.AutoSize = true;
+			label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label9.Location = new System.Drawing.Point(4, 85);
+			label9.Name = "label9";
+			label9.Size = new System.Drawing.Size(109, 13);
+			label9.TabIndex = 1;
+			label9.Text = "FFmpeg.exe Path:";
 			// 
 			// info_status
 			// 
@@ -117,16 +215,6 @@
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
 			// 
-			// panelRestore1
-			// 
-			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
-			this.panelRestore1.MaximumSize = new System.Drawing.Size(600, 280);
-			this.panelRestore1.MinimumSize = new System.Drawing.Size(450, 280);
-			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(450, 280);
-			this.panelRestore1.TabIndex = 0;
-			// 
 			// tabCrush
 			// 
 			this.tabCrush.Controls.Add(this.panelCompress1);
@@ -139,21 +227,18 @@
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
 			// 
-			// panelCompress1
-			// 
-			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
-			this.panelCompress1.MaximumSize = new System.Drawing.Size(600, 280);
-			this.panelCompress1.MinimumSize = new System.Drawing.Size(450, 280);
-			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(450, 280);
-			this.panelCompress1.TabIndex = 0;
-			// 
 			// tabSettings
 			// 
+			this.tabSettings.Controls.Add(this.info_ffmpeg_status);
+			this.tabSettings.Controls.Add(this.num_threads);
+			this.tabSettings.Controls.Add(this.btn_temp_def);
+			this.tabSettings.Controls.Add(this.btn_ffmpeg_clear);
+			this.tabSettings.Controls.Add(this.btn_ffmpeg);
 			this.tabSettings.Controls.Add(this.btn_selectTemp);
-			this.tabSettings.Controls.Add(this.check_tempDef);
+			this.tabSettings.Controls.Add(label8);
+			this.tabSettings.Controls.Add(label9);
 			this.tabSettings.Controls.Add(label6);
+			this.tabSettings.Controls.Add(this.info_ffmpeg);
 			this.tabSettings.Controls.Add(this.info_tempFolder);
 			this.tabSettings.Location = new System.Drawing.Point(4, 25);
 			this.tabSettings.Name = "tabSettings";
@@ -161,6 +246,104 @@
 			this.tabSettings.TabIndex = 2;
 			this.tabSettings.Text = "Settings";
 			this.tabSettings.UseVisualStyleBackColor = true;
+			// 
+			// info_ffmpeg_status
+			// 
+			this.info_ffmpeg_status.AutoSize = true;
+			this.info_ffmpeg_status.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.info_ffmpeg_status.ForeColor = System.Drawing.Color.Green;
+			this.info_ffmpeg_status.Location = new System.Drawing.Point(347, 124);
+			this.info_ffmpeg_status.Name = "info_ffmpeg_status";
+			this.info_ffmpeg_status.Size = new System.Drawing.Size(103, 13);
+			this.info_ffmpeg_status.TabIndex = 5;
+			this.info_ffmpeg_status.Text = "FFmpeg is ready.";
+			// 
+			// num_threads
+			// 
+			this.num_threads.Location = new System.Drawing.Point(7, 156);
+			this.num_threads.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+			this.num_threads.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.num_threads.Name = "num_threads";
+			this.num_threads.Size = new System.Drawing.Size(124, 20);
+			this.num_threads.TabIndex = 4;
+			this.num_threads.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.num_threads.ValueChanged += new System.EventHandler(this.num_threads_ValueChanged);
+			// 
+			// btn_temp_def
+			// 
+			this.btn_temp_def.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_temp_def.Location = new System.Drawing.Point(399, 43);
+			this.btn_temp_def.Name = "btn_temp_def";
+			this.btn_temp_def.Size = new System.Drawing.Size(50, 20);
+			this.btn_temp_def.TabIndex = 3;
+			this.btn_temp_def.Text = "Default";
+			this.btn_temp_def.UseVisualStyleBackColor = true;
+			this.btn_temp_def.Click += new System.EventHandler(this.btn_temp_def_Click);
+			// 
+			// btn_ffmpeg_clear
+			// 
+			this.btn_ffmpeg_clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_ffmpeg_clear.Location = new System.Drawing.Point(402, 101);
+			this.btn_ffmpeg_clear.Name = "btn_ffmpeg_clear";
+			this.btn_ffmpeg_clear.Size = new System.Drawing.Size(48, 20);
+			this.btn_ffmpeg_clear.TabIndex = 3;
+			this.btn_ffmpeg_clear.Text = "Clear";
+			this.btn_ffmpeg_clear.UseVisualStyleBackColor = true;
+			this.btn_ffmpeg_clear.Click += new System.EventHandler(this.btn_ffmpeg_clear_Click);
+			// 
+			// btn_ffmpeg
+			// 
+			this.btn_ffmpeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_ffmpeg.Location = new System.Drawing.Point(378, 101);
+			this.btn_ffmpeg.Name = "btn_ffmpeg";
+			this.btn_ffmpeg.Size = new System.Drawing.Size(24, 20);
+			this.btn_ffmpeg.TabIndex = 3;
+			this.btn_ffmpeg.Text = "...";
+			this.btn_ffmpeg.UseVisualStyleBackColor = true;
+			this.btn_ffmpeg.Click += new System.EventHandler(this.btn_ffmpeg_Click);
+			// 
+			// btn_selectTemp
+			// 
+			this.btn_selectTemp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_selectTemp.Location = new System.Drawing.Point(375, 43);
+			this.btn_selectTemp.Name = "btn_selectTemp";
+			this.btn_selectTemp.Size = new System.Drawing.Size(24, 20);
+			this.btn_selectTemp.TabIndex = 3;
+			this.btn_selectTemp.Text = "...";
+			this.btn_selectTemp.UseVisualStyleBackColor = true;
+			this.btn_selectTemp.Click += new System.EventHandler(this.btn_selectTemp_Click);
+			// 
+			// info_ffmpeg
+			// 
+			this.info_ffmpeg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.info_ffmpeg.Location = new System.Drawing.Point(6, 101);
+			this.info_ffmpeg.Name = "info_ffmpeg";
+			this.info_ffmpeg.ReadOnly = true;
+			this.info_ffmpeg.Size = new System.Drawing.Size(370, 20);
+			this.info_ffmpeg.TabIndex = 0;
+			// 
+			// info_tempFolder
+			// 
+			this.info_tempFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.info_tempFolder.Location = new System.Drawing.Point(7, 43);
+			this.info_tempFolder.Name = "info_tempFolder";
+			this.info_tempFolder.ReadOnly = true;
+			this.info_tempFolder.Size = new System.Drawing.Size(366, 20);
+			this.info_tempFolder.TabIndex = 0;
 			// 
 			// tabInfo
 			// 
@@ -179,46 +362,6 @@
 			this.tabInfo.Text = "Info";
 			this.tabInfo.UseVisualStyleBackColor = true;
 			// 
-			// label1
-			// 
-			label1.AutoSize = true;
-			label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label1.Location = new System.Drawing.Point(142, 44);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(123, 25);
-			label1.TabIndex = 0;
-			label1.Text = "CDCRUSH";
-			// 
-			// label2
-			// 
-			label2.AutoSize = true;
-			label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label2.Location = new System.Drawing.Point(144, 98);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(52, 13);
-			label2.TabIndex = 1;
-			label2.Text = "Author :";
-			// 
-			// label3
-			// 
-			label3.AutoSize = true;
-			label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label3.Location = new System.Drawing.Point(144, 113);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(57, 13);
-			label3.TabIndex = 1;
-			label3.Text = "Version :";
-			// 
-			// label4
-			// 
-			label4.AutoSize = true;
-			label4.ForeColor = System.Drawing.SystemColors.GrayText;
-			label4.Location = new System.Drawing.Point(144, 69);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(165, 13);
-			label4.TabIndex = 1;
-			label4.Text = "Highy compress cd-image games ";
-			// 
 			// link_web
 			// 
 			this.link_web.AutoSize = true;
@@ -228,16 +371,6 @@
 			this.link_web.TabIndex = 2;
 			this.link_web.TabStop = true;
 			this.link_web.Text = "Project Page on Github";
-			// 
-			// label5
-			// 
-			label5.AutoSize = true;
-			label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label5.Location = new System.Drawing.Point(202, 98);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(53, 13);
-			label5.TabIndex = 1;
-			label5.Text = "John Dimi";
 			// 
 			// info_ver
 			// 
@@ -249,54 +382,25 @@
 			this.info_ver.TabIndex = 1;
 			this.info_ver.Text = "0.0";
 			// 
-			// label7
+			// panelRestore1
 			// 
-			label7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			label7.Location = new System.Drawing.Point(147, 88);
-			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(159, 1);
-			label7.TabIndex = 3;
+			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
+			this.panelRestore1.MaximumSize = new System.Drawing.Size(600, 280);
+			this.panelRestore1.MinimumSize = new System.Drawing.Size(450, 280);
+			this.panelRestore1.Name = "panelRestore1";
+			this.panelRestore1.Size = new System.Drawing.Size(450, 280);
+			this.panelRestore1.TabIndex = 0;
 			// 
-			// info_tempFolder
+			// panelCompress1
 			// 
-			this.info_tempFolder.Location = new System.Drawing.Point(13, 39);
-			this.info_tempFolder.Name = "info_tempFolder";
-			this.info_tempFolder.Size = new System.Drawing.Size(373, 20);
-			this.info_tempFolder.TabIndex = 0;
-			// 
-			// label6
-			// 
-			label6.AutoSize = true;
-			label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label6.Location = new System.Drawing.Point(10, 20);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(167, 13);
-			label6.TabIndex = 1;
-			label6.Text = "Temp Folder for operations :";
-			// 
-			// check_tempDef
-			// 
-			this.check_tempDef.AutoSize = true;
-			this.check_tempDef.Checked = true;
-			this.check_tempDef.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.check_tempDef.Location = new System.Drawing.Point(323, 19);
-			this.check_tempDef.Name = "check_tempDef";
-			this.check_tempDef.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.check_tempDef.Size = new System.Drawing.Size(63, 17);
-			this.check_tempDef.TabIndex = 2;
-			this.check_tempDef.Text = "Default ";
-			this.check_tempDef.UseVisualStyleBackColor = true;
-			this.check_tempDef.CheckedChanged += new System.EventHandler(this.check_tempDef_CheckedChanged);
-			// 
-			// btn_selectTemp
-			// 
-			this.btn_selectTemp.Location = new System.Drawing.Point(392, 37);
-			this.btn_selectTemp.Name = "btn_selectTemp";
-			this.btn_selectTemp.Size = new System.Drawing.Size(49, 23);
-			this.btn_selectTemp.TabIndex = 3;
-			this.btn_selectTemp.Text = "...";
-			this.btn_selectTemp.UseVisualStyleBackColor = true;
-			this.btn_selectTemp.Click += new System.EventHandler(this.btn_selectTemp_Click);
+			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
+			this.panelCompress1.MaximumSize = new System.Drawing.Size(600, 280);
+			this.panelCompress1.MinimumSize = new System.Drawing.Size(450, 280);
+			this.panelCompress1.Name = "panelCompress1";
+			this.panelCompress1.Size = new System.Drawing.Size(450, 280);
+			this.panelCompress1.TabIndex = 0;
 			// 
 			// FormMain
 			// 
@@ -310,13 +414,15 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(502, 420);
 			this.Name = "FormMain";
-			this.Text = "cdcrush";
+			this.Text = "CDCRUSH";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
 			this.Load += new System.EventHandler(this.FormMain_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tabRestore.ResumeLayout(false);
 			this.tabCrush.ResumeLayout(false);
 			this.tabSettings.ResumeLayout(false);
 			this.tabSettings.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.num_threads)).EndInit();
 			this.tabInfo.ResumeLayout(false);
 			this.tabInfo.PerformLayout();
 			this.ResumeLayout(false);
@@ -337,7 +443,12 @@
 		private System.Windows.Forms.LinkLabel link_web;
 		private System.Windows.Forms.Label info_ver;
 		private System.Windows.Forms.Button btn_selectTemp;
-		private System.Windows.Forms.CheckBox check_tempDef;
 		private System.Windows.Forms.TextBox info_tempFolder;
+		private System.Windows.Forms.NumericUpDown num_threads;
+		private System.Windows.Forms.Button btn_ffmpeg;
+		private System.Windows.Forms.TextBox info_ffmpeg;
+		private System.Windows.Forms.Button btn_temp_def;
+		private System.Windows.Forms.Button btn_ffmpeg_clear;
+		private System.Windows.Forms.Label info_ffmpeg_status;
 	}
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace cdcrush.lib.task
@@ -87,7 +86,7 @@ public class CJob
 	// #USERSET #OPTIONAL
 	// Same call as onJobStatus(complete)
 	// Called whenever the Job Completes or Fails
-	// A: success, if False, read the ERROR field
+	// True : success, False : Error (read the ERROR field)
 	// NOTE: Be careful if you set BOTH this and onJobStatus they will both get called
 	public Action<bool> onComplete = null;
 
@@ -221,7 +220,7 @@ public class CJob
 				kill();
 				status = CJobStatus.complete;
 				onJobStatus(CJobStatus.complete, this);
-				if (onComplete != null) onComplete(true);
+				onComplete?.Invoke(true);
 			}
 		}
 		
@@ -314,14 +313,14 @@ public class CJob
 
 		status = CJobStatus.fail;
 		onJobStatus(CJobStatus.fail, this);
-		if (onComplete != null) onComplete(false);
+		onComplete?.Invoke(false);
 	}// -----------------------------------------
 
 
 	/// <summary>
 	/// Custom code, called on FAIL and COMPLETE
 	/// </summary>
-	protected void kill()
+	virtual protected void kill()
 	{
 		LOG.log("[CJOB] : Killing Job :: ", this.name);
 		foreach(var t1 in currentTasks) t1.kill();

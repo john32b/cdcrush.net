@@ -1,12 +1,10 @@
 ﻿using cdcrush.lib;
 using cdcrush.lib.app;
 using cdcrush.lib.task;
+
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace cdcrush.prog
 {
@@ -33,9 +31,16 @@ public struct CrushParams
 	internal bool workFromTemp; // True if the original/bin has more than one track and is cut into the temp folder
 }// --
 
+
+
+/// <summary>
+/// A collection of tasks, that will CRUSH a cd,
+/// Tasks will run in order, and some will run in parallel
+/// </summary>
 class JobCrush:CJob
 {
 
+	// --
 	public JobCrush(CrushParams p):base("Compress CD")
 	{
 		// Check for input files
@@ -166,27 +171,39 @@ class JobCrush:CJob
 		}, "Finalizing"));
 
 		// - Get post data
-		// - Clean files
 		add(new CTask((t) =>
 		{
 			var finfo = new FileInfo(jobData.finalArcPath);
 			jobData.crushedSize = (int)finfo.Length;
-
-			// - Cleanup
-			if (p.tempDir != p.outputDir)
-			{
-				// NOTE: This is always a subdir of the master
-				Directory.Delete(p.tempDir, true);
-			}// --
-
 			t.complete();
 
 		},"Finalizing"));
 
 		// -- COMPLETE --
-		
+
 	}// -----------------------------------------
 
+	/// <summary>
+	/// Called on FAIL and COMPLETE
+	/// </summary>
+	protected override void kill()
+	{
+		base.kill();
+
+		// - Cleanup
+		CrushParams p = jobData;
+		if (p.tempDir != p.outputDir) {
+			// NOTE: This is always a subdir of the master
+			try
+			{
+				Directory.Delete(p.tempDir, true);
+			}
+			catch(IOException)
+			{
+				// do nothing
+			}
+		}// --
+	}// -----------------------------------------
 
 }// --
 }// --

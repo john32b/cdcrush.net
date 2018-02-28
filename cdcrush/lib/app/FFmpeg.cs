@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace cdcrush.lib.app
 {
@@ -38,16 +33,16 @@ class FFmpeg:ICliReport
 	/// <summary>
 	/// FFMPEG wrapper
 	/// </summary>
-	/// <param name="toolsPath">Set the path of ffmpeg if not on path already</param>
-	public FFmpeg(string toolsPath = "")
+	/// <param name="executablePath">Set the path of ffmpeg if not on path already</param>
+	public FFmpeg(string executablePath = "")
 	{
-		proc = new CliApp(Path.Combine(toolsPath,"ffmpeg.exe"));
+		proc = new CliApp(Path.Combine(executablePath,"ffmpeg.exe"));
 
 		proc.onComplete = (code) =>
 		{
 			if (code == 0)
 			{
-				if (onComplete != null) onComplete(true);
+				onComplete?.Invoke(true);
 			}
 			else
 			{
@@ -68,7 +63,7 @@ class FFmpeg:ICliReport
 			// LOG.log("[FFMPEG] : {0} / {1} = {2}", secondsConverted, targetSeconds, progress);
 
 			if (progress > 100) progress = 100;
-			if (onProgress != null) onProgress(progress);
+			onProgress?.Invoke(progress);
 		};
 
 	}// -----------------------------------------

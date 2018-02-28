@@ -2,12 +2,7 @@
 using cdcrush.lib.app;
 using cdcrush.lib.task;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace cdcrush.prog
 {
@@ -28,20 +23,37 @@ namespace cdcrush.prog
 	{
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
-		public const string PROGRAM_NAME = "CD Crush";
+		public const string PROGRAM_NAME = "CDCRUSH";
 		public const string PROGRAM_VERSION = "1.2.0";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string WEB_SITE = "https://github.com/johndimi/cdcrush.net";
 		public const string CDCRUSH_SETTINGS = "crushdata.json";
 		public const string CDCRUSH_COVER = "cover.jpg";
 		public const string CDCRUSH_EXTENSION = ".arc";
-		// -- Globals
-		public static int MAX_TASKS = 3;			// Maximum concurrent tasks on CJobs
-		public const int QUALITY_DEFAULT = 1;		// Number passed to FFMPEG by defauls ( 0 - 10 )
-		// --
-		private static bool isInited = false;
+
+		// -- Global
+
+		// Maximum concurrent tasks in CJobs
+		public static int MAX_TASKS = 2;
+
+		// Number passed to FFMPEG by defauls ( 0 - 10 )
+		public static int QUALITY_DEFAULT = 1;
+
+		// FFmpeg executable name
+		const string FFMPEG_EXE = "ffmpeg.exe";
+
+		// Location of `ffmpeg.exe` null for same folder or global path
+		public static string FFMPEG_PATH = null;
+
+		// Is FFMPEG ready to go?
+		public static bool FFMPEG_OK {get; private set;}
+
 		// This is the GLOBAL temp folder used for ALL operations
 		public static string TEMP_FOLDER {get; private set;}
+
+		// Is the TEMP_FOLDER the cdcrush default, or did user alter it
+		public static bool TEMP_FOLDER_IS_DEF {get; private set;}
+
 		// General use Error Message, read this to get latest errors from functions
 		public static string ERROR { get; private set; }
 
@@ -50,13 +62,15 @@ namespace cdcrush.prog
 		public static bool LOCKED { get; private set; }
 
 		// In addition to the completion callbacks, set this to get status reports
-		// about the progress of each job. It's non crucial
+		// about the progress of each job.
 		public static Action<CJobStatus, CJob> jobStatusHandler;
 		
 		// The temp folder name to create under `TEMP_FOLDER`
 		// No other program in the world should have this unique name, right?
 		private const string TEMP_FOLDER_NAME = "CDCRUSH_361C4202-25A3-4F09-A690";
-		
+
+		// --
+		private static bool isInited = false;
 		// -----------------------------------------
 
 		/// <summary>
@@ -73,42 +87,58 @@ namespace cdcrush.prog
 			// - Set Temp Folder to default
 			if (!setTempFolder()) return false;
 
-			// TODO: Check for ffmpeg, freearc and ecm/unecm
-			isInited = true;
-			ERROR = null;
-			LOCKED = false;
+			// - Check for FFMPEG, since it may not come with the program
+			setFFMPEGPath();
+
+			ERROR = null; isInited = true; LOCKED = false;
 			return true;
 		}// -----------------------------------------
 
+		/// <summary>
+		/// Sets and Checks a new FFMPEG PATH
+		/// </summary>
+		/// <param name="ffmpeg_path">Folder FFMPEG is in,</param>
+		public static void setFFMPEGPath(string ffmpeg_path=null)
+		{
+			if(CliApp.exists(Path.Combine(ffmpeg_path??"",FFMPEG_EXE)))
+			{
+				FFMPEG_OK = true;
+				FFMPEG_PATH = ffmpeg_path;
+			}
+		}// -----------------------------------------
 
 		/// <summary>
-		/// Set program global temp folder, unique every time the program starts
+		/// Set program global temp folder
 		/// </summary>
 		/// <param name="path"></param>
 		public static bool setTempFolder(string path = null)
 		{
-			if(path == null) path = Path.GetTempPath();
+			string TEST_FOLDER; bool isDef = path == null;
+
+			if(isDef) path = Path.GetTempPath();
 
 			try{
-				TEMP_FOLDER = Path.Combine(path, TEMP_FOLDER_NAME);
+				TEST_FOLDER = Path.Combine(path, TEMP_FOLDER_NAME);
 			}catch(ArgumentException){
 				ERROR = "TempFolder : Invalid path"; return false;
 			}
 
-			if(!FileTools.createDirectory(TEMP_FOLDER))
+			if(!FileTools.createDirectory(TEST_FOLDER))
 			{
-				ERROR = "TempFolder : Can't create " + TEMP_FOLDER;
+				ERROR = "TempFolder : Can't create " + TEST_FOLDER;
 				return false;
 			}
 
-			if(!FileTools.hasWriteAccess(TEMP_FOLDER))
+			if(!FileTools.hasWriteAccess(TEST_FOLDER))
 			{
-				ERROR = "Temp Folder :: Don't have write access to " + TEMP_FOLDER;
+				ERROR = "Temp Folder :: Don't have write access to " + TEST_FOLDER;
 				return false;
 			}
 
+			// Final sets at the end, ensuring that temp folder is OK
+			TEMP_FOLDER = TEST_FOLDER;
 			LOG.log("TEMP FOLDER = " + TEMP_FOLDER);
-
+			TEMP_FOLDER_IS_DEF = isDef;
 			return true;
 		}// -----------------------------------------
 
@@ -119,13 +149,19 @@ namespace cdcrush.prog
 		/// </summary>
 		/// <param name="_Input">Input file, must be `.cue`</param>
 		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
-		/// <param name="onComplete">Completed OK(true,false)</param>
+		/// <param name="_Audio">Audio Quality to encode the audio tracks with</param>
+		/// <param name="_Cover">Cover Image to store in the archive</param>
+		/// <param name="_Title">Title of the CD</param>
+		/// <param name="onComplete">Completed (completeStatus,MD5,CrushedSize)</param>
 		/// <returns></returns>
 		public static bool crushCD(string _Input, string _Output, int _Audio, string _Cover, string _Title,
-			Action<bool,CueReader,int> onComplete)
+			Action<bool,string,int> onComplete)
 		{
 			// NOTE : JOB checks for input file
-			if (LOCKED) { ERROR="LOCKED"; return false; } LOCKED = true;
+			if (LOCKED) { ERROR="Engine is working"; return false; } 
+			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
+
+			LOCKED = true;
 
 			var par = new CrushParams();
 				par.inputFile = _Input;
@@ -141,10 +177,13 @@ namespace cdcrush.prog
 				{
 					LOCKED = false;
 					ERROR = j.ERROR[1];
-					if (s)
-						onComplete(s, j.jobData.cd , j.jobData.crushedSize); // Hack, send CDINFO and SIZE as well
-					else
-						onComplete(s, null, 0);
+					if (s) {
+						CueReader cd = (CueReader) j.jobData.cd;						
+						onComplete(s,cd.getFirstDataTrackMD5(),j.jobData.crushedSize); // Hack, send CDINFO and SIZE as well
+					}
+					else {
+						onComplete(s, "", 0);
+					}
 				};
 
 				j.onJobStatus = jobStatusHandler;	// For status and progress updates
@@ -155,23 +194,26 @@ namespace cdcrush.prog
 
 
 		/// <summary>
-		/// RESTORE an arc file to output folder
+		/// RESTORE an arc file to target output folder
 		/// </summary>
 		/// <param name="_Input">Input file, Must be `.arc`</param>
 		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
-		/// <param name="onComplete">Completed OK(true,false)</param>
+		/// <param name="onComplete">(completeStatus)</param>
 		/// <returns></returns>
 		public static bool restoreARC(string _Input, string _Output,
 			bool flag_folder, bool flag_forceSingle,
 			Action<bool> onComplete)
 		{
 			// NOTE : JOB checks for input file
-			if (LOCKED) { ERROR="LOCKED"; return false; } LOCKED = true;
+			if (LOCKED) { ERROR="Engine is working"; return false; } 
+			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
+
+			LOCKED = true;
 
 			var par = new RestoreParams();
 				par.inputFile = _Input;		// Checked in the JOB
 				par.outputDir = _Output;	// Checked in the JOB
-				par.flag_folder = flag_folder;					//
+				par.flag_folder = flag_folder;
 				par.flag_forceSingle = flag_forceSingle;		// SINGLE FILE
 
 			var j = new JobRestore(par);
@@ -273,7 +315,7 @@ namespace cdcrush.prog
 						size1 = cd.CD_TOTAL_SIZE,
 						audio = cd.CD_AUDIO_QUALITY,
 						tracks = cd.tracks.Count,
-						cd.tracks[0].md5,
+						md5 = cd.getFirstDataTrackMD5(),
 						cover = Path.Combine(TEMP_FOLDER,CDCRUSH_COVER) // The file might be missing
 					};
 					
@@ -291,10 +333,8 @@ namespace cdcrush.prog
 			arc.extractFiles(arcFile, new[] { CDCRUSH_SETTINGS, CDCRUSH_COVER },TEMP_FOLDER);
 
 			return true;
-		}
-		// -----------------------------------------
-
-
+		}// -----------------------------------------
+	
 
 		/// <summary>
 		/// Check if file EXISTS and is of VALID EXTENSION 

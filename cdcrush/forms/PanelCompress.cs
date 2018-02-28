@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using cdcrush.lib;
 using cdcrush.lib.app;
@@ -13,9 +6,9 @@ using cdcrush.prog;
 
 namespace cdcrush.forms
 {
+
 public partial class PanelCompress : UserControl
 {
-
 	// Path of the dropped/selected cover image
 	string preparedCover;
 	string preparedCue;
@@ -46,11 +39,6 @@ public partial class PanelCompress : UserControl
 		preparedCue = null;
 		
 	}// -----------------------------------------
-
-
-
-
-
 
 
 
@@ -134,7 +122,6 @@ public partial class PanelCompress : UserControl
 		if(cdInfo==null)
 		{
 			// set all to none
-			
 			info_size0.Text = "";
 			info_md5.Text = "";
 			return;
@@ -197,6 +184,7 @@ public partial class PanelCompress : UserControl
 			FormMain.sendMessage("Unsupported file extension.",3);
 	}// -----------------------------------------
 
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -204,26 +192,19 @@ public partial class PanelCompress : UserControl
 	/// <param name="e"></param>
 	private void btn_CRUSH_Click(object sender, EventArgs e)
 	{
-		if (CDCRUSH.LOCKED) return; // for any reason
-		form_lockSection("all", true);
-
-		// Starts the job
+		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
-		// I will only handle fail statuses for now
-
-		CDCRUSH.crushCD(preparedCue, input_out.Text, combo_audioq.SelectedIndex, preparedCover, info_cdtitle.Text,
-			(complete, cd, newSize) => {
+		bool res = CDCRUSH.crushCD(preparedCue, input_out.Text, combo_audioq.SelectedIndex, preparedCover, info_cdtitle.Text,
+			(complete, md5, newSize) => {
 
 				FormTools.invoke(this, () =>{
 					form_lockSection("all", false);
 					form_lockSection("action", true);
-					if(cd!=null)
-					{
-						form_set_info_post(new {
-							cd.tracks[0].md5,
-							size0 = newSize
-						});
-					}
+					form_set_info_post(new {
+						md5,
+						size0 = newSize
+					});
+
 				});
 
 				if(complete)
@@ -234,6 +215,13 @@ public partial class PanelCompress : UserControl
 					FormMain.sendMessage(CDCRUSH.ERROR,3);
 				}
 			});
+
+		if(res)
+		{
+			form_lockSection("all", true);
+		}else{
+			FormMain.sendMessage(CDCRUSH.ERROR, 3);
+		}
 	}// -----------------------------------------
 
 	// --

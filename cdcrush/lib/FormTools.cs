@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace cdcrush.lib
@@ -131,8 +127,8 @@ class FormTools
 	/// Currently just ONE file
 	/// </summary>
 	/// <param name="id">An ID previously set with prepareDialogFileLoad()</param>
-	/// <param name="dir"></param>
-	/// <param name="multi"></param>
+	/// <param name="dir">Start in this directory</param>
+	/// <param name="multi">Select multiple files</param>
 	public static string[] fileLoadDialog(string id="all",string dir=null,bool multi=false)
 	{
 		#if DEBUG

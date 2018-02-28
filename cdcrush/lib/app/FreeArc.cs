@@ -23,7 +23,7 @@ class FreeArc : AbArchiver
 		{
 			if (code == 0)
 			{
-				if (onComplete != null) onComplete(true);
+				onComplete?.Invoke(true);
 			}
 			else
 			{

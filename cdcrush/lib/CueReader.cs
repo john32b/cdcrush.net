@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 using System.Collections;
 using System.Web.Script.Serialization;
 
@@ -109,6 +108,18 @@ public class CueReader
 
 	}// -----------------------------------------
 
+
+	/// <summary>
+	/// Get the MD5 of the first data track of the CD
+	/// </summary>
+	/// <returns></returns>
+	public string getFirstDataTrackMD5()
+	{
+		// LINQ
+		if(tracks==null) return null;
+		return tracks.Where(t=>t.isData).FirstOrDefault()?.md5;
+	}// -----------------------------------------
+	
 
 	/// <summary>
 	/// Load a descriptor file
@@ -500,7 +511,7 @@ public class CueReader
 					t["isData"] = (bool) !((t["type"] as string) == "AUDIO");
 					
 				}
-				 goto case 2;
+				goto case 2;
 
 			case 2:
 				// Convert V2 to V3
@@ -543,6 +554,7 @@ public class CueReader
 			tr.pregapSeconds = (int)t["pregapSeconds"];
 			tr.pregapMillisecs = (int)t["pregapMillisecs"];
 			tr.storedFileName = (string)t["storedFileName"];
+			tr.md5 = (string)t["md5"];
 
 			foreach(Dictionary<string,object> ind in (ArrayList)t["indexes"]) {
 				tr.addIndex((int)ind["no"], (int)ind["minutes"], (int)ind["seconds"], (int)ind["millisecs"]);
@@ -598,7 +610,7 @@ public class CueReader
 			sectorSize= SECTOR_SIZE,
 			totalSize = CD_TOTAL_SIZE,
 			multiFile = MULTIFILE,
-			tracks = tracks
+			tracks
 		};
 
 		// Serialize

@@ -1,11 +1,8 @@
 ﻿using cdcrush.lib;
 using cdcrush.lib.app;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace cdcrush.prog
 {
@@ -72,7 +69,7 @@ class TaskCompressTrack : lib.task.CTask
 		}
 		else
 		{
-			var ffmp = new FFmpeg();
+			var ffmp = new FFmpeg(CDCRUSH.FFMPEG_PATH);
 			ffmp.onComplete = (s) => {
 				if(s) {
 					deleteOldFile();

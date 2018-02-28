@@ -43,17 +43,17 @@
 			this.input_in = new System.Windows.Forms.TextBox();
 			this.input_out = new System.Windows.Forms.TextBox();
 			this.btn_input_out = new System.Windows.Forms.Button();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+			this.info_size1 = new System.Windows.Forms.TextBox();
 			this.combo_audioq = new System.Windows.Forms.ComboBox();
 			this.info_tracks = new System.Windows.Forms.TextBox();
-			this.info_size1 = new System.Windows.Forms.TextBox();
 			this.info_size0 = new System.Windows.Forms.TextBox();
-			this.btn_CRUSH = new System.Windows.Forms.Button();
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.info_md5 = new System.Windows.Forms.TextBox();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.info_cdtitle = new System.Windows.Forms.TextBox();
-			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.btn_CRUSH = new System.Windows.Forms.Button();
 			label3 = new System.Windows.Forms.Label();
 			table_IO = new System.Windows.Forms.TableLayoutPanel();
 			label1 = new System.Windows.Forms.Label();
@@ -66,11 +66,11 @@
 			label9 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			table_IO.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			groupBox1.SuspendLayout();
-			this.tableLayoutPanel1.SuspendLayout();
-			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
+			this.tableLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label3
@@ -216,20 +216,61 @@
 			label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			label9.Location = new System.Drawing.Point(3, 0);
 			label9.Name = "label9";
-			label9.Size = new System.Drawing.Size(81, 13);
+			label9.Size = new System.Drawing.Size(126, 13);
 			label9.TabIndex = 20;
-			label9.Text = "Track 1 MD5";
+			label9.Text = "First data track MD5";
 			// 
-			// pictureBox1
+			// groupBox1
 			// 
-			this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.pictureBox1.Image = global::cdcrush.Properties.Resources.dropimage;
-			this.pictureBox1.Location = new System.Drawing.Point(3, 103);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(128, 128);
-			this.pictureBox1.TabIndex = 3;
-			this.pictureBox1.TabStop = false;
-			this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			groupBox1.Controls.Add(this.tableLayoutPanel3);
+			groupBox1.Controls.Add(this.tableLayoutPanel2);
+			groupBox1.Controls.Add(this.tableLayoutPanel1);
+			groupBox1.Location = new System.Drawing.Point(137, 103);
+			groupBox1.Name = "groupBox1";
+			groupBox1.Size = new System.Drawing.Size(310, 128);
+			groupBox1.TabIndex = 23;
+			groupBox1.TabStop = false;
+			groupBox1.Text = "Cue Info";
+			// 
+			// tableLayoutPanel3
+			// 
+			this.tableLayoutPanel3.AutoSize = true;
+			this.tableLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanel3.ColumnCount = 4;
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel3.Controls.Add(label7, 0, 0);
+			this.tableLayoutPanel3.Controls.Add(this.info_size1, 0, 1);
+			this.tableLayoutPanel3.Controls.Add(label8, 1, 0);
+			this.tableLayoutPanel3.Controls.Add(label3, 3, 0);
+			this.tableLayoutPanel3.Controls.Add(this.combo_audioq, 3, 1);
+			this.tableLayoutPanel3.Controls.Add(this.info_tracks, 2, 1);
+			this.tableLayoutPanel3.Controls.Add(this.info_size0, 1, 1);
+			this.tableLayoutPanel3.Controls.Add(label6, 2, 0);
+			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 80);
+			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+			this.tableLayoutPanel3.RowCount = 2;
+			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(304, 40);
+			this.tableLayoutPanel3.TabIndex = 24;
+			// 
+			// info_size1
+			// 
+			this.info_size1.BackColor = System.Drawing.SystemColors.Info;
+			this.info_size1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.info_size1.Location = new System.Drawing.Point(3, 16);
+			this.info_size1.Name = "info_size1";
+			this.info_size1.ReadOnly = true;
+			this.info_size1.Size = new System.Drawing.Size(51, 20);
+			this.info_size1.TabIndex = 7;
+			this.info_size1.Text = "650MB";
+			this.info_size1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
 			// combo_audioq
 			// 
@@ -254,18 +295,6 @@
 			this.info_tracks.Text = "25";
 			this.info_tracks.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
-			// info_size1
-			// 
-			this.info_size1.BackColor = System.Drawing.SystemColors.Info;
-			this.info_size1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_size1.Location = new System.Drawing.Point(3, 16);
-			this.info_size1.Name = "info_size1";
-			this.info_size1.ReadOnly = true;
-			this.info_size1.Size = new System.Drawing.Size(51, 20);
-			this.info_size1.TabIndex = 7;
-			this.info_size1.Text = "650MB";
-			this.info_size1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
 			// info_size0
 			// 
 			this.info_size0.BackColor = System.Drawing.SystemColors.Info;
@@ -278,19 +307,22 @@
 			this.info_size0.Text = "68MB";
 			this.info_size0.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
-			// btn_CRUSH
+			// tableLayoutPanel2
 			// 
-			this.btn_CRUSH.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_CRUSH.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btn_CRUSH.ForeColor = System.Drawing.Color.Green;
-			this.btn_CRUSH.Location = new System.Drawing.Point(3, 237);
-			this.btn_CRUSH.Name = "btn_CRUSH";
-			this.btn_CRUSH.Size = new System.Drawing.Size(444, 39);
-			this.btn_CRUSH.TabIndex = 22;
-			this.btn_CRUSH.Text = "CRUSH";
-			this.btn_CRUSH.UseVisualStyleBackColor = true;
-			this.btn_CRUSH.Click += new System.EventHandler(this.btn_CRUSH_Click);
+			this.tableLayoutPanel2.AutoSize = true;
+			this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanel2.ColumnCount = 1;
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel2.Controls.Add(label9, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.info_md5, 0, 1);
+			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 48);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 2;
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(304, 32);
+			this.tableLayoutPanel2.TabIndex = 1;
 			// 
 			// info_md5
 			// 
@@ -304,20 +336,6 @@
 			this.info_md5.TabIndex = 21;
 			this.info_md5.Text = "c1a8d182a940e751f1c9a506ada22fe8";
 			this.info_md5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			// 
-			// groupBox1
-			// 
-			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			groupBox1.Controls.Add(this.tableLayoutPanel3);
-			groupBox1.Controls.Add(this.tableLayoutPanel2);
-			groupBox1.Controls.Add(this.tableLayoutPanel1);
-			groupBox1.Location = new System.Drawing.Point(137, 103);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(310, 128);
-			groupBox1.TabIndex = 23;
-			groupBox1.TabStop = false;
-			groupBox1.Text = "Cue Info";
 			// 
 			// tableLayoutPanel1
 			// 
@@ -349,48 +367,30 @@
 			this.info_cdtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.info_cdtitle.WordWrap = false;
 			// 
-			// tableLayoutPanel2
+			// pictureBox1
 			// 
-			this.tableLayoutPanel2.AutoSize = true;
-			this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel2.ColumnCount = 1;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel2.Controls.Add(label9, 0, 0);
-			this.tableLayoutPanel2.Controls.Add(this.info_md5, 0, 1);
-			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 48);
-			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 2;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(304, 32);
-			this.tableLayoutPanel2.TabIndex = 1;
+			this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pictureBox1.Image = global::cdcrush.Properties.Resources.dropimage;
+			this.pictureBox1.Location = new System.Drawing.Point(3, 103);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(128, 128);
+			this.pictureBox1.TabIndex = 3;
+			this.pictureBox1.TabStop = false;
+			this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
 			// 
-			// tableLayoutPanel3
+			// btn_CRUSH
 			// 
-			this.tableLayoutPanel3.AutoSize = true;
-			this.tableLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel3.ColumnCount = 4;
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.Controls.Add(label7, 0, 0);
-			this.tableLayoutPanel3.Controls.Add(this.info_size1, 0, 1);
-			this.tableLayoutPanel3.Controls.Add(label8, 1, 0);
-			this.tableLayoutPanel3.Controls.Add(label3, 3, 0);
-			this.tableLayoutPanel3.Controls.Add(this.combo_audioq, 3, 1);
-			this.tableLayoutPanel3.Controls.Add(this.info_tracks, 2, 1);
-			this.tableLayoutPanel3.Controls.Add(this.info_size0, 1, 1);
-			this.tableLayoutPanel3.Controls.Add(label6, 2, 0);
-			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 80);
-			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 2;
-			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(304, 40);
-			this.tableLayoutPanel3.TabIndex = 24;
+			this.btn_CRUSH.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_CRUSH.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btn_CRUSH.ForeColor = System.Drawing.Color.Green;
+			this.btn_CRUSH.Location = new System.Drawing.Point(3, 237);
+			this.btn_CRUSH.Name = "btn_CRUSH";
+			this.btn_CRUSH.Size = new System.Drawing.Size(444, 39);
+			this.btn_CRUSH.TabIndex = 22;
+			this.btn_CRUSH.Text = "CRUSH";
+			this.btn_CRUSH.UseVisualStyleBackColor = true;
+			this.btn_CRUSH.Click += new System.EventHandler(this.btn_CRUSH_Click);
 			// 
 			// PanelCompress
 			// 
@@ -408,15 +408,15 @@
 			this.Load += new System.EventHandler(this.PanelCompress_Load);
 			table_IO.ResumeLayout(false);
 			table_IO.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			groupBox1.ResumeLayout(false);
 			groupBox1.PerformLayout();
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
-			this.tableLayoutPanel2.ResumeLayout(false);
-			this.tableLayoutPanel2.PerformLayout();
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.tableLayoutPanel3.PerformLayout();
+			this.tableLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel2.PerformLayout();
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 
 		}

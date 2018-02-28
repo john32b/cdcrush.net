@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 
 namespace cdcrush.lib.app
 {
@@ -126,11 +124,11 @@ class CliApp
 	 * Quickly create a CLI APP in SYNC and return it's stdOut and stdErr
 	 * Returns [ stdOut, stdErr, ExitCode ]
 	 */
-	static public string[] quickStartSync(string filename,string args = null)
+	static public string[] quickStartSync(string exePath,string args = null)
 	{
-		var app = new CliApp(filename);
+		var app = new CliApp(exePath);
 			app.proc.StartInfo.Arguments = args;
-			LOG.log("[CLI.APP] : quickrun() : {0} {1}", filename, args);
+			LOG.log("[CLI.APP] : quickrun() : {0} {1}", exePath, args);
 			app.proc.Start();
 			app.proc.WaitForExit();
 		var s = new string[] {
@@ -141,52 +139,27 @@ class CliApp
 		// app.proc.Close(); // DO NOT CLOSE!! ~CliApp() will handle the process ending
 		return s;
 	}// -----------------------------------------
-}// -- end class
 
-}// -- end namespace
-
-
-
-
-
-/* 
- *
- * FIGURING OUT THINGS:
- * -----------------------
- * 
- * 	public async Task<int> startAsync(string args = null)
+	/// <summary>
+	/// Check to see if an executable exists / can be run
+	/// </summary>
+	/// <param name="exePath"></param>
+	/// <returns></returns>
+	static public bool exists(string exePath)
 	{
-		proc.StartInfo.Arguments = args;
-		Debug.WriteLine("Starting CLI {0} {1}", _filename, proc.StartInfo.Arguments);
-		return await RunProcessAsync(proc).ConfigureAwait(false);
-	}// -----------------------------------------
-
-	// --
-	private Task<int> RunProcessAsync(Process process)
-	{
-		var tcs = new TaskCompletionSource<int>();
-
-		process.Exited += (s, ea) =>
+		var app = new CliApp(exePath);
+		
+		try{
+			app.proc.Start();
+			app.proc.WaitForExit();
+		}catch(System.ComponentModel.Win32Exception)
 		{
-			Debug.WriteLine("Process {0} Exited with code {1}", _filename, process.ExitCode);
-			tcs.SetResult(process.ExitCode);
-			process.Dispose();
-		};
-
-		process.OutputDataReceived += proc_OutputDataReceived;
-		process.ErrorDataReceived += proc_ErrorDataReceived;
-
-		if (!process.Start())
-		{
-			//you may allow for the process to be re-used (started = false) 
-			//but I'm not sure about the guarantees of the Exited event in such a case
-			throw new InvalidOperationException("Could not start process: " + process);
+			return false;
 		}
 
-		process.BeginOutputReadLine();
-		process.BeginErrorReadLine();
-
-		return tcs.Task;
+		return true;
 	}// -----------------------------------------
- 
- */
+
+
+}// -- end class
+}// -- end namespace
