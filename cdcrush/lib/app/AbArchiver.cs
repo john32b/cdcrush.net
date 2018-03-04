@@ -40,6 +40,8 @@ namespace cdcrush.lib.app
 			return true;
 		}// -----------------------------------------
 
+		// Forcefully end the operation
+		public void kill() => proc?.kill();
 
 	}// -- end class
 

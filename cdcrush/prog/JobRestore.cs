@@ -77,9 +77,14 @@ class JobRestore: CJob
 		// - Extract the Archive
 		// -----------------------
 		add(new CTask((t) => {
-			var arc = new FreeArc();
+			var arc = new FreeArc(CDCRUSH.TOOLS_PATH);
 			t.handleCliReport(arc);
 			arc.extractAll(p.inputFile, p.tempDir);
+			// In case the operation is aborted
+			t.killExtra = () => {
+				arc.kill();
+			};
+
 		}, "Extracting", true));
 
 		//  - Read JSON data
@@ -89,15 +94,15 @@ class JobRestore: CJob
 		add(new CTask((t) => {
 			var cd = new CueReader();
 			jobData.cd = cd;
-
 			// This runs in sync:
 			if(!cd.loadJson(Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS))) {
 				t.fail(msg: cd.ERROR);
 				return;
 			}//--
 
-			// #DEBUG
-			// cd.debugInfo();
+			#if DEBUG
+				cd.debugInfo();
+			#endif
 
 			// - Push TASK RESTORE tasks right after this one
 			foreach(CueTrack tr in cd.tracks) {
@@ -125,8 +130,6 @@ class JobRestore: CJob
 			t.complete();
 
 		}, "Preparing to Join"));
-
-
 
 
 		// - Prepare tracks `trackfile` which is the track written to the CUE
@@ -182,15 +185,15 @@ class JobRestore: CJob
 
 
 	/// <summary>
-	/// Called on FAIL and COMPLETE
+	/// Called on FAIL / COMPLETE / PROGRAM EXIT
+	/// Clean up temporary files
 	/// </summary>
 	protected override void kill()
 	{
 		base.kill();
-
 		RestoreParams p = jobData;
-		if (p.tempDir != p.outputDir) {
-			// NOTE: This is always a subdir of the master
+		if (p.tempDir != p.outputDir)  // NOTE: This is always a subdir of the master temp dir
+		{ 
 			try
 			{
 				Directory.Delete(p.tempDir, true);

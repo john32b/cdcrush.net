@@ -1,0 +1,11 @@
+The following people have been contributed into FreeArc:
+
+Igor Pavlov, author of 7-zip, LZMA and EXE filter: licensed under the GNU LGPL license and available for free at http://www.7-zip.org
+Dmitry Shkarin, author of PPMd: distributed to public domain and available for free at http://www.compression.ru/ds/
+Ilya Grebnov, author of GRZipII and original LZP filter: licensed under the GNU LGPL license
+Alexander Djourik and Pavel Zhilin, authors of TTA: licensed under the GNU GPL license and available for free at http://true-audio.com/
+Tom St Denis, author of LibTomCrypt: distributed to public domain and available for free at http://libtomcrypt.com/
+Dmitry Subbotin, author of Carryless rangecoder: distributed to public domain and available for free at http://www.compression.ru/ds/
+Joachim Henke, coauthor of Tornado: licensed under the GNU GPL license and available for free at http://freearc.org/Research.aspx
+Mark Shevchenko (author of GUI SFX and web site)
+Bulat Ziganshin (author of remaining parts)

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 
 namespace cdcrush.lib.app {
 
@@ -15,9 +14,11 @@ namespace cdcrush.lib.app {
 /// </summary>
 class FreeArc : AbArchiver
 {
-	public FreeArc(string toolsPath = "")
+	const string EXECUTABLE_NAME = "Arc.exe";
+	// --
+	public FreeArc(string exePath = "")
 	{
-		proc = new CliApp(Path.Combine(toolsPath,"Arc.exe"));
+		proc = new CliApp(Path.Combine(exePath,EXECUTABLE_NAME));
 
 		proc.onComplete = (code) =>
 		{
@@ -33,10 +34,10 @@ class FreeArc : AbArchiver
 		};
 
 		// FREEARC writes to stdout
-		proc.onStdOut = (s) =>
-		{
-			// Try to read the progress, but can't
-		};
+		//proc.onStdOut = (s) =>
+		//{
+			// Tried to read the progress, but can't
+		//};
 
 	}// -----------------------------------------
 

@@ -37,12 +37,16 @@
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label8;
 			System.Windows.Forms.Label label9;
+			System.Windows.Forms.Label label10;
+			System.Windows.Forms.Label label11;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
 			this.info_status = new System.Windows.Forms.RichTextBox();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabRestore = new System.Windows.Forms.TabPage();
+			this.panelRestore1 = new cdcrush.forms.PanelRestore();
 			this.tabCrush = new System.Windows.Forms.TabPage();
+			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			this.tabSettings = new System.Windows.Forms.TabPage();
 			this.info_ffmpeg_status = new System.Windows.Forms.Label();
 			this.num_threads = new System.Windows.Forms.NumericUpDown();
@@ -53,10 +57,9 @@
 			this.info_ffmpeg = new System.Windows.Forms.TextBox();
 			this.info_tempFolder = new System.Windows.Forms.TextBox();
 			this.tabInfo = new System.Windows.Forms.TabPage();
+			this.link_donate = new System.Windows.Forms.LinkLabel();
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
-			this.panelRestore1 = new cdcrush.forms.PanelRestore();
-			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -66,6 +69,8 @@
 			label6 = new System.Windows.Forms.Label();
 			label8 = new System.Windows.Forms.Label();
 			label9 = new System.Windows.Forms.Label();
+			label10 = new System.Windows.Forms.Label();
+			label11 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabRestore.SuspendLayout();
 			this.tabCrush.SuspendLayout();
@@ -162,6 +167,26 @@
 			label9.TabIndex = 1;
 			label9.Text = "FFmpeg.exe Path:";
 			// 
+			// label10
+			// 
+			label10.AutoSize = true;
+			label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label10.Location = new System.Drawing.Point(144, 144);
+			label10.Name = "label10";
+			label10.Size = new System.Drawing.Size(87, 13);
+			label10.TabIndex = 1;
+			label10.Text = "Source code :";
+			// 
+			// label11
+			// 
+			label11.AutoSize = true;
+			label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label11.Location = new System.Drawing.Point(144, 190);
+			label11.Name = "label11";
+			label11.Size = new System.Drawing.Size(59, 13);
+			label11.TabIndex = 1;
+			label11.Text = "Support :";
+			// 
 			// info_status
 			// 
 			this.info_status.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -215,6 +240,16 @@
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
 			// 
+			// panelRestore1
+			// 
+			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
+			this.panelRestore1.MaximumSize = new System.Drawing.Size(600, 280);
+			this.panelRestore1.MinimumSize = new System.Drawing.Size(450, 280);
+			this.panelRestore1.Name = "panelRestore1";
+			this.panelRestore1.Size = new System.Drawing.Size(450, 280);
+			this.panelRestore1.TabIndex = 0;
+			// 
 			// tabCrush
 			// 
 			this.tabCrush.Controls.Add(this.panelCompress1);
@@ -226,6 +261,16 @@
 			this.tabCrush.TabIndex = 1;
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
+			// 
+			// panelCompress1
+			// 
+			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
+			this.panelCompress1.MaximumSize = new System.Drawing.Size(600, 280);
+			this.panelCompress1.MinimumSize = new System.Drawing.Size(450, 280);
+			this.panelCompress1.Name = "panelCompress1";
+			this.panelCompress1.Size = new System.Drawing.Size(450, 280);
+			this.panelCompress1.TabIndex = 0;
 			// 
 			// tabSettings
 			// 
@@ -348,8 +393,11 @@
 			// tabInfo
 			// 
 			this.tabInfo.Controls.Add(label7);
+			this.tabInfo.Controls.Add(this.link_donate);
 			this.tabInfo.Controls.Add(this.link_web);
 			this.tabInfo.Controls.Add(label4);
+			this.tabInfo.Controls.Add(label11);
+			this.tabInfo.Controls.Add(label10);
 			this.tabInfo.Controls.Add(label3);
 			this.tabInfo.Controls.Add(this.info_ver);
 			this.tabInfo.Controls.Add(label5);
@@ -362,10 +410,20 @@
 			this.tabInfo.Text = "Info";
 			this.tabInfo.UseVisualStyleBackColor = true;
 			// 
+			// link_donate
+			// 
+			this.link_donate.AutoSize = true;
+			this.link_donate.Location = new System.Drawing.Point(144, 204);
+			this.link_donate.Name = "link_donate";
+			this.link_donate.Size = new System.Drawing.Size(98, 13);
+			this.link_donate.TabIndex = 2;
+			this.link_donate.TabStop = true;
+			this.link_donate.Text = "Donate with paypal";
+			// 
 			// link_web
 			// 
 			this.link_web.AutoSize = true;
-			this.link_web.Location = new System.Drawing.Point(144, 139);
+			this.link_web.Location = new System.Drawing.Point(144, 158);
 			this.link_web.Name = "link_web";
 			this.link_web.Size = new System.Drawing.Size(117, 13);
 			this.link_web.TabIndex = 2;
@@ -381,26 +439,6 @@
 			this.info_ver.Size = new System.Drawing.Size(22, 13);
 			this.info_ver.TabIndex = 1;
 			this.info_ver.Text = "0.0";
-			// 
-			// panelRestore1
-			// 
-			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
-			this.panelRestore1.MaximumSize = new System.Drawing.Size(600, 280);
-			this.panelRestore1.MinimumSize = new System.Drawing.Size(450, 280);
-			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(450, 280);
-			this.panelRestore1.TabIndex = 0;
-			// 
-			// panelCompress1
-			// 
-			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
-			this.panelCompress1.MaximumSize = new System.Drawing.Size(600, 280);
-			this.panelCompress1.MinimumSize = new System.Drawing.Size(450, 280);
-			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(450, 280);
-			this.panelCompress1.TabIndex = 0;
 			// 
 			// FormMain
 			// 
@@ -450,5 +488,6 @@
 		private System.Windows.Forms.Button btn_temp_def;
 		private System.Windows.Forms.Button btn_ffmpeg_clear;
 		private System.Windows.Forms.Label info_ffmpeg_status;
+		private System.Windows.Forms.LinkLabel link_donate;
 	}
 }

@@ -42,7 +42,7 @@ class TaskCompressTrack : lib.task.CTask
 		// --
 		if(track.isData)
 		{
-			var ecm = new EcmTools();
+			var ecm = new EcmTools(CDCRUSH.TOOLS_PATH);
 			ecm.onComplete = (s) => {
 				if(s) {
 					deleteOldFile();
@@ -51,8 +51,9 @@ class TaskCompressTrack : lib.task.CTask
 					fail(msg:ecm.ERROR);
 				}
 			};
-			
 
+			killExtra = () => ecm.kill();
+			
 			// Before compressing DATA tracks, get the MD5
 			using(var md5 = System.Security.Cryptography.MD5.Create())
 			{
@@ -78,6 +79,9 @@ class TaskCompressTrack : lib.task.CTask
 					fail(msg:ffmp.ERROR);
 				}
 			};
+
+			killExtra = () => ffmp.kill();
+
 			// New filename that is going to be generated:
 			track.storedFileName = track.getTrackName() + ".ogg";
 			track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
@@ -94,9 +98,7 @@ class TaskCompressTrack : lib.task.CTask
 		if(jobData.workFromTemp) {
 			File.Delete(trackFile); // Delete it if it was cut from a single bin
 		}
-
 	}// -----------------------------------------
 
-}// -- end class
-	
+}// -- end class	
 }// -- end namespace

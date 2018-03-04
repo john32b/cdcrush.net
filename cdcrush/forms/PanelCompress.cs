@@ -40,10 +40,6 @@ public partial class PanelCompress : UserControl
 		
 	}// -----------------------------------------
 
-
-
-
-
 	// ==========================================
 	// FORM ACTIONS
 	// ==========================================
@@ -74,6 +70,7 @@ public partial class PanelCompress : UserControl
 				break;
 		}
 	}// -----------------------------------------
+
 	/// <summary>
 	/// Checks input file and if valid it sets it
 	/// </summary>
@@ -88,7 +85,7 @@ public partial class PanelCompress : UserControl
 		else
 		{
 			// FAIL
-			pictureBox1.Image = cdcrush.Properties.Resources.dropimage;
+			pictureBox1.Image = Properties.Resources.dropimage;
 			preparedCover = null;
 		}
 	}// -----------------------------------------
@@ -146,9 +143,10 @@ public partial class PanelCompress : UserControl
 		form_set_info_post(null);
 		preparedCue = null;
 
-		if (o == null)
+		FormMain.FLAG_CLEAR_STATUS = true;
+
+		if (o == null) // Error
 		{
-			// ERROR
 			FormMain.sendMessage(CDCRUSH.ERROR, 3);
 		}
 		else
@@ -160,9 +158,6 @@ public partial class PanelCompress : UserControl
 		}
 
 	}// -----------------------------------------
-
-
-
 
 	// ==========================================
 	// EVENTS
@@ -180,8 +175,10 @@ public partial class PanelCompress : UserControl
 			form_quickLoadFile(file);
 		else if (ext == ".jpg")
 			form_set_cover(file);
-		else
+		else {
 			FormMain.sendMessage("Unsupported file extension.",3);
+			FormMain.FLAG_CLEAR_STATUS = true;
+		}
 	}// -----------------------------------------
 
 
@@ -221,6 +218,7 @@ public partial class PanelCompress : UserControl
 			form_lockSection("all", true);
 		}else{
 			FormMain.sendMessage(CDCRUSH.ERROR, 3);
+			FormMain.FLAG_CLEAR_STATUS = true;
 		}
 	}// -----------------------------------------
 

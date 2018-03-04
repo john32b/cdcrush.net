@@ -15,6 +15,7 @@ namespace cdcrush.lib.app
 /// </summary>
 class FFmpeg:ICliReport
 {
+	const string EXECUTABLE_NAME = "ffmpeg.exe";
 	private CliApp proc;
 
 	// # USER SET ::
@@ -36,7 +37,7 @@ class FFmpeg:ICliReport
 	/// <param name="executablePath">Set the path of ffmpeg if not on path already</param>
 	public FFmpeg(string executablePath = "")
 	{
-		proc = new CliApp(Path.Combine(executablePath,"ffmpeg.exe"));
+		proc = new CliApp(Path.Combine(executablePath,EXECUTABLE_NAME));
 
 		proc.onComplete = (code) =>
 		{
@@ -68,6 +69,8 @@ class FFmpeg:ICliReport
 
 	}// -----------------------------------------
 
+	// --
+	public void kill() => proc?.kill();
 
 	/// <summary>
 	/// Read a file's duration, used for when converting to PCM

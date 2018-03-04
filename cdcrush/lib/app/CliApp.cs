@@ -11,17 +11,17 @@ namespace cdcrush.lib.app
  */
 class CliApp
 {
-	// The main process
+	// The main process object
 	public Process proc {get; private set;}
 
-	// Be able to change the exec pathf
+	// Path to the executable, set directly to the process object
 	public string executable { 
 		get { return proc.StartInfo.FileName; }
 		set { proc.StartInfo.FileName = value; } 
 	}
 	
 	// --
-	// Called when process ends along with exit code, { Usually 0 = OK, 1 = Error.. 
+	// Called when process ends along with exit code, { Usually 0 = OK, 1 = Error, 2 = Could not run EXE }
 	public Action<int> onComplete;  // #Userset
 	public Action<string> onStdOut;	// #Userset
 	public Action<string> onStdErr; // #Userset
@@ -44,8 +44,7 @@ class CliApp
 	public CliApp(string exec)
 	{
 		proc = new Process();
-		//Debug.WriteLine("PROCESS {0} HAS ID {1}", exec, proc.Id);
-		executable = exec; // setter
+		executable = exec; // uses setter
 		proc.StartInfo.UseShellExecute = false; // needed for executables!
 		proc.StartInfo.CreateNoWindow = true;
 		proc.StartInfo.RedirectStandardOutput = true;
@@ -57,7 +56,7 @@ class CliApp
 		builderStdOut = new StringBuilder();
 		builderStdErr = new StringBuilder();
 
-		System.Text.StringBuilder g = new System.Text.StringBuilder();
+		StringBuilder g = new StringBuilder();
 
 		proc.OutputDataReceived += (sender, e) =>
 		{
@@ -78,9 +77,15 @@ class CliApp
 	// --
 	~CliApp()
 	{
-		if(_hasStarted && !proc.HasExited) proc.Kill();
-		proc.Dispose(); 
+		kill();
 	}// -----------------------------------------	
+
+	// --
+	public void kill()
+	{
+		if(_hasStarted && !proc.HasExited) proc.Kill();
+		proc.Dispose();
+	}// -----------------------------------------
 
 	/// <summary>
 	/// Start a thread in a new thread, it will keep going
@@ -95,13 +100,23 @@ class CliApp
 
 		var th = new Thread(new ThreadStart(
 			 () => {
-				 proc.Start(); _hasStarted = true;
+			 
+				try{
+					 proc.Start();
+				}catch(System.ComponentModel.Win32Exception e){
+					// Could not find the executable
+					builderStdErr.Append($"Problem running {executable}");
+					onComplete?.Invoke(2);
+					return;	
+				}
+				 _hasStarted = true;
 				 proc.BeginErrorReadLine();
 				 proc.BeginOutputReadLine();
 				 proc.WaitForExit();
 				 LOG.log("[CLI.APP] : Process \'{0}\' Exited with code {1}", executable, proc.ExitCode);
-				 if (onComplete != null) onComplete(proc.ExitCode);
+				 onComplete?.Invoke(proc.ExitCode);
 			 }));
+
 		th.IsBackground = true;
 		th.Name = "cliApp(" + executable + ")";
 		th.Start();

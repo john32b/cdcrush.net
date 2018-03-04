@@ -70,15 +70,19 @@ public class CueReader
 
 	// -----------------------------------------
 
+	// --
 	public CueReader()
 	{
 	}// -----------------------------------------
 
+	// --
 	public override string ToString()
 	{
 		return string.Format("Title:{0} | Size:{1} | Tracks:{2} | MultiFile : {3}", CD_TITLE, CD_TOTAL_SIZE, tracks.Count, MULTIFILE);
 	}// -----------------------------------------
 
+	// --
+	// Display some info about the CD and tracks
 	public void debugInfo()
 	{
 		LOG.log(this);
@@ -88,6 +92,7 @@ public class CueReader
 		}
 		LOG.line();
 	}// -----------------------------------------
+
 	/**
 	 * Figure out the CD TYPE from the track infos
 	 */

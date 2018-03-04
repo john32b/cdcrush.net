@@ -120,19 +120,23 @@ class JobCrush:CJob
 		// Create Archive
 		// Add all tracks to the final archive
 		// ---------------------
-		add(new CTask((t) =>
-		{
+		add(new CTask((t) => {
 			CueReader cd = jobData.cd;
 
 			// -- Get list of files::
 			System.Collections.ArrayList files = new System.Collections.ArrayList();
-			foreach(var tr in cd.tracks){
+			foreach(var tr in cd.tracks) {
 				files.Add(tr.workingFile); // Working file is valid, was set earlier
 			}
 
-			var arc = new FreeArc();
+			var arc = new FreeArc(CDCRUSH.TOOLS_PATH);
 			t.handleCliReport(arc);
-			arc.compress((string[])files.ToArray(typeof( string )), jobData.finalArcPath);
+			arc.compress((string[])files.ToArray(typeof(string)), jobData.finalArcPath);
+
+			t.killExtra = () => {
+				arc.kill();
+				FileTools.tryDelete(jobData.finalArcPath);
+			};
 
 		}, "Compressing"));
 
@@ -164,9 +168,11 @@ class JobCrush:CJob
 			}
 
 			// - Append the file(s)
-			var arc = new FreeArc();
+			var arc = new FreeArc(CDCRUSH.TOOLS_PATH);
 			t.handleCliReport(arc);
 			arc.appendFiles(new string[]{path_settings, path_cover},jobData.finalArcPath);
+
+			t.killExtra = () => arc.kill();
 
 		}, "Finalizing"));
 
@@ -184,7 +190,8 @@ class JobCrush:CJob
 	}// -----------------------------------------
 
 	/// <summary>
-	/// Called on FAIL and COMPLETE
+	/// Called on FAIL / COMPLETE / PROGRAM EXIT
+	/// Clean up temporary files
 	/// </summary>
 	protected override void kill()
 	{
@@ -192,8 +199,8 @@ class JobCrush:CJob
 
 		// - Cleanup
 		CrushParams p = jobData;
-		if (p.tempDir != p.outputDir) {
-			// NOTE: This is always a subdir of the master
+		if (p.tempDir != p.outputDir)  // NOTE: This is always a subdir of the master temp dir
+		{ 
 			try
 			{
 				Directory.Delete(p.tempDir, true);
@@ -202,7 +209,7 @@ class JobCrush:CJob
 			{
 				// do nothing
 			}
-		}// --
+		}// --	
 	}// -----------------------------------------
 
 }// --

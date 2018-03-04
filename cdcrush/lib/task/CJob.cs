@@ -118,6 +118,9 @@ public class CJob
 	// [1] is Error Message
 	public string[] ERROR {get; private set;}
 
+	// Keep track of whether the job is done and properly shutdown
+	private bool IS_KILLED = false;
+
 	// --
 	// Create a new Job handler for Custom Tasks
 	public CJob(string _name = null, object _taskData = null)
@@ -132,10 +135,11 @@ public class CJob
 		ERROR = new string[2];
 	}// -----------------------------------------
 
-	// Kill all active Tasks
+	// --
+	// Destructor
 	~CJob()
 	{
-
+		kill();
 	}// -----------------------------------------
 
 	// Adds a task in the queue that will be executed ASYNC
@@ -170,11 +174,13 @@ public class CJob
 	// Use the onStatus and onComplete callbacks to get updates
 	public void start()
 	{
+		// --
+		if(status != CJobStatus.waiting) {
+			throw new Exception("A CJob object can only run once");
+		}
+
 		// Fill in the slot array 
 		slots = Enumerable.Repeat<bool>(false, MAX_CONCURRENT).ToArray();
-
-		// SHOULD ONLY BE CALLED ONCE IN THE LIFETIME
-		// TODO: SAFEGUARD FOR THAT
 
 		TASKS_COMPLETION_PERCENT = 0;
 		TASKS_COMPLETE = 0;
@@ -318,14 +324,20 @@ public class CJob
 
 
 	/// <summary>
-	/// Custom code, called on FAIL and COMPLETE
+	/// Cleanup code, called on FAIL and COMPLETE
 	/// </summary>
 	virtual protected void kill()
 	{
-		LOG.log("[CJOB] : Killing Job :: ", this.name);
+		if(IS_KILLED) return; IS_KILLED = true;
+
+		LOG.log("[CJOB] : Killing Job :: ", name);
+
+		// Clear any running task
 		foreach(var t1 in currentTasks) t1.kill();
 		currentTasks.Clear();
-		foreach(var t2 in taskQueue) t2.kill(); // They are not running but just in case
+
+		// Clear any waiting task (just in case)
+		foreach(var t2 in taskQueue) t2.kill();
 		taskQueue.Clear();
 	}// -----------------------------------------
 

@@ -8,17 +8,11 @@ namespace cdcrush.prog
 {
 
 	/**
-	 * About Progress Report:
-	 * ----------------------
-	 * Since this engine can only do ONE JOB AT A TIME. i.e. (restoring, compressing)
-	 * it's ok to have a single listener for progress updates
-	 * sending progress (0 to 100) or (unknown)
-	 * sending short text status messages e.g. ("Compressing 1/10")
-	 * ----------------------------------------------------------------------
-	 **/
+	 * CDCRUSH.cs is the main engine of the program,
+	 * offering tools to compress/restore/get infos/etc.
+	 * ----------------------------------------------------
+	 */
 	 
-
-	// -- MAIN CLASS OF THE CDCRUSH PROGRAM
 	public static class CDCRUSH
 	{
 		// -- Program Infos
@@ -26,7 +20,8 @@ namespace cdcrush.prog
 		public const string PROGRAM_NAME = "CDCRUSH";
 		public const string PROGRAM_VERSION = "1.2.0";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
-		public const string WEB_SITE = "https://github.com/johndimi/cdcrush.net";
+		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
+		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
 		public const string CDCRUSH_SETTINGS = "crushdata.json";
 		public const string CDCRUSH_COVER = "cover.jpg";
 		public const string CDCRUSH_EXTENSION = ".arc";
@@ -42,11 +37,14 @@ namespace cdcrush.prog
 		// FFmpeg executable name
 		const string FFMPEG_EXE = "ffmpeg.exe";
 
-		// Location of `ffmpeg.exe` null for same folder or global path
-		public static string FFMPEG_PATH = null;
+		// Location of `ffmpeg.exe` null for global path
+		public static string FFMPEG_PATH {get; private set;}
 
 		// Is FFMPEG ready to go?
 		public static bool FFMPEG_OK {get; private set;}
+
+		// Relative directory for the external tools (Arc, EcmTools)
+		public static string TOOLS_PATH {get; private set;}
 
 		// This is the GLOBAL temp folder used for ALL operations
 		public static string TEMP_FOLDER {get; private set;}
@@ -63,7 +61,8 @@ namespace cdcrush.prog
 
 		// In addition to the completion callbacks, set this to get status reports
 		// about the progress of each job.
-		public static Action<CJobStatus, CJob> jobStatusHandler;
+		// #USERSET
+		public static Action<CJobStatus, CJob> jobStatusHandler; 
 		
 		// The temp folder name to create under `TEMP_FOLDER`
 		// No other program in the world should have this unique name, right?
@@ -88,19 +87,40 @@ namespace cdcrush.prog
 			if (!setTempFolder()) return false;
 
 			// - Check for FFMPEG, since it may not come with the program
+			FFMPEG_PATH = "";
+			FFMPEG_OK = false;
 			setFFMPEGPath();
+
+			// -
+			#if DEBUG
+				TOOLS_PATH = "../../../tools/";
+			#else // release
+				TOOLS_PATH = "tools";
+			#endif
 
 			ERROR = null; isInited = true; LOCKED = false;
 			return true;
 		}// -----------------------------------------
 
 		/// <summary>
+		/// Called on normal exit and forced exit
+		/// </summary>
+		public static void kill()
+		{
+			// Check if anything is running and gracefully end it
+			// Delete Temp Files?
+
+
+		}// -----------------------------------------
+
+
+		/// <summary>
 		/// Sets and Checks a new FFMPEG PATH
 		/// </summary>
 		/// <param name="ffmpeg_path">Folder FFMPEG is in,</param>
-		public static void setFFMPEGPath(string ffmpeg_path=null)
+		public static void setFFMPEGPath(string ffmpeg_path = "")
 		{
-			if(CliApp.exists(Path.Combine(ffmpeg_path??"",FFMPEG_EXE)))
+			if(CliApp.exists(Path.Combine(ffmpeg_path,FFMPEG_EXE)))
 			{
 				FFMPEG_OK = true;
 				FFMPEG_PATH = ffmpeg_path;
@@ -201,8 +221,7 @@ namespace cdcrush.prog
 		/// <param name="onComplete">(completeStatus)</param>
 		/// <returns></returns>
 		public static bool restoreARC(string _Input, string _Output,
-			bool flag_folder, bool flag_forceSingle,
-			Action<bool> onComplete)
+			bool flag_folder, bool flag_forceSingle, Action<bool> onComplete)
 		{
 			// NOTE : JOB checks for input file
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
@@ -210,11 +229,12 @@ namespace cdcrush.prog
 
 			LOCKED = true;
 
-			var par = new RestoreParams();
-				par.inputFile = _Input;		// Checked in the JOB
-				par.outputDir = _Output;	// Checked in the JOB
-				par.flag_folder = flag_folder;
-				par.flag_forceSingle = flag_forceSingle;		// SINGLE FILE
+			var par = new RestoreParams {
+				inputFile = _Input,     // Checked in the JOB
+				outputDir = _Output,    // Checked in the JOB
+				flag_folder = flag_folder,
+				flag_forceSingle = flag_forceSingle // SINGLE FILE
+			};
 
 			var j = new JobRestore(par);
 				j.MAX_CONCURRENT = MAX_TASKS;
@@ -273,8 +293,7 @@ namespace cdcrush.prog
 		/// Take a crushed archive and extract only the info file, Returns a customized object with some info
 		/// </summary>
 		/// <param name="arcFile"></param>
-		/// <param name="onComplete"></param>
-		/// <returns>0:Locked, 1:OK, -1:Error</returns>
+		/// <param name="onComplete">(null) if error</param>
 		public static bool loadQuickInfo(string arcFile, Action<Object> onComplete)
 		{
 			if (LOCKED) {
@@ -286,11 +305,11 @@ namespace cdcrush.prog
 
 			LOCKED = true;
 
-			// Move old files out of the way
+			// Delete old files from previous quickInfos
 			FileTools.tryDelete(Path.Combine(TEMP_FOLDER, CDCRUSH_SETTINGS));
 			FileTools.tryDelete(Path.Combine(TEMP_FOLDER, CDCRUSH_COVER));
 
-			var arc = new FreeArc();
+			var arc = new FreeArc(TOOLS_PATH);
 
 			// --
 			arc.onComplete = (success) =>
@@ -316,7 +335,7 @@ namespace cdcrush.prog
 						audio = cd.CD_AUDIO_QUALITY,
 						tracks = cd.tracks.Count,
 						md5 = cd.getFirstDataTrackMD5(),
-						cover = Path.Combine(TEMP_FOLDER,CDCRUSH_COVER) // The file might be missing
+						cover = Path.Combine(TEMP_FOLDER,CDCRUSH_COVER)
 					};
 					
 					onComplete(info);

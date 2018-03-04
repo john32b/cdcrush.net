@@ -45,7 +45,7 @@ class TaskRestoreTrack : lib.task.CTask
 		// --
 		if(track.isData)
 		{
-			var ecm = new EcmTools();
+			var ecm = new EcmTools(CDCRUSH.TOOLS_PATH);
 			ecm.onComplete = (s) => {
 				if(s){
 					deleteOldFile();
@@ -55,6 +55,7 @@ class TaskRestoreTrack : lib.task.CTask
 				}
 			};
 			ecm.unecm(crushedTrackPath);
+			killExtra = () => ecm.kill();
 		}
 		else
 		{
@@ -69,6 +70,7 @@ class TaskRestoreTrack : lib.task.CTask
 				}
 			};
 			ffmp.audioToPCM(crushedTrackPath);
+			killExtra = () => ffmp.kill();
 		}
 		
 	}// -----------------------------------------

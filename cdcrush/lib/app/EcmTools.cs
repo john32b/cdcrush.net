@@ -14,7 +14,11 @@ namespace cdcrush.lib.app
 	/// </summary>
 	class EcmTools:ICliReport
 	{
-		string exe_ecm, exe_unecm;
+		const string EXECUTABLE_ECM = "ecm.exe";
+		const string EXECUTABLE_UNECM = "unecm.exe";
+
+		string exe_ecm, exe_unecm; // Final paths
+
 		CliApp app;
 
 		// #CALLBACK on progress updates (0 - 100)
@@ -33,12 +37,12 @@ namespace cdcrush.lib.app
 		/// <summary>
 		/// Create the EcmTools object
 		/// </summary>
-		/// <param name="toolsPath">Where ecm.exe and unecm.exe are</param>
-		public EcmTools(string toolsPath = "")
+		/// <param name="exePath">Where ecm.exe and unecm.exe are</param>
+		public EcmTools(string exePath = "")
 		{
-			string binPath = toolsPath;
-			exe_ecm = Path.Combine(binPath, "ecm.exe");
-			exe_unecm = Path.Combine(binPath, "unecm.exe");
+			string binPath = exePath;
+			exe_ecm = Path.Combine(binPath, EXECUTABLE_ECM);
+			exe_unecm = Path.Combine(binPath, EXECUTABLE_UNECM);
 
 			app = new CliApp(""); // Set executable later
 
@@ -46,7 +50,7 @@ namespace cdcrush.lib.app
 			{
 				if (code == 0)
 				{
-					if (onComplete != null) onComplete(true);
+					onComplete?.Invoke(true);
 				}
 				else
 				{
@@ -62,11 +66,15 @@ namespace cdcrush.lib.app
 				if(m.Success) {
 					progress = int.Parse(m.Groups[1].Value);
 					// Debug.WriteLine("CAPTURED PERCENT  - " +  m.Groups[1].Value);
-					if (onProgress != null) onProgress(progress);
+					onProgress?.Invoke(progress);
 				}
 			};
 
 		}// -----------------------------------------
+
+
+		// --
+		public void kill() => app.kill();
 
 		/// <summary>
 		/// Covert a .bin file to .ecm

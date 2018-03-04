@@ -56,6 +56,7 @@ public class CTask
 
 	// #USERSET Called when this task is completed
 	public Action onComplete = null;
+
 	// #USERSET  Called whenever the status changes
 	// Available statuses ==
 	//		start	:	The task has just started
@@ -63,6 +64,10 @@ public class CTask
 	//		complete:	The task has been completed
 	//		fail	:	The task has failed, read the ERROR field
 	public Action<CTaskStatus, CTask> onStatus = (a, b) => { };	// Nothing by default 
+
+	// # USER SET
+	// if you want to declare a kill function on quick tasks, here is where you do it
+	public Action killExtra = null;
 
 	// Pointer to the Job holding this task
 	internal CJob parent;
@@ -115,7 +120,7 @@ public class CTask
 		status = CTaskStatus.start;
 		onStatus(CTaskStatus.start, this);
 		PROGRESS = 0;
-		if (quick_run != null) quick_run(this);
+		quick_run?.Invoke(this);
 	}// -----------------------------------------
 
 	// Call this from the extended class or a quickrun to indicate task completion
@@ -136,11 +141,11 @@ public class CTask
 	}// -----------------------------------------
 
 	// Called from a job, use this to free resources etc.
+	// Called on Completion / Fail / Forced Exit
 	public virtual void kill()
 	{
-		// OVERRIDE THIS
-		// Called on Completion and Fail
-		// Gracefully dispose of things
+		// # OVERRIDE THIS , don't forget to call base.kill()
+		killExtra?.Invoke();
 	}// -----------------------------------------
 
 	/// <summary>
@@ -162,7 +167,7 @@ public class CTask
 	/// Quickly handle a CLI app completion
 	/// </summary>
 	/// <param name="cli"></param>
-	public void handleCliReport(cdcrush.lib.app.ICliReport cli)
+	public void handleCliReport(app.ICliReport cli)
 	{
 		cli.onComplete = (s) =>
 		{
@@ -174,7 +179,5 @@ public class CTask
 		};
 	}// -----------------------------------------
 }// --
-
-
 
 }// -- 

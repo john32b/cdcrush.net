@@ -111,41 +111,45 @@ public partial class PanelRestore : UserControl
 	/// </summary>
 	void form_quickLoadFile(string file)
 	{
-			void onLoad(object o)
-			{
-				FormTools.invoke(this, () => {
+		
+		Action<object> onLoad = (o) => 
+		{
+			FormTools.invoke(this, () => {
 
-					FormMain.sendProgress(0);
-					form_lockSection("all", false);
+				FormMain.sendProgress(0);
+				form_lockSection("all", false);
+				FormMain.FLAG_CLEAR_STATUS = true;
 
-					if(o == null) {
-						//form_setText(CDCRUSH.ERROR, 3);
-						LOG.log("ERROR - " + CDCRUSH.ERROR);
-						return;
-					}
+				if(o == null) 
+				{
+					LOG.log("QuickLoad ERROR - " + CDCRUSH.ERROR);
+					FormMain.sendMessage(CDCRUSH.ERROR, 3);
+					form_lockSection("action", true);
+					return;
+				}
 
-					// This file will be restored when the button is clicked
-					preparedArcPath = file;
+				// This file will be restored when the button is clicked
+				preparedArcPath = file;
 
-					input_in.Text = file;
-					form_setCdInfo(o);
-					form_setCoverImage((o as dynamic).cover); // Note: Cover file may not exist
-					FormMain.sendMessage("Ready.", 2);
-					btn_RESTORE.Focus();
-				});
-			} // --
+				input_in.Text = file;
+				form_setCdInfo(o);
+				form_setCoverImage((o as dynamic).cover); // Note: Cover file may not exist
+				FormMain.sendMessage("Loaded Info OK.", 2);
+				btn_RESTORE.Focus();
 
-		if(CDCRUSH.loadQuickInfo(file,onLoad))
+			});
+
+		}; // --
+
+		if(CDCRUSH.loadQuickInfo(file, onLoad))
 		{
 			// Waiting to load quick info : Lock Form
 			form_lockSection("all", true);
 			FormMain.sendMessage("Reading Information ..", 1);
 			FormMain.sendProgress(-1);
-		}else
-		{
-			// Something bad happened
-			LOG.log(CDCRUSH.ERROR);
-			FormMain.sendMessage(CDCRUSH.ERROR, 3);
+		}else{
+			
+			onLoad(null);	// hacky way to have one codebase for errors
 		}
 
 	}// -----------------------------------------

@@ -5,6 +5,13 @@ using System.Windows.Forms;
 
 namespace cdcrush.forms
 {
+
+/**
+ * Test form to test various functionalities
+ * ----
+ * IN DEVELOPMENT
+ * ------------------------------------------*/
+
 	public partial class FormComponentsTest : Form
 	{
 		public FormComponentsTest()
