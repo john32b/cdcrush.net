@@ -673,6 +673,10 @@ public class CueReader
 
 		}// --
 
+		// - Save engine info
+		data += string.Format("REM CueReader Version : {0}\n", VERSION);
+		data += string.Format("REM Audio Quality : {0}\n", CD_AUDIO_QUALITY);
+
 		if (comment != null)
 		{
 			data += "REM " + comment;

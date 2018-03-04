@@ -88,7 +88,7 @@ public partial class FormMain : Form
 		});
 
 		link_donate.LinkClicked += new LinkLabelLinkClickedEventHandler( (a,b) => {
-			link_web.LinkVisited = true;
+			link_donate.LinkVisited = true;
 			System.Diagnostics.Process.Start(CDCRUSH.LINK_DONATE);
 		});
 

@@ -133,10 +133,7 @@ class JobCrush:CJob
 			t.handleCliReport(arc);
 			arc.compress((string[])files.ToArray(typeof(string)), jobData.finalArcPath);
 
-			t.killExtra = () => {
-				arc.kill();
-				FileTools.tryDelete(jobData.finalArcPath);
-			};
+			t.killExtra = () => arc.kill();
 
 		}, "Compressing"));
 
@@ -148,8 +145,9 @@ class JobCrush:CJob
 		{
 			CueReader cd = jobData.cd;
 
-			// #DEBUG
-			//cd.debugInfo();
+			#if DEBUG
+				cd.debugInfo();
+			#endif
 
 			string path_settings = Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS);
 			if(!cd.saveJson(path_settings))

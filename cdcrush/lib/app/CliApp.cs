@@ -84,7 +84,7 @@ class CliApp
 	public void kill()
 	{
 		if(_hasStarted && !proc.HasExited) proc.Kill();
-		proc.Dispose();
+		//proc.Dispose();
 	}// -----------------------------------------
 
 	/// <summary>
