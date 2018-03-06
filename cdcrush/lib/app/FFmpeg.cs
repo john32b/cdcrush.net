@@ -158,25 +158,58 @@ class FFmpeg:ICliReport
 			}
 		}
 
-		var fsize = (int)new FileInfo(input).Length;
-		
 		LOG.log("[FFMPEG] : Converting \"{0}\" to OGG, Quality {1}",input,QUALITY[OGGquality]);
 
-		secondsConverted = progress = 0;
-		targetSeconds = (int)Math.Floor((double)fsize / 176400); // PCM is 176400 bytes per second
-
-		LOG.log("[FFMPEG] : FILE SIZE = {0}, TARGET SECONDS = {1}", fsize, targetSeconds);
+		_initProgressVars(input);
 
 		proc.start(string.Format(
 				"-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a libvorbis -q {1} \"{2}\"",
 				input,OGGquality,output
 			));
 
-		// note: If oncomplete is set, it will be called 
-		//		 If onprogress is set, it will be called with progress 
+		return true;
+	}// -----------------------------------------
+
+	/// <summary>
+	/// Convert a PCM audio file to FLAC
+	/// ! Overwrites all generated files !
+	/// ! Does not check INPUT file !
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="output">If ommited, will be automatically set</param>
+	/// <returns></returns>
+	public bool audioPCMToFlac(string input,string output = null)
+	{
+		if(string.IsNullOrEmpty(output)) {
+			output = Path.ChangeExtension(input,"flac");
+		}else{
+			//[safeguard] Make sure it's a FLAC
+			if(!output.ToLower().EndsWith(".flac")) {
+				output += ".flac"; // try to fix it
+			}
+		}
+
+		LOG.log("[FFMPEG] : Converting \"{0}\" to FLAC",input);
+
+		_initProgressVars(input);
+
+		// C#6 string interpolation
+		proc.start($"-y -f s16le -ar 44.1k -ac 2 -i \"{input}\" -c:a flac \"{output}\"");
+		//proc.start(string.Format("-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a flac \"{1}\"", input,output));
 
 		return true;
 	}// -----------------------------------------
+
+
+	// Helper
+	void _initProgressVars(string input)
+	{
+		var fsize = (int)new FileInfo(input).Length;
+		secondsConverted = progress = 0;
+		targetSeconds = (int)Math.Floor((double)fsize / 176400); // PCM is 176400 bytes per second
+		// LOG.log("[FFMPEG] : FILE SIZE = {0}, TARGET SECONDS = {1}", fsize, targetSeconds);
+	}// -----------------------------------------
+
 
 
 }// -- end class

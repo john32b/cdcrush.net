@@ -23,8 +23,10 @@ public partial class PanelCompress : UserControl
 	private void PanelCompress_Load(object sender, EventArgs e)
 	{
 		// -- Dynamically add the audio quality items
+
+		combo_audioq.Items.Add("FLAC lossless");
 		for(int i=0;i<FFmpeg.QUALITY.Length;i++) {
-			combo_audioq.Items.Add(FFmpeg.QUALITY[i].ToString() + " kbps");
+			combo_audioq.Items.Add(FFmpeg.QUALITY[i].ToString() + "k VBR ogg");
 		}
 		combo_audioq.SelectedIndex = 0;
 

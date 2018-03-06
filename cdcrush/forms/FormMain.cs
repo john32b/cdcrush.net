@@ -108,6 +108,11 @@ public partial class FormMain : Form
 
 		// -- Set initial tab
 		tabControl1.SelectedIndex = STARTING_TAB;
+
+		// --
+		#if (!DEBUG)
+			group_debug.Visible = false;
+		#endif
 	}// -----------------------------------------
 
 
@@ -385,6 +390,17 @@ public partial class FormMain : Form
 			info_ffmpeg_status.Text = "FFmpeg is missing.";
 			info_ffmpeg_status.ForeColor = Color.Red;
 		}
+	}// -----------------------------------------
+
+	// --
+	private void chk_keepTemp_CheckedChanged(object sender, EventArgs e)
+	{
+		#if (!DEBUG)
+			// I don't know how the user got here, but it's a mistake.
+			return;
+		#endif
+
+		CDCRUSH.FLAG_KEEP_TEMP = chk_keepTemp.Checked;
 	}// -----------------------------------------
 
 }// end class

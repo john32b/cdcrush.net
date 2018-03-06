@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "CDCRUSH";
-		public const string PROGRAM_VERSION = "1.2.0";
+		public const string PROGRAM_VERSION = "1.2.1";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -27,6 +27,10 @@ namespace cdcrush.prog
 		public const string CDCRUSH_EXTENSION = ".arc";
 
 		// -- Global
+
+		// Keep temporary files, don't delete them
+		// Currently for debug builds only
+		public static bool FLAG_KEEP_TEMP = false;
 
 		// Maximum concurrent tasks in CJobs
 		public static int MAX_TASKS = 2;
@@ -107,10 +111,8 @@ namespace cdcrush.prog
 		/// </summary>
 		public static void kill()
 		{
-			// Check if anything is running and gracefully end it
-			// Delete Temp Files?
-
-
+			// - Check if anything is running and gracefully end it? 
+			// - Running Jobs are gracefully killed by their destructors
 		}// -----------------------------------------
 
 
@@ -169,7 +171,7 @@ namespace cdcrush.prog
 		/// </summary>
 		/// <param name="_Input">Input file, must be `.cue`</param>
 		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
-		/// <param name="_Audio">Audio Quality to encode the audio tracks with</param>
+		/// <param name="_Audio">Audio Quality to encode the audio tracks with.</param>
 		/// <param name="_Cover">Cover Image to store in the archive</param>
 		/// <param name="_Title">Title of the CD</param>
 		/// <param name="onComplete">Completed (completeStatus,MD5,CrushedSize)</param>

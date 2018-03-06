@@ -191,6 +191,9 @@ class JobRestore: CJob
 	protected override void kill()
 	{
 		base.kill();
+
+		if(CDCRUSH.FLAG_KEEP_TEMP) return;
+
 		RestoreParams p = jobData;
 		if (p.tempDir != p.outputDir)  // NOTE: This is always a subdir of the master temp dir
 		{ 

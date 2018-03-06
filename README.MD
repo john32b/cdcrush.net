@@ -4,7 +4,7 @@
 **Author:** John Dimi, <johndimi@outlook.com> *twitter*: [@jondmt](https://twitter.com/jondmt)\
 **Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)\
 **Language:** C# dotNET 4.5, VS2017 **Licence:** MIT\
-**Version:** 1.2 **Platform:** Windows
+**Version:** 1.2.1 **Platform:** Windows
 
 ## Download
 To get the latest version check [the releases page here on github](https://github.com/johndimi/cdcrush.net/releases). Available for **windows** only.
@@ -17,24 +17,25 @@ To get the latest version check [the releases page here on github](https://githu
 
 - The program separates the tracks of the cd image and compress them separately.
 - For **data** tracks it will use **ecm tools** to remove Error Correction/Detection Codes (ECC/EDC) data from the sectors. *( redundant data )*
-- For  **audio** tracks it willl use the **ogg vorbis** audio codec to produce a decent quality audio file (*custom bitrate 64-500kbps*) with a much smaller filesize compared to the uncompressed PCM audio original.
+- For  **audio** tracks it will use the **ogg vorbis** audio codec to produce a decent quality audio file (*custom bitrate 64-500kbps*) with a much smaller filesize compared to the uncompressed PCM audio original.
+- **NEW:** You can choose to encode the **audio tracks** with the **FLAC** lossless codec.
 - Finally it compresses everything into a single archive using the **FreeArc** archiver.
-
-> **NOTE** : Cdcrush is NOT for creating a 1:1 copy of the original CD, as the audio tracks are being converted to lossy audio, and then converted back to PCM.
-> **BUT** : For normal home use and just playing games the audio quality is still very good and you won't even notice the difference.
-
  
-**Then**  it can  **restore** the crushed cd image back to it's original form, a **.bin/.cue** image that is ready to be used however you like.
+**Then**  it can  **restore** the crushed CD image back to it's original form, a **.bin/.cue** image that is ready to be used however you like.
+
+**NEW from V1.2.1**: Archives with the audio tracks encoded with **FLAC**, will be restored to a 1:1 copy, byte for byte, of the original source CD
  
 ### Some example of game sizes archived with 7zip and cdcrush:
 
-| Title             |  Raw    | 7z      | cdcrush |
-| ----------------- | ------- | ------  | ------  |
-| Wipeout 3         |  577mb  |  ~490mb  | **77mb**   |
-| Die Hard Trilogy  |  532mb  |  ~450mb  | **71mb**   |
-| Alien Trilogy     |  507mb  |  ~440mb  | **88mb**   |
+| Title             |  Raw    | 7z      | cdcrush-ogg|  cdcrush-flac |
+| ----------------- | ------- | ------  | -----------  | -------|
+| Tomb Raider 2     |  710MB  |  ~ 455MB  | **150MB**  | **320MB** |
+| Wipeout 3         |  577MB  |  ~ 490MB  | **77MB**   | .|
+| Die Hard Trilogy  |  532MB  |  ~ 450MB  | **71MB**   | .|
+| Alien Trilogy     |  507MB  |  ~ 440MB  | **88MB**   | .|
 
 <sup>Those games feature many CD-DA audio tracks</sup>
+<sup>7zip maximum compression default template</sup>
 
 ## USAGE
 
@@ -52,7 +53,7 @@ To get the latest version check [the releases page here on github](https://githu
 - Select an input file ( **.cue** ). You can drop it in the window or click the **[...]** button to select one
 - Optionally set an output folder, the final **.arc** file will be created there, auto-named after the CD title
 - Optionally set a cover image by dropping a **.png** file in the window, or by clicking on the image placeholder
-- Choose the audio bitrate to compress the audio tracks (*when audio tracks are present on the cd*)
+- Choose the audio bitrate to compress the audio tracks (*when audio tracks are present on the cd*) **NEW** You can choose the **FLAC** codec here
 - You can optionally change the CD Title, in case the automatic name is wrong
 - Press the **CRUSH** button
 - Wait for the operation to end
@@ -85,6 +86,8 @@ How many tracks to process at the same time. *(For when compressing or restoring
 
 ## CHANGELOG
 
+### V1.2.1
+- Added **FLAC** support. Audio tracks can be encoded and then restored to an exact copy of their original source, to the last byte. Now the full CD can be preserved byte for byte.
 ### V1.2
  - First **dotNet** release, continuing the project from the [NPM cdcrush 1.12](https://www.npmjs.com/package/cdcrush)  release
  - Calculate and display the **MD5** of the first data track, useful to quickly identify the validity of the CD
@@ -101,10 +104,10 @@ How many tracks to process at the same time. *(For when compressing or restoring
 **A** : Theoretically it should support all valid **.cue/.bin** files, try it out.
 
 **Q** : I am worried about the audio quality.\
-**A** : The OGG vorbis codec is decent and it can produce very good results even at 96kbps. Also, implementing a **FLAC** codec is coming at a later version.
+**A** : The OGG vorbis codec is decent and it can produce very good results even at 96kbps. ~~Also, implementing a **FLAC** codec is coming at a later version.~~
 
-**Q** : But compressing the cd audio over and over again, it will deteriorate the quality vastly (*That was a real question I got for the NPM version a while back*)\
-**A**: You are **NOT SUPPOSED** to compress a restored image.  Just compress once from the original cd source and keep the crushed archive.
+**Q**: Is storing the entire CD with FLAC really lossless? I am worried about byte integrity.
+**A**: YES, to the last byte. The filesize and checksums of the restored tracks are the same as the original ones. (data&audio). You can check for yourself by calculating the checksums of restored files vs original source. **ALSO Checksum reports** are coming at a later version.
 
 **Q** : Why there are two versions of the program?\
 **A** : FFmpeg.exe is a small beast ( *around 36 megabytes*) and in some cases users already have it on their pc. So I am publishing a version with and a version without it.

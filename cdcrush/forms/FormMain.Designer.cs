@@ -60,6 +60,8 @@
 			this.link_donate = new System.Windows.Forms.LinkLabel();
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
+			this.chk_keepTemp = new System.Windows.Forms.CheckBox();
+			this.group_debug = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -77,6 +79,7 @@
 			this.tabSettings.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.num_threads)).BeginInit();
 			this.tabInfo.SuspendLayout();
+			this.group_debug.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -274,6 +277,7 @@
 			// 
 			// tabSettings
 			// 
+			this.tabSettings.Controls.Add(this.group_debug);
 			this.tabSettings.Controls.Add(this.info_ffmpeg_status);
 			this.tabSettings.Controls.Add(this.num_threads);
 			this.tabSettings.Controls.Add(this.btn_temp_def);
@@ -440,6 +444,29 @@
 			this.info_ver.TabIndex = 1;
 			this.info_ver.Text = "0.0";
 			// 
+			// chk_keepTemp
+			// 
+			this.chk_keepTemp.AutoSize = true;
+			this.chk_keepTemp.Location = new System.Drawing.Point(6, 33);
+			this.chk_keepTemp.Name = "chk_keepTemp";
+			this.chk_keepTemp.Size = new System.Drawing.Size(105, 17);
+			this.chk_keepTemp.TabIndex = 6;
+			this.chk_keepTemp.Text = "Keep Temp Files";
+			this.chk_keepTemp.UseVisualStyleBackColor = true;
+			this.chk_keepTemp.CheckedChanged += new System.EventHandler(this.chk_keepTemp_CheckedChanged);
+			// 
+			// group_debug
+			// 
+			this.group_debug.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.group_debug.Controls.Add(this.chk_keepTemp);
+			this.group_debug.Location = new System.Drawing.Point(3, 212);
+			this.group_debug.Name = "group_debug";
+			this.group_debug.Size = new System.Drawing.Size(448, 78);
+			this.group_debug.TabIndex = 8;
+			this.group_debug.TabStop = false;
+			this.group_debug.Text = "Debugging";
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -463,6 +490,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.num_threads)).EndInit();
 			this.tabInfo.ResumeLayout(false);
 			this.tabInfo.PerformLayout();
+			this.group_debug.ResumeLayout(false);
+			this.group_debug.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -489,5 +518,7 @@
 		private System.Windows.Forms.Button btn_ffmpeg_clear;
 		private System.Windows.Forms.Label info_ffmpeg_status;
 		private System.Windows.Forms.LinkLabel link_donate;
+		private System.Windows.Forms.GroupBox group_debug;
+		private System.Windows.Forms.CheckBox chk_keepTemp;
 	}
 }

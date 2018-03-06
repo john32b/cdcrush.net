@@ -38,7 +38,16 @@ class TaskCompressTrack : lib.task.CTask
 
 		// Working file is already set and points to either TEMP or INPUT folder
 		trackFile = track.workingFile;
-		
+
+		// Before compressing the tracks, get and store the MD5 of the track
+		using(var md5 = System.Security.Cryptography.MD5.Create())
+		{
+			using(var str = File.OpenRead(trackFile))
+			{
+				track.md5 = BitConverter.ToString(md5.ComputeHash(str)).Replace("-","").ToLower();
+			}
+		}
+
 		// --
 		if(track.isData)
 		{
@@ -52,23 +61,15 @@ class TaskCompressTrack : lib.task.CTask
 				}
 			};
 
+			// In case the task ends abruptly
 			killExtra = () => ecm.kill();
-			
-			// Before compressing DATA tracks, get the MD5
-			using(var md5 = System.Security.Cryptography.MD5.Create())
-			{
-				using(var str = File.OpenRead(trackFile))
-				{
-					track.md5 = BitConverter.ToString(md5.ComputeHash(str)).Replace("-","").ToLower();
-				}
-			}
 
 			// New filename that is going to be generated:
 			track.storedFileName = track.getTrackName() + ".bin.ecm";
 			track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
 			ecm.ecm(trackFile,track.workingFile);	// old .bin file from wherever it was to temp/bin.ecm
 		}
-		else
+		else // AUDIO TRACK :
 		{
 			var ffmp = new FFmpeg(CDCRUSH.FFMPEG_PATH);
 			ffmp.onComplete = (s) => {
@@ -80,21 +81,31 @@ class TaskCompressTrack : lib.task.CTask
 				}
 			};
 
+			// In case the task ends abruptly
 			killExtra = () => ffmp.kill();
 
-			// New filename that is going to be generated:
-			track.storedFileName = track.getTrackName() + ".ogg";
-			track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-			ffmp.audioPCMToOgg(trackFile, jobData.audioQuality, track.workingFile);
+			int audioQ = jobData.audioQuality;
+			if(audioQ==0) // FLAC
+			{
+				track.storedFileName = track.getTrackName() + ".flac";
+				track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
+				ffmp.audioPCMToFlac(trackFile,track.workingFile);
+
+			}else // OGG
+			{
+				track.storedFileName = track.getTrackName() + ".ogg";
+				track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
+				ffmp.audioPCMToOgg(trackFile, audioQ - 1, track.workingFile);
+			}
 		}
 		
 	}// -----------------------------------------
 
 	// --
-	// Delete old files
-	// ONLY IF it's in the TEMP folder!
+	// Delete old files ONLY IF they reside in the TEMP folder!
 	void deleteOldFile()
 	{
+		if(CDCRUSH.FLAG_KEEP_TEMP) return;
 		if(jobData.workFromTemp) {
 			File.Delete(trackFile); // Delete it if it was cut from a single bin
 		}

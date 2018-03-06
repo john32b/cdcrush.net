@@ -64,7 +64,9 @@ class TaskJoinTrackFiles:cdcrush.lib.task.CTask
 				streamRead.CopyTo(streamWrite);
 			}
 
-			FileTools.tryDelete(inputs[i]);
+			if(!CDCRUSH.FLAG_KEEP_TEMP){
+				FileTools.tryDelete(inputs[i]);
+			}
 			PROGRESS += progressStep;
 		}
 

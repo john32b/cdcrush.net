@@ -16,7 +16,7 @@ public struct CrushParams
 	public string inputFile;	// The CUE file to compress
 	public string outputDir;	// Output Directory.
 	public string cdTitle;		// Custom CD TITLE
-	public int audioQuality;	// OGG quality, Check FFmpeg class
+	public int audioQuality;	// 0 is FLAC, 1 to 11 is OGG quality
 	public string cover;		// Cover image for the CD, square
 	// : Internal Use :
 
@@ -88,7 +88,11 @@ class JobCrush:CJob
 			}
 
 			// Real quality to string name
-			cd.CD_AUDIO_QUALITY = FFmpeg.QUALITY[p.audioQuality].ToString() + "kbps";
+			if(p.audioQuality==0){
+				cd.CD_AUDIO_QUALITY = "FLAC";
+			}else{
+				cd.CD_AUDIO_QUALITY = FFmpeg.QUALITY[(p.audioQuality-1)].ToString() + "kbps";
+			}
 
 			// This flag notes that all files will go to the TEMP folder
 			jobData.workFromTemp = !cd.MULTIFILE;
@@ -194,6 +198,8 @@ class JobCrush:CJob
 	protected override void kill()
 	{
 		base.kill();
+
+		if(CDCRUSH.FLAG_KEEP_TEMP) return;
 
 		// - Cleanup
 		CrushParams p = jobData;

@@ -674,7 +674,8 @@ public class CueReader
 		}// --
 
 		// - Save engine info
-		data += string.Format("REM CueReader Version : {0}\n", VERSION);
+		data += string.Format("REM ------------------------------\n");
+		data += string.Format("REM CDCRUSH Version : {0}\n",cdcrush.prog.CDCRUSH.PROGRAM_VERSION);
 		data += string.Format("REM Audio Quality : {0}\n", CD_AUDIO_QUALITY);
 
 		if (comment != null)
