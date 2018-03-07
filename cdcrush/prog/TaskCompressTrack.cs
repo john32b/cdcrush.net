@@ -84,20 +84,32 @@ class TaskCompressTrack : lib.task.CTask
 			// In case the task ends abruptly
 			killExtra = () => ffmp.kill();
 
-			int audioQ = jobData.audioQuality;
-			if(audioQ==0) // FLAC
-			{
-				track.storedFileName = track.getTrackName() + ".flac";
-				track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-				ffmp.audioPCMToFlac(trackFile,track.workingFile);
+			// Cast for easy coding
+			Tuple<int,int> audioQ = jobData.audioQuality;
 
-			}else // OGG OPUS
+			switch(audioQ.Item1)
 			{
-				track.storedFileName = track.getTrackName() + ".ogg";
-				track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-				ffmp.audioPCMToOgg(trackFile, CDCRUSH.OPUS_QUALITY[audioQ - 1], track.workingFile);
-			}
-		}
+				case 0: // FLAC
+					track.storedFileName = track.getTrackName() + ".flac";
+					track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
+					ffmp.audioPCMToFlac(trackFile,track.workingFile);
+					break;
+
+				case 1: // VORBIS
+					track.storedFileName = track.getTrackName() + ".ogg";
+					track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
+					ffmp.audioPCMToOggVorbis(trackFile, audioQ.Item2, track.workingFile);
+					break;
+
+				case 2: // OPUS
+					track.storedFileName = track.getTrackName() + ".ogg";
+					track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
+					ffmp.audioPCMToOggOpus(trackFile, CDCRUSH.OPUS_QUALITY[audioQ.Item2], track.workingFile);
+					break;
+
+			}//- end switch
+
+		}//- end if (track.isData)
 		
 	}// -----------------------------------------
 

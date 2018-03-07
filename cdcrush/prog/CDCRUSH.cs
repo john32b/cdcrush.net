@@ -76,8 +76,23 @@ namespace cdcrush.prog
 		private static bool isInited = false;
 		// -----------------------------------------
 
-		// The quality options for encoding with OGG OPUS
+		// :: AUDIO QUALITY ::
+
+		// Audio codecs as they appear on the form controls
+		public static readonly string[] AUDIO_CODECS = {
+			"FLAC",
+			"Ogg Vorbis",
+			"Ogg Opus"
+		};
+
+		// The quality options for encoding with OPUS OGG
 		public static readonly int[] OPUS_QUALITY = { 32, 48, 64, 80, 96, 112, 128, 160, 320};
+
+		// The quality options for encoding with VORBIS OGG
+		// Ogg vorbis Quality Number to kbps.
+		public static readonly int[] VORBIS_QUALITY = { 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500 };
+
+		// -----------------------------------
 
 		/// <summary>
 		/// Init Variables program
@@ -169,14 +184,26 @@ namespace cdcrush.prog
 
 		
 		/// <summary>
-		/// Translate from an integer to quality 
+		/// Translate from an AudioSettings tuple to String Descriptor
 		/// </summary>
 		/// <param name="q">The index of the combobox. Or Quality passed to the crush job</param>
-		public static string getAudioQualityString(int q)
+		public static string getAudioQualityString(Tuple<int,int> A)
 		{
-			// WARNING. NOT SAFEGUARDED
-			if(q==0) return "FLAC lossless";
-			return (OPUS_QUALITY[q-1].ToString() + "k vbr Opus");
+			string res = AUDIO_CODECS[A.Item1];
+			
+			switch(A.Item1)
+			{
+				case 0:	// FLAC;
+					break;
+				case 1: // VORBIS
+					res += $" {VORBIS_QUALITY[A.Item2]}k Vbr";
+					break;
+				case 2: // OPUS
+					res += $" {OPUS_QUALITY[A.Item2]}k Vbr";
+					break;
+			}
+
+			return res;
 		}// -----------------------------------------
 
 
@@ -190,7 +217,7 @@ namespace cdcrush.prog
 		/// <param name="_Title">Title of the CD</param>
 		/// <param name="onComplete">Completed (completeStatus,MD5,CrushedSize)</param>
 		/// <returns></returns>
-		public static bool crushCD(string _Input, string _Output, int _Audio, string _Cover, string _Title,
+		public static bool crushCD(string _Input, string _Output, Tuple<int,int> _Audio, string _Cover, string _Title,
 			Action<bool,string,int> onComplete)
 		{
 			// NOTE : JOB checks for input file

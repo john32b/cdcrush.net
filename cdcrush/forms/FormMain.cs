@@ -402,6 +402,5 @@ public partial class FormMain : Form
 
 		CDCRUSH.FLAG_KEEP_TEMP = chk_keepTemp.Checked;
 	}// -----------------------------------------
-
-}// end class
+	}// end class
 }// --

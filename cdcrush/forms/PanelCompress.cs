@@ -22,13 +22,14 @@ public partial class PanelCompress : UserControl
 	// --
 	private void PanelCompress_Load(object sender, EventArgs e)
 	{
-		// -- Dynamically add the audio quality items
-		//combo_audioq.Items.Add("FLAC lossless");
-		for(int i=0;i<CDCRUSH.OPUS_QUALITY.Length + 1;i++){
-			//combo_audioq.Items.Add(CDCRUSH.OPUS_QUALITY[i].ToString() + "k Vbr Opus");
-			combo_audioq.Items.Add(CDCRUSH.getAudioQualityString(i));
+		// -- Initialize Audio Settings:
+		foreach(string scodec in CDCRUSH.AUDIO_CODECS)
+		{
+			combo_audio_c.Items.Add(scodec);
 		}
-		combo_audioq.SelectedIndex = 0;
+
+		combo_audio_c.SelectedIndex = 0;
+		combo_audio_c_SelectedIndexChanged(null,null); // force first call? why
 
 		FormTools.fileLoadDialogPrepare("cue", "CUE files (*.cue)|*.cue");
 		FormTools.fileLoadDialogPrepare("cover", "Image files (*.jpg)|*.jpg");
@@ -65,7 +66,7 @@ public partial class PanelCompress : UserControl
 				input_out.Enabled = !_lock;
 				//--
 				info_cdtitle.Enabled = !_lock;
-				combo_audioq.Enabled = !_lock;
+				combo_audio_q.Enabled = !_lock;
 				pictureBox1.Enabled = !_lock;
 				form_lockSection("action", _lock);
 				FormMain.sendLock(_lock);
@@ -122,12 +123,12 @@ public partial class PanelCompress : UserControl
 		{
 			// set all to none
 			info_size0.Text = "";
-			info_md5.Text = "";
+			//info_md5.Text = "";
 			return;
 		}
 
 		info_size0.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.size0));
-		info_md5.Text = cdInfo.md5;
+	//	info_md5.Text = cdInfo.md5;
 	}// -----------------------------------------
 
 	/// <summary>
@@ -191,9 +192,13 @@ public partial class PanelCompress : UserControl
 	/// <param name="e"></param>
 	private void btn_CRUSH_Click(object sender, EventArgs e)
 	{
+
+		// Get a valid audio parameters tuple
+		Tuple<int,int> audioQ = Tuple.Create(combo_audio_c.SelectedIndex,combo_audio_q.SelectedIndex);
+
 		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
-		bool res = CDCRUSH.crushCD(preparedCue, input_out.Text, combo_audioq.SelectedIndex, preparedCover, info_cdtitle.Text,
+		bool res = CDCRUSH.crushCD(preparedCue, input_out.Text, audioQ, preparedCover, info_cdtitle.Text,
 			(complete, md5, newSize) => {
 
 				FormTools.invoke(this, () =>{
@@ -269,6 +274,38 @@ public partial class PanelCompress : UserControl
 		}else{
 			form_set_cover(files[0]);
 		}
+	}// -----------------------------------------
+
+	/**
+	 * Codec was changed, fill out the quality combobox
+	 **/
+	private void combo_audio_c_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		combo_audio_q.Items.Clear();
+
+		// Ordering is defined in CDCRUSH.AUDIO_CODECS
+		switch(combo_audio_c.SelectedIndex)
+		{
+			case 0: // FLAC
+				// Keep empty
+				combo_audio_q.Items.Add("");
+				combo_audio_q.Enabled = false;
+				break;
+			case 1: // VORBIS
+				for(int i=0;i<CDCRUSH.VORBIS_QUALITY.Length;i++) {
+					combo_audio_q.Items.Add(CDCRUSH.VORBIS_QUALITY[i].ToString() + "k Vbr");
+				}
+				combo_audio_q.Enabled = true;
+				break;
+			case 2: // OPUS
+				for(int i=0;i<CDCRUSH.OPUS_QUALITY.Length;i++) {
+					combo_audio_q.Items.Add(CDCRUSH.OPUS_QUALITY[i].ToString() + "k Vbr");
+				}				
+				combo_audio_q.Enabled = true;
+				break;
+		}
+
+		combo_audio_q.SelectedIndex = 0;
 	}// -----------------------------------------
 
 }// --

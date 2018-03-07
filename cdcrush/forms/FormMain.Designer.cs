@@ -195,11 +195,11 @@
 			this.info_status.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.info_status.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.info_status.Location = new System.Drawing.Point(12, 361);
+			this.info_status.Location = new System.Drawing.Point(12, 402);
 			this.info_status.Name = "info_status";
 			this.info_status.ReadOnly = true;
 			this.info_status.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.info_status.Size = new System.Drawing.Size(462, 15);
+			this.info_status.Size = new System.Drawing.Size(467, 15);
 			this.info_status.TabIndex = 19;
 			this.info_status.Text = "Ready.";
 			this.info_status.WordWrap = false;
@@ -208,15 +208,16 @@
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.progressBar1.Location = new System.Drawing.Point(12, 334);
+			this.progressBar1.Location = new System.Drawing.Point(12, 375);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(458, 24);
+			this.progressBar1.Size = new System.Drawing.Size(463, 24);
 			this.progressBar1.TabIndex = 12;
 			this.progressBar1.Value = 50;
 			// 
 			// tabControl1
 			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
 			this.tabControl1.Controls.Add(this.tabRestore);
@@ -226,7 +227,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(462, 322);
+			this.tabControl1.Size = new System.Drawing.Size(467, 357);
 			this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabControl1.TabIndex = 20;
 			this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
@@ -238,7 +239,7 @@
 			this.tabRestore.Location = new System.Drawing.Point(4, 25);
 			this.tabRestore.Name = "tabRestore";
 			this.tabRestore.Padding = new System.Windows.Forms.Padding(3);
-			this.tabRestore.Size = new System.Drawing.Size(454, 293);
+			this.tabRestore.Size = new System.Drawing.Size(459, 328);
 			this.tabRestore.TabIndex = 0;
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
@@ -247,10 +248,8 @@
 			// 
 			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
-			this.panelRestore1.MaximumSize = new System.Drawing.Size(600, 280);
-			this.panelRestore1.MinimumSize = new System.Drawing.Size(450, 280);
 			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(450, 280);
+			this.panelRestore1.Size = new System.Drawing.Size(453, 322);
 			this.panelRestore1.TabIndex = 0;
 			// 
 			// tabCrush
@@ -260,7 +259,7 @@
 			this.tabCrush.Location = new System.Drawing.Point(4, 25);
 			this.tabCrush.Name = "tabCrush";
 			this.tabCrush.Padding = new System.Windows.Forms.Padding(3);
-			this.tabCrush.Size = new System.Drawing.Size(454, 293);
+			this.tabCrush.Size = new System.Drawing.Size(459, 328);
 			this.tabCrush.TabIndex = 1;
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
@@ -269,10 +268,8 @@
 			// 
 			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
-			this.panelCompress1.MaximumSize = new System.Drawing.Size(600, 280);
-			this.panelCompress1.MinimumSize = new System.Drawing.Size(450, 280);
 			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(450, 280);
+			this.panelCompress1.Size = new System.Drawing.Size(453, 322);
 			this.panelCompress1.TabIndex = 0;
 			// 
 			// tabSettings
@@ -291,7 +288,7 @@
 			this.tabSettings.Controls.Add(this.info_tempFolder);
 			this.tabSettings.Location = new System.Drawing.Point(4, 25);
 			this.tabSettings.Name = "tabSettings";
-			this.tabSettings.Size = new System.Drawing.Size(454, 293);
+			this.tabSettings.Size = new System.Drawing.Size(459, 328);
 			this.tabSettings.TabIndex = 2;
 			this.tabSettings.Text = "Settings";
 			this.tabSettings.UseVisualStyleBackColor = true;
@@ -432,7 +429,7 @@
 			this.tabInfo.Controls.Add(label1);
 			this.tabInfo.Location = new System.Drawing.Point(4, 25);
 			this.tabInfo.Name = "tabInfo";
-			this.tabInfo.Size = new System.Drawing.Size(454, 293);
+			this.tabInfo.Size = new System.Drawing.Size(459, 328);
 			this.tabInfo.TabIndex = 3;
 			this.tabInfo.Text = "Info";
 			this.tabInfo.UseVisualStyleBackColor = true;
@@ -471,7 +468,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(486, 381);
+			this.ClientSize = new System.Drawing.Size(491, 422);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.info_status);

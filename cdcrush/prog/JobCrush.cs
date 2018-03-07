@@ -16,7 +16,7 @@ public struct CrushParams
 	public string inputFile;	// The CUE file to compress
 	public string outputDir;	// Output Directory.
 	public string cdTitle;		// Custom CD TITLE
-	public int audioQuality;	// 0 is FLAC, 1 to 11 is OGG quality
+	public Tuple<int,int> audioQuality;	// Tuple<AudioCodecID, Bitrate/Index> !!
 	public string cover;		// Cover image for the CD, square
 	// : Internal Use :
 

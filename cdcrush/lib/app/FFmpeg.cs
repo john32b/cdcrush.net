@@ -139,14 +139,14 @@ class FFmpeg:ICliReport
 	/// ! Does not check INPUT file !
 	/// </summary>
 	/// <param name="input"></param>
-	/// <param name="OPUSQuality">In KBPS from 32 to 500</param>
+	/// <param name="quality">In KBPS from 32 to 500</param>
 	/// <param name="output">If ommited, will be automatically set</param>
 	/// <returns></returns>
-	public bool audioPCMToOgg(string input,int OPUSQuality,string output = null)
+	public bool audioPCMToOggOpus(string input, int quality, string output = null)
 	{
 		// [safequard]
-		if (OPUSQuality < 32) OPUSQuality = 32;
-		else if (OPUSQuality > 500) OPUSQuality = 500;
+		if (quality < 32) quality = 32;
+		else if (quality > 500) quality = 500;
 
 		if(string.IsNullOrEmpty(output)) {
 			output = Path.ChangeExtension(input,"ogg");
@@ -157,14 +157,52 @@ class FFmpeg:ICliReport
 			}
 		}
 
-		LOG.log("[FFMPEG] : Converting \"{0}\" to OPUS OGG {1}kbps",input,OPUSQuality);
+		LOG.log("[FFMPEG] : Converting \"{0}\" to OPUS OGG {1}kbps",input,quality);
 
 		_initProgressVars(input);
 
 		proc.start(string.Format(
 				// VBR is ON and Compression is 10 by FFmpeg defaults, but just to be sure.
 				"-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a libopus -b:a {1}k -vbr on -compression_level 10 \"{2}\"",
-				input ,OPUSQuality, output
+				input ,quality, output
+			));
+
+		return true;
+	}// -----------------------------------------
+
+
+	/// <summary>
+	/// Convert a PCM audio file to OGG VORBIS
+	/// ! Overwrites all generated files !
+	/// ! Does not check INPUT file !
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="OPUSQuality">In KBPS from 0 to 10</param>
+	/// <param name="output">If ommited, will be automatically set</param>
+	/// <returns></returns>
+	public bool audioPCMToOggVorbis(string input, int quality, string output = null)
+	{
+		// [safequard]
+		if (quality < 0) quality = 0;
+		else if (quality > 10) quality = 10;
+
+		if(string.IsNullOrEmpty(output)) {
+			output = Path.ChangeExtension(input,"ogg");
+		}else{
+			//[safeguard] Make sure it's an OGG
+			if(!output.ToLower().EndsWith(".ogg")) {
+				output += ".ogg"; // try to fix it
+			}
+		}
+
+		LOG.log("[FFMPEG] : Converting \"{0}\" to VORBIS OGG {1}kbps", input, VORBIS_QUALITY[quality]);
+
+		_initProgressVars(input);
+
+		proc.start(string.Format(
+				// VBR is ON and Compression is 10 by FFmpeg defaults, but just to be sure.
+				"-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a libvorbis -q {1} \"{2}\"",
+				input, quality, output
 			));
 
 		return true;
