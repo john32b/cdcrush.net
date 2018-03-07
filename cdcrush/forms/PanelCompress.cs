@@ -23,10 +23,10 @@ public partial class PanelCompress : UserControl
 	private void PanelCompress_Load(object sender, EventArgs e)
 	{
 		// -- Dynamically add the audio quality items
-
-		combo_audioq.Items.Add("FLAC lossless");
-		for(int i=0;i<FFmpeg.QUALITY.Length;i++) {
-			combo_audioq.Items.Add(FFmpeg.QUALITY[i].ToString() + "k VBR ogg");
+		//combo_audioq.Items.Add("FLAC lossless");
+		for(int i=0;i<CDCRUSH.OPUS_QUALITY.Length + 1;i++){
+			//combo_audioq.Items.Add(CDCRUSH.OPUS_QUALITY[i].ToString() + "k Vbr Opus");
+			combo_audioq.Items.Add(CDCRUSH.getAudioQualityString(i));
 		}
 		combo_audioq.SelectedIndex = 0;
 
@@ -270,7 +270,6 @@ public partial class PanelCompress : UserControl
 			form_set_cover(files[0]);
 		}
 	}// -----------------------------------------
-
 
 }// --
 }// --

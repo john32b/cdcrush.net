@@ -4,7 +4,7 @@
 **Author:** John Dimi, <johndimi@outlook.com> *twitter*: [@jondmt](https://twitter.com/jondmt)\
 **Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)\
 **Language:** C# dotNET 4.5, VS2017 **Licence:** MIT\
-**Version:** 1.2.1 **Platform:** Windows
+**Version:** 1.2.2 **Platform:** Windows
 
 ## Download
 To get the latest version check [the releases page here on github](https://github.com/johndimi/cdcrush.net/releases). Available for **windows** only.
@@ -17,7 +17,7 @@ To get the latest version check [the releases page here on github](https://githu
 
 - The program separates the tracks of the cd image and compress them separately.
 - For **data** tracks it will use **ecm tools** to remove Error Correction/Detection Codes (ECC/EDC) data from the sectors. *( redundant data )*
-- For  **audio** tracks it will use the **ogg vorbis** audio codec to produce a decent quality audio file (*custom bitrate 64-500kbps*) with a much smaller filesize compared to the uncompressed PCM audio original.
+- For  **audio** tracks it will use the **ogg OPUS** audio codec to produce a decent quality audio file (*custom bitrate 32-320kbps vbr*) with a much smaller filesize compared to the uncompressed PCM audio original.
 - **NEW:** You can choose to encode the **audio tracks** with the **FLAC** lossless codec.
 - Finally it compresses everything into a single archive using the **FreeArc** archiver.
  
@@ -86,8 +86,12 @@ How many tracks to process at the same time. *(For when compressing or restoring
 
 ## CHANGELOG
 
+### V1.2.2
+- Replaced the vorbis audio codec with the **opus** codec. It seems to be a better encoder and even supports lower bitrates (*like 32k*)
+
 ### V1.2.1
 - Added **FLAC** support. Audio tracks can be encoded and then restored to an exact copy of their original source, to the last byte. Now the full CD can be preserved byte for byte.
+
 ### V1.2
  - First **dotNet** release, continuing the project from the [NPM cdcrush 1.12](https://www.npmjs.com/package/cdcrush)  release
  - Calculate and display the **MD5** of the first data track, useful to quickly identify the validity of the CD
@@ -104,7 +108,7 @@ How many tracks to process at the same time. *(For when compressing or restoring
 **A** : Theoretically it should support all valid **.cue/.bin** files, try it out.
 
 **Q** : I am worried about the audio quality.\
-**A** : The OGG vorbis codec is decent and it can produce very good results even at 96kbps. ~~Also, implementing a **FLAC** codec is coming at a later version.~~
+**A** : The OGG ~~vorbis~~ (new **OPUS**) codec is decent and it can produce very good results even at 96kbps. ~~Also, implementing a **FLAC** codec is coming at a later version.~~
 
 **Q**: Is storing the entire CD with FLAC really lossless? I am worried about byte integrity.
 **A**: YES, to the last byte. The filesize and checksums of the restored tracks are the same as the original ones. (data&audio). You can check for yourself by calculating the checksums of restored files vs original source. **ALSO Checksum reports** are coming at a later version.

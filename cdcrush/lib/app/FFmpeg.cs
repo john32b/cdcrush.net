@@ -28,7 +28,7 @@ class FFmpeg:ICliReport
 	public int progress {get; private set;} // Current progress % of the current conversion
 
 	// Ogg vorbis Quality Number to kbps.
-	public static readonly int[] QUALITY = { 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500 };
+	public static readonly int[] VORBIS_QUALITY = { 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500 };
 	// -----------------------------------------
 
 	/// <summary>
@@ -129,25 +129,24 @@ class FFmpeg:ICliReport
 		targetSeconds = getSecondsFromFile(input);
 
 		proc.start(string.Format("-i \"{0}\" -y -f s16le -acodec pcm_s16le \"{1}\"", input, output));
-		// note: If oncomplete is set, it will be called 
-		//		 If onprogress is set, it will be called with progress 
+
 		return true;
 	}// -----------------------------------------
 
 	/// <summary>
-	/// Convert a PCM audio file to OGG
+	/// Convert a PCM audio file to OGG OPUS
 	/// ! Overwrites all generated files !
 	/// ! Does not check INPUT file !
 	/// </summary>
 	/// <param name="input"></param>
-	/// <param name="OGGquality">0(64kbps) to 10(500kbps)</param>
+	/// <param name="OPUSQuality">In KBPS from 32 to 500</param>
 	/// <param name="output">If ommited, will be automatically set</param>
 	/// <returns></returns>
-	public bool audioPCMToOgg(string input,int OGGquality,string output = null)
+	public bool audioPCMToOgg(string input,int OPUSQuality,string output = null)
 	{
 		// [safequard]
-		if (OGGquality < 0) OGGquality = 0;
-		else if (OGGquality > 10) OGGquality = 10;
+		if (OPUSQuality < 32) OPUSQuality = 32;
+		else if (OPUSQuality > 500) OPUSQuality = 500;
 
 		if(string.IsNullOrEmpty(output)) {
 			output = Path.ChangeExtension(input,"ogg");
@@ -158,13 +157,14 @@ class FFmpeg:ICliReport
 			}
 		}
 
-		LOG.log("[FFMPEG] : Converting \"{0}\" to OGG, Quality {1}",input,QUALITY[OGGquality]);
+		LOG.log("[FFMPEG] : Converting \"{0}\" to OPUS OGG {1}kbps",input,OPUSQuality);
 
 		_initProgressVars(input);
 
 		proc.start(string.Format(
-				"-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a libvorbis -q {1} \"{2}\"",
-				input,OGGquality,output
+				// VBR is ON and Compression is 10 by FFmpeg defaults, but just to be sure.
+				"-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a libopus -b:a {1}k -vbr on -compression_level 10 \"{2}\"",
+				input ,OPUSQuality, output
 			));
 
 		return true;
@@ -195,7 +195,6 @@ class FFmpeg:ICliReport
 
 		// C#6 string interpolation
 		proc.start($"-y -f s16le -ar 44.1k -ac 2 -i \"{input}\" -c:a flac \"{output}\"");
-		//proc.start(string.Format("-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a flac \"{1}\"", input,output));
 
 		return true;
 	}// -----------------------------------------
@@ -211,7 +210,5 @@ class FFmpeg:ICliReport
 	}// -----------------------------------------
 
 
-
 }// -- end class
-
 }// --

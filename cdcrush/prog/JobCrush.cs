@@ -88,11 +88,7 @@ class JobCrush:CJob
 			}
 
 			// Real quality to string name
-			if(p.audioQuality==0){
-				cd.CD_AUDIO_QUALITY = "FLAC";
-			}else{
-				cd.CD_AUDIO_QUALITY = FFmpeg.QUALITY[(p.audioQuality-1)].ToString() + "kbps";
-			}
+			cd.CD_AUDIO_QUALITY = CDCRUSH.getAudioQualityString(p.audioQuality);
 
 			// This flag notes that all files will go to the TEMP folder
 			jobData.workFromTemp = !cd.MULTIFILE;

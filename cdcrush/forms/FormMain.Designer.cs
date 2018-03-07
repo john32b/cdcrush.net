@@ -48,6 +48,8 @@
 			this.tabCrush = new System.Windows.Forms.TabPage();
 			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			this.tabSettings = new System.Windows.Forms.TabPage();
+			this.group_debug = new System.Windows.Forms.GroupBox();
+			this.chk_keepTemp = new System.Windows.Forms.CheckBox();
 			this.info_ffmpeg_status = new System.Windows.Forms.Label();
 			this.num_threads = new System.Windows.Forms.NumericUpDown();
 			this.btn_temp_def = new System.Windows.Forms.Button();
@@ -60,8 +62,6 @@
 			this.link_donate = new System.Windows.Forms.LinkLabel();
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
-			this.chk_keepTemp = new System.Windows.Forms.CheckBox();
-			this.group_debug = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -77,9 +77,9 @@
 			this.tabRestore.SuspendLayout();
 			this.tabCrush.SuspendLayout();
 			this.tabSettings.SuspendLayout();
+			this.group_debug.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.num_threads)).BeginInit();
 			this.tabInfo.SuspendLayout();
-			this.group_debug.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -296,6 +296,29 @@
 			this.tabSettings.Text = "Settings";
 			this.tabSettings.UseVisualStyleBackColor = true;
 			// 
+			// group_debug
+			// 
+			this.group_debug.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.group_debug.Controls.Add(this.chk_keepTemp);
+			this.group_debug.Location = new System.Drawing.Point(3, 212);
+			this.group_debug.Name = "group_debug";
+			this.group_debug.Size = new System.Drawing.Size(448, 78);
+			this.group_debug.TabIndex = 8;
+			this.group_debug.TabStop = false;
+			this.group_debug.Text = "Debugging";
+			// 
+			// chk_keepTemp
+			// 
+			this.chk_keepTemp.AutoSize = true;
+			this.chk_keepTemp.Location = new System.Drawing.Point(6, 33);
+			this.chk_keepTemp.Name = "chk_keepTemp";
+			this.chk_keepTemp.Size = new System.Drawing.Size(105, 17);
+			this.chk_keepTemp.TabIndex = 6;
+			this.chk_keepTemp.Text = "Keep Temp Files";
+			this.chk_keepTemp.UseVisualStyleBackColor = true;
+			this.chk_keepTemp.CheckedChanged += new System.EventHandler(this.chk_keepTemp_CheckedChanged);
+			// 
 			// info_ffmpeg_status
 			// 
 			this.info_ffmpeg_status.AutoSize = true;
@@ -444,29 +467,6 @@
 			this.info_ver.TabIndex = 1;
 			this.info_ver.Text = "0.0";
 			// 
-			// chk_keepTemp
-			// 
-			this.chk_keepTemp.AutoSize = true;
-			this.chk_keepTemp.Location = new System.Drawing.Point(6, 33);
-			this.chk_keepTemp.Name = "chk_keepTemp";
-			this.chk_keepTemp.Size = new System.Drawing.Size(105, 17);
-			this.chk_keepTemp.TabIndex = 6;
-			this.chk_keepTemp.Text = "Keep Temp Files";
-			this.chk_keepTemp.UseVisualStyleBackColor = true;
-			this.chk_keepTemp.CheckedChanged += new System.EventHandler(this.chk_keepTemp_CheckedChanged);
-			// 
-			// group_debug
-			// 
-			this.group_debug.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.group_debug.Controls.Add(this.chk_keepTemp);
-			this.group_debug.Location = new System.Drawing.Point(3, 212);
-			this.group_debug.Name = "group_debug";
-			this.group_debug.Size = new System.Drawing.Size(448, 78);
-			this.group_debug.TabIndex = 8;
-			this.group_debug.TabStop = false;
-			this.group_debug.Text = "Debugging";
-			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -477,6 +477,7 @@
 			this.Controls.Add(this.info_status);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(502, 420);
 			this.Name = "FormMain";
 			this.Text = "CDCRUSH";
@@ -487,11 +488,11 @@
 			this.tabCrush.ResumeLayout(false);
 			this.tabSettings.ResumeLayout(false);
 			this.tabSettings.PerformLayout();
+			this.group_debug.ResumeLayout(false);
+			this.group_debug.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.num_threads)).EndInit();
 			this.tabInfo.ResumeLayout(false);
 			this.tabInfo.PerformLayout();
-			this.group_debug.ResumeLayout(false);
-			this.group_debug.PerformLayout();
 			this.ResumeLayout(false);
 
 		}

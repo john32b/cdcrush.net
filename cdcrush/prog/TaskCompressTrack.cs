@@ -91,11 +91,11 @@ class TaskCompressTrack : lib.task.CTask
 				track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
 				ffmp.audioPCMToFlac(trackFile,track.workingFile);
 
-			}else // OGG
+			}else // OGG OPUS
 			{
 				track.storedFileName = track.getTrackName() + ".ogg";
 				track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-				ffmp.audioPCMToOgg(trackFile, audioQ - 1, track.workingFile);
+				ffmp.audioPCMToOgg(trackFile, CDCRUSH.OPUS_QUALITY[audioQ - 1], track.workingFile);
 			}
 		}
 		

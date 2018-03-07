@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "CDCRUSH";
-		public const string PROGRAM_VERSION = "1.2.1";
+		public const string PROGRAM_VERSION = "1.2.2";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -36,7 +36,7 @@ namespace cdcrush.prog
 		public static int MAX_TASKS = 2;
 
 		// Number passed to FFMPEG by defauls ( 0 - 10 )
-		public static int QUALITY_DEFAULT = 1;
+		// public static int QUALITY_DEFAULT = 1;
 
 		// FFmpeg executable name
 		const string FFMPEG_EXE = "ffmpeg.exe";
@@ -75,6 +75,9 @@ namespace cdcrush.prog
 		// --
 		private static bool isInited = false;
 		// -----------------------------------------
+
+		// The quality options for encoding with OGG OPUS
+		public static readonly int[] OPUS_QUALITY = { 32, 48, 64, 80, 96, 112, 128, 160, 320};
 
 		/// <summary>
 		/// Init Variables program
@@ -165,6 +168,17 @@ namespace cdcrush.prog
 		}// -----------------------------------------
 
 		
+		/// <summary>
+		/// Translate from an integer to quality 
+		/// </summary>
+		/// <param name="q">The index of the combobox. Or Quality passed to the crush job</param>
+		public static string getAudioQualityString(int q)
+		{
+			// WARNING. NOT SAFEGUARDED
+			if(q==0) return "FLAC lossless";
+			return (OPUS_QUALITY[q-1].ToString() + "k vbr Opus");
+		}// -----------------------------------------
+
 
 		/// <summary>
 		/// Compress a CD to output folder
