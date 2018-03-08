@@ -9,17 +9,21 @@ namespace cdcrush.prog
 
 
 /// <summary>
-/// - Compress Track (data or audio)
-/// - Set track.storedFileName to proper name
+/// - Compresses a Track (data or audio)
+///
+/// CHANGES:
+///  - track.workingFile : points to the new encoded file path
+///  - track.storedFileName : is set to just a filename. e.g (track02.ogg) How it's saved in the archive?
+///  - The old `track.workingFile` is deleted
+/// 
 /// </summary>
 class TaskCompressTrack : lib.task.CTask
 {
-
 	// Point to the JOB's restore parameters
 	CrushParams p;
 	CueTrack track;
 
-	string trackFile;  // Autocalculated
+	string trackFile;  // Temp name, Autocalculated
 
 	// --
 	public TaskCompressTrack(CueTrack tr):base(null,"Compressing")

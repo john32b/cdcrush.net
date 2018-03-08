@@ -79,7 +79,7 @@
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.41975F));
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.5679F));
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.01235F));
-			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 122F));
+			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 123F));
 			tableLayoutPanel3.Controls.Add(this.label8, 3, 0);
 			tableLayoutPanel3.Controls.Add(this.label7, 2, 0);
 			tableLayoutPanel3.Controls.Add(this.label5, 0, 0);
@@ -94,16 +94,16 @@
 			tableLayoutPanel3.RowCount = 2;
 			tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			tableLayoutPanel3.Size = new System.Drawing.Size(339, 32);
+			tableLayoutPanel3.Size = new System.Drawing.Size(330, 32);
 			tableLayoutPanel3.TabIndex = 10;
 			// 
 			// label8
 			// 
 			this.label8.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label8.Location = new System.Drawing.Point(219, 0);
+			this.label8.Location = new System.Drawing.Point(209, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(117, 13);
+			this.label8.Size = new System.Drawing.Size(118, 13);
 			this.label8.TabIndex = 7;
 			this.label8.Text = "Audio Quality :";
 			// 
@@ -111,9 +111,9 @@
 			// 
 			this.label7.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(157, 0);
+			this.label7.Location = new System.Drawing.Point(149, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(56, 13);
+			this.label7.Size = new System.Drawing.Size(54, 13);
 			this.label7.TabIndex = 5;
 			this.label7.Text = "Tracks :";
 			// 
@@ -123,7 +123,7 @@
 			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(3, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(73, 13);
+			this.label5.Size = new System.Drawing.Size(69, 13);
 			this.label5.TabIndex = 0;
 			this.label5.Text = "Crushed Size :";
 			// 
@@ -131,9 +131,9 @@
 			// 
 			this.label6.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label6.Location = new System.Drawing.Point(82, 0);
+			this.label6.Location = new System.Drawing.Point(78, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(69, 13);
+			this.label6.Size = new System.Drawing.Size(65, 13);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "Full Size :";
 			// 
@@ -142,10 +142,10 @@
 			this.info_audio.BackColor = System.Drawing.SystemColors.Info;
 			this.info_audio.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_audio.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_audio.Location = new System.Drawing.Point(219, 16);
+			this.info_audio.Location = new System.Drawing.Point(209, 16);
 			this.info_audio.Name = "info_audio";
 			this.info_audio.ReadOnly = true;
-			this.info_audio.Size = new System.Drawing.Size(117, 13);
+			this.info_audio.Size = new System.Drawing.Size(118, 13);
 			this.info_audio.TabIndex = 8;
 			this.info_audio.Text = "96kbps";
 			this.info_audio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -155,10 +155,10 @@
 			this.info_size1.BackColor = System.Drawing.SystemColors.Info;
 			this.info_size1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_size1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_size1.Location = new System.Drawing.Point(82, 16);
+			this.info_size1.Location = new System.Drawing.Point(78, 16);
 			this.info_size1.Name = "info_size1";
 			this.info_size1.ReadOnly = true;
-			this.info_size1.Size = new System.Drawing.Size(69, 13);
+			this.info_size1.Size = new System.Drawing.Size(65, 13);
 			this.info_size1.TabIndex = 4;
 			this.info_size1.Text = "540MB";
 			this.info_size1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -171,7 +171,7 @@
 			this.info_size0.Location = new System.Drawing.Point(3, 16);
 			this.info_size0.Name = "info_size0";
 			this.info_size0.ReadOnly = true;
-			this.info_size0.Size = new System.Drawing.Size(73, 13);
+			this.info_size0.Size = new System.Drawing.Size(69, 13);
 			this.info_size0.TabIndex = 4;
 			this.info_size0.Text = "41MB";
 			this.info_size0.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -181,10 +181,10 @@
 			this.info_tracks.BackColor = System.Drawing.SystemColors.Info;
 			this.info_tracks.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_tracks.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_tracks.Location = new System.Drawing.Point(157, 16);
+			this.info_tracks.Location = new System.Drawing.Point(149, 16);
 			this.info_tracks.Name = "info_tracks";
 			this.info_tracks.ReadOnly = true;
-			this.info_tracks.Size = new System.Drawing.Size(56, 13);
+			this.info_tracks.Size = new System.Drawing.Size(54, 13);
 			this.info_tracks.TabIndex = 3;
 			this.info_tracks.Text = "20";
 			this.info_tracks.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -207,7 +207,7 @@
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			tableLayoutPanel1.Size = new System.Drawing.Size(339, 32);
+			tableLayoutPanel1.Size = new System.Drawing.Size(330, 32);
 			tableLayoutPanel1.TabIndex = 9;
 			// 
 			// label4
@@ -228,7 +228,7 @@
 			this.info_cdtitle.Location = new System.Drawing.Point(3, 16);
 			this.info_cdtitle.Name = "info_cdtitle";
 			this.info_cdtitle.ReadOnly = true;
-			this.info_cdtitle.Size = new System.Drawing.Size(333, 13);
+			this.info_cdtitle.Size = new System.Drawing.Size(324, 13);
 			this.info_cdtitle.TabIndex = 1;
 			this.info_cdtitle.Text = "Dummy Info, CD title with a really long name etc";
 			this.info_cdtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -253,13 +253,13 @@
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			table_IO.Size = new System.Drawing.Size(476, 82);
+			table_IO.Size = new System.Drawing.Size(467, 82);
 			table_IO.TabIndex = 16;
 			// 
 			// btn_input_in
 			// 
 			this.btn_input_in.Dock = System.Windows.Forms.DockStyle.Top;
-			this.btn_input_in.Location = new System.Drawing.Point(434, 16);
+			this.btn_input_in.Location = new System.Drawing.Point(425, 16);
 			this.btn_input_in.Name = "btn_input_in";
 			this.btn_input_in.Size = new System.Drawing.Size(39, 23);
 			this.btn_input_in.TabIndex = 2;
@@ -281,7 +281,7 @@
 			this.input_in.Dock = System.Windows.Forms.DockStyle.Top;
 			this.input_in.Location = new System.Drawing.Point(3, 16);
 			this.input_in.Name = "input_in";
-			this.input_in.Size = new System.Drawing.Size(425, 20);
+			this.input_in.Size = new System.Drawing.Size(416, 20);
 			this.input_in.TabIndex = 1;
 			// 
 			// input_out
@@ -289,13 +289,13 @@
 			this.input_out.Dock = System.Windows.Forms.DockStyle.Top;
 			this.input_out.Location = new System.Drawing.Point(3, 58);
 			this.input_out.Name = "input_out";
-			this.input_out.Size = new System.Drawing.Size(425, 20);
+			this.input_out.Size = new System.Drawing.Size(416, 20);
 			this.input_out.TabIndex = 1;
 			// 
 			// btn_input_out
 			// 
 			this.btn_input_out.Dock = System.Windows.Forms.DockStyle.Top;
-			this.btn_input_out.Location = new System.Drawing.Point(434, 58);
+			this.btn_input_out.Location = new System.Drawing.Point(425, 58);
 			this.btn_input_out.Name = "btn_input_out";
 			this.btn_input_out.Size = new System.Drawing.Size(39, 23);
 			this.btn_input_out.TabIndex = 2;
@@ -316,7 +316,7 @@
 			// 
 			label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			label3.ForeColor = System.Drawing.SystemColors.ControlDark;
-			label3.Location = new System.Drawing.Point(301, 222);
+			label3.Location = new System.Drawing.Point(292, 222);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(178, 13);
 			label3.TabIndex = 5;
@@ -340,7 +340,7 @@
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			tableLayoutPanel2.Size = new System.Drawing.Size(339, 32);
+			tableLayoutPanel2.Size = new System.Drawing.Size(330, 32);
 			tableLayoutPanel2.TabIndex = 11;
 			// 
 			// label9
@@ -361,7 +361,7 @@
 			this.info_md5.Location = new System.Drawing.Point(3, 16);
 			this.info_md5.Name = "info_md5";
 			this.info_md5.ReadOnly = true;
-			this.info_md5.Size = new System.Drawing.Size(333, 13);
+			this.info_md5.Size = new System.Drawing.Size(324, 13);
 			this.info_md5.TabIndex = 1;
 			this.info_md5.Text = "unavailable";
 			this.info_md5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -376,17 +376,19 @@
 			this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.groupBox1.Location = new System.Drawing.Point(137, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(345, 128);
+			this.groupBox1.Size = new System.Drawing.Size(336, 128);
 			this.groupBox1.TabIndex = 14;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Info";
 			// 
 			// toggle_subf
 			// 
+			this.toggle_subf.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.toggle_subf.AutoSize = true;
 			this.toggle_subf.Checked = true;
 			this.toggle_subf.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.toggle_subf.Location = new System.Drawing.Point(6, 221);
+			this.toggle_subf.Location = new System.Drawing.Point(6, 247);
 			this.toggle_subf.Name = "toggle_subf";
 			this.toggle_subf.Size = new System.Drawing.Size(105, 17);
 			this.toggle_subf.TabIndex = 12;
@@ -395,8 +397,10 @@
 			// 
 			// toggle_single
 			// 
+			this.toggle_single.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.toggle_single.AutoSize = true;
-			this.toggle_single.Location = new System.Drawing.Point(117, 221);
+			this.toggle_single.Location = new System.Drawing.Point(117, 247);
 			this.toggle_single.Name = "toggle_single";
 			this.toggle_single.Size = new System.Drawing.Size(95, 17);
 			this.toggle_single.TabIndex = 13;
@@ -409,9 +413,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn_RESTORE.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btn_RESTORE.ForeColor = System.Drawing.Color.Green;
-			this.btn_RESTORE.Location = new System.Drawing.Point(3, 274);
+			this.btn_RESTORE.Location = new System.Drawing.Point(3, 270);
 			this.btn_RESTORE.Name = "btn_RESTORE";
-			this.btn_RESTORE.Size = new System.Drawing.Size(479, 39);
+			this.btn_RESTORE.Size = new System.Drawing.Size(470, 39);
 			this.btn_RESTORE.TabIndex = 17;
 			this.btn_RESTORE.Text = "RESTORE";
 			this.btn_RESTORE.UseVisualStyleBackColor = true;
@@ -438,7 +442,7 @@
 			this.Controls.Add(this.toggle_single);
 			this.Controls.Add(label3);
 			this.Name = "PanelRestore";
-			this.Size = new System.Drawing.Size(485, 316);
+			this.Size = new System.Drawing.Size(476, 312);
 			this.Load += new System.EventHandler(this.PanelRestore_Load);
 			tableLayoutPanel3.ResumeLayout(false);
 			tableLayoutPanel3.PerformLayout();

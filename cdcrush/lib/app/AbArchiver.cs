@@ -25,17 +25,17 @@ namespace cdcrush.lib.app
 		public Action<bool> onComplete { get; set;} // OnComplete(Success), read ERROR for errors
 
 		// Return Preliminary Success, onComplete will report final success
-		public virtual bool compress(string[] listOfFiles,string destinationFile = null)
+		public virtual bool compress(string[] listOfFiles,string destinationFile, int compressionLevel)
 		{
 			return true;
 		}// -----------------------------------------
 		// Return Preliminary Success, onComplete will report final success
-		public virtual bool extractAll(string inputFile, string destinationFolder = null)
+		public virtual bool extractAll(string inputFile, string destinationFolder)
 		{
 			return true;
 		}// -----------------------------------------
 		// Return Preliminary Success, onComplete will report final success
-		public virtual bool extractFiles(string inputFile, string[] listOfFiles, string destinationFolder=null)
+		public virtual bool extractFiles(string inputFile, string[] listOfFiles, string destinationFolder)
 		{
 			return true;
 		}// -----------------------------------------

@@ -22,6 +22,11 @@ public partial class PanelCompress : UserControl
 	// --
 	private void PanelCompress_Load(object sender, EventArgs e)
 	{
+		// -- Some Tooltips
+         ToolTip tt = new ToolTip();		 
+		 tt.SetToolTip(chk_encodedCue, "Encodes audio tracks and creates a .CUE file that handles data and encoded audio tracks. Doesn't create a final archive. This format can be used in some emulators.");
+		 tt.SetToolTip(pictureBox1,"You can optionally set an image cover for this CD and it will be stored in the archive.");
+         
 		// -- Initialize Audio Settings:
 		foreach(string scodec in CDCRUSH.AUDIO_CODECS)
 		{
@@ -38,9 +43,12 @@ public partial class PanelCompress : UserControl
 		form_lockSection("action", true);
 		form_set_cover(null); // will also set preparedCover
 		form_set_info_pre(null);
-		form_set_info_post(null);
+		form_set_crushed_size();
 		preparedCue = null;
 		
+		// --
+		form_set_proper_action_name();
+		combo_data_c.SelectedIndex = 3;
 	}// -----------------------------------------
 
 	// ==========================================
@@ -60,6 +68,8 @@ public partial class PanelCompress : UserControl
 				btn_CRUSH.Enabled = !_lock;
 				break;
 			case "all":
+
+				chk_encodedCue.Enabled = !_lock;
 				input_in.Enabled = !_lock;
 				btn_input_in.Enabled = !_lock;
 				btn_input_out.Enabled = !_lock;
@@ -67,6 +77,7 @@ public partial class PanelCompress : UserControl
 				//--
 				info_cdtitle.Enabled = !_lock;
 				combo_audio_q.Enabled = !_lock;
+				combo_audio_c.Enabled = !_lock;
 				pictureBox1.Enabled = !_lock;
 				form_lockSection("action", _lock);
 				FormMain.sendLock(_lock);
@@ -93,6 +104,17 @@ public partial class PanelCompress : UserControl
 		}
 	}// -----------------------------------------
 
+
+
+	/// <summary>
+	/// Call this to change the main button's name depending on the convert checkbox
+	/// </summary>
+	void form_set_proper_action_name()
+	{
+		btn_CRUSH.Text = chk_encodedCue.Checked?"CONVERT CUE":"CRUSH";
+	}// -----------------------------------------
+
+
 	/// <summary>
 	/// Set some CD infos from a CUE file
 	/// </summary>
@@ -117,18 +139,13 @@ public partial class PanelCompress : UserControl
 	/// Set some CD infos from data gathered AFTER crushing
 	/// </summary>
 	/// <param name="cdInfo"></param>
-	void form_set_info_post(dynamic cdInfo = null)
+	void form_set_crushed_size(int size = 0)
 	{
-		if(cdInfo==null)
-		{
-			// set all to none
+		if(size==0) {
 			info_size0.Text = "";
-			//info_md5.Text = "";
-			return;
+		}else{
+			info_size0.Text =  String.Format("{0}MB", FormTools.bytesToMB(size));
 		}
-
-		info_size0.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.size0));
-	//	info_md5.Text = cdInfo.md5;
 	}// -----------------------------------------
 
 	/// <summary>
@@ -143,7 +160,7 @@ public partial class PanelCompress : UserControl
 		form_lockSection("action", true);
 		form_set_cover(null); // will also set preparedCover
 		form_set_info_pre(null);
-		form_set_info_post(null);
+		form_set_crushed_size();
 		preparedCue = null;
 
 		FormMain.FLAG_CLEAR_STATUS = true;
@@ -166,6 +183,7 @@ public partial class PanelCompress : UserControl
 	// EVENTS
 	// ==========================================
 	
+
 	/// <summary>
 	/// A file has been dropped and the ENGINE is NOT LOCKED
 	/// </summary>
@@ -184,44 +202,45 @@ public partial class PanelCompress : UserControl
 		}
 	}// -----------------------------------------
 
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
+	// --
+	// Event Clicked Compressed Button
 	private void btn_CRUSH_Click(object sender, EventArgs e)
 	{
-
 		// Get a valid audio parameters tuple
 		Tuple<int,int> audioQ = Tuple.Create(combo_audio_c.SelectedIndex,combo_audio_q.SelectedIndex);
 
-		// Start the job
-		// Note, Progress updates are automatically being handled by the main FORM
-		bool res = CDCRUSH.crushCD(preparedCue, input_out.Text, audioQ, preparedCover, info_cdtitle.Text,
-			(complete, md5, newSize) => {
-
-				FormTools.invoke(this, () =>{
-					form_lockSection("all", false);
-					form_lockSection("action", true);
-					form_set_info_post(new {
-						md5,
-						size0 = newSize
-					});
-
-				});
-
-				if(complete)
-				{
-					FormMain.sendMessage("Complete", 2);
-				}else
-				{
-					FormMain.sendMessage(CDCRUSH.ERROR,3);
-				}
+		// Since I can fire 2 jobs from here, have a common callback
+		Action<bool,int> jobCallback = (complete, newSize) => {
+			FormTools.invoke(this, () =>{
+				form_lockSection("all", false);
+				form_lockSection("action", true);
+				form_set_crushed_size(newSize);
 			});
 
-		if(res)
-		{
+			if(complete) {
+				FormMain.sendMessage("Complete", 2);
+			}else {
+				FormMain.sendMessage(CDCRUSH.ERROR,3);
+			}
+		};
+
+		// Engine request job result
+		bool res = false;
+
+
+		// Either compress to an archive, or just convert
+		// Note : Progress updates are automatically being handled by the main FORM
+		if(chk_encodedCue.Checked) {
+			res = CDCRUSH.startJob_ConvertCue(preparedCue, input_out.Text, audioQ, 
+				info_cdtitle.Text, jobCallback);
+		}else {
+			
+			res = CDCRUSH.startJob_CrushCD(preparedCue, input_out.Text, audioQ, 
+				preparedCover, info_cdtitle.Text, combo_data_c.SelectedIndex+1, jobCallback);
+		}
+		
+		// -- Is everything ok?
+		if(res) {
 			form_lockSection("all", true);
 		}else{
 			FormMain.sendMessage(CDCRUSH.ERROR, 3);
@@ -230,6 +249,7 @@ public partial class PanelCompress : UserControl
 	}// -----------------------------------------
 
 	// --
+	// Event: Input Folder Select
 	private void btn_input_in_Click(object sender, EventArgs e)
 	{
 		string lastDir = null;
@@ -240,6 +260,7 @@ public partial class PanelCompress : UserControl
 	}// -----------------------------------------
 
 	// --
+	// Event: Output Folder Select
 	private void btn_input_out_Click(object sender, EventArgs e)
 	{
 		string lastDir = null;
@@ -265,6 +286,7 @@ public partial class PanelCompress : UserControl
 	}// -----------------------------------------
 
 	// --
+	// Cover Image Clicked
 	private void pictureBox1_Click(object sender, EventArgs e)
 	{	
 		if (CDCRUSH.LOCKED) return;
@@ -276,9 +298,8 @@ public partial class PanelCompress : UserControl
 		}
 	}// -----------------------------------------
 
-	/**
-	 * Codec was changed, fill out the quality combobox
-	 **/
+	// --
+	// Codec was changed, fill out the quality combobox
 	private void combo_audio_c_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		combo_audio_q.Items.Clear();
@@ -308,5 +329,12 @@ public partial class PanelCompress : UserControl
 		combo_audio_q.SelectedIndex = 0;
 	}// -----------------------------------------
 
-}// --
+
+	// --
+	// Encode Instead Checkbox
+	private void chk_encodedCue_CheckedChanged(object sender, EventArgs e)
+	{
+		form_set_proper_action_name();
+	}// -----------------------------------------
+	}// --
 }// --

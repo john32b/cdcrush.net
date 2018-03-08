@@ -112,6 +112,7 @@
     <Compile Include="lib\LOG.cs" />
     <Compile Include="lib\task\CTask.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="prog\JobConvertCue.cs" />
     <Compile Include="prog\TaskCompressTrack.cs" />
     <Compile Include="prog\JobCrush.cs" />
     <Compile Include="prog\JobRestore.cs" />

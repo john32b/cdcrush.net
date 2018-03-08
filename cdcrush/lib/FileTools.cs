@@ -32,7 +32,6 @@ class FileTools
 
 	/// <summary>
 	/// 
-	/// 
 	/// </summary>
 	/// <param name="path"></param>
 	/// <returns></returns>
@@ -49,7 +48,6 @@ class FileTools
 	}// -----------------------------------------
 
 	/// <summary>
-	/// 
 	/// 
 	/// </summary>
 	/// <param name="path"></param>
@@ -68,6 +66,26 @@ class FileTools
 		catch (UnauthorizedAccessException) { return false; }
 		catch (NotSupportedException) { return false; }
 	}// -----------------------------------------
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="dest"></param>
+	/// <returns></returns>
+	public static bool tryCopy(string source,string dest)
+	{
+		if(source==dest) return true;
+		try{
+			File.Copy(source,dest);
+			return true;
+		}
+		catch (IOException) { return false; }
+		catch (ArgumentException) { return false; }
+		catch (UnauthorizedAccessException) { return false; }
+		catch (NotSupportedException) { return false; }
+	}// -----------------------------------------
+
 
 	/// <summary>
 	/// 

@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "CDCRUSH";
-		public const string PROGRAM_VERSION = "1.2.2";
+		public const string PROGRAM_VERSION = "1.2.3";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -34,9 +34,6 @@ namespace cdcrush.prog
 
 		// Maximum concurrent tasks in CJobs
 		public static int MAX_TASKS = 2;
-
-		// Number passed to FFMPEG by defauls ( 0 - 10 )
-		// public static int QUALITY_DEFAULT = 1;
 
 		// FFmpeg executable name
 		const string FFMPEG_EXE = "ffmpeg.exe";
@@ -206,7 +203,44 @@ namespace cdcrush.prog
 			return res;
 		}// -----------------------------------------
 
+		/// <summary>
+		/// Convert from bin/cue to encoded audio/cue
+		/// </summary>
+		/// <param name="_Input">Input file, must be `.cue`</param>
+		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
+		/// <param name="_Audio">Audio Quality to encode the audio tracks with.</param>
+		/// <param name="_Title">Title of the CD</param>
+		/// <param name="onComplete">Completed (completeStatus,final Size)</param>
+		/// <returns></returns>
+		public static bool startJob_ConvertCue(string _Input, string _Output, Tuple<int,int> _Audio, 
+			string _Title, Action<bool,int> onComplete)
+		{
+			if (LOCKED) { ERROR="Engine is working"; return false; } 
+			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
 
+			LOCKED = true;
+
+			var par = new CrushParams();	// CovertCue shares params with Crush job
+				par.inputFile = _Input;
+				par.outputDir = _Output;
+				par.audioQuality = _Audio;
+				par.cdTitle = _Title;
+
+			var j = new JobConvertCue(par);
+				j.MAX_CONCURRENT = MAX_TASKS;
+				j.onComplete = (s) =>{
+					LOCKED = false;
+					ERROR = j.ERROR[1];
+					onComplete(s, 0); // Disregard final filesize
+				};
+
+				j.onJobStatus = jobStatusHandler;	// For status and progress updates
+				j.start();
+
+			return true;
+		}// -----------------------------------------
+		
+		
 		/// <summary>
 		/// Compress a CD to output folder
 		/// </summary>
@@ -215,12 +249,11 @@ namespace cdcrush.prog
 		/// <param name="_Audio">Audio Quality to encode the audio tracks with.</param>
 		/// <param name="_Cover">Cover Image to store in the archive</param>
 		/// <param name="_Title">Title of the CD</param>
-		/// <param name="onComplete">Completed (completeStatus,MD5,CrushedSize)</param>
+		/// <param name="onComplete">Completed (completeStatus,CrushedSize)</param>
 		/// <returns></returns>
-		public static bool crushCD(string _Input, string _Output, Tuple<int,int> _Audio, string _Cover, string _Title,
-			Action<bool,string,int> onComplete)
+		public static bool startJob_CrushCD(string _Input, string _Output, Tuple<int,int> _Audio, 
+			string _Cover, string _Title, int compressionLevel, Action<bool,int> onComplete)
 		{
-			// NOTE : JOB checks for input file
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
 			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
 
@@ -232,20 +265,19 @@ namespace cdcrush.prog
 				par.audioQuality = _Audio;
 				par.cover = _Cover;
 				par.cdTitle = _Title;
+				par.compressionLevel = compressionLevel;
 
 			var j = new JobCrush(par);
 				j.MAX_CONCURRENT = MAX_TASKS;
-
-				j.onComplete = (s) =>
-				{
+				j.onComplete = (s) => {
 					LOCKED = false;
 					ERROR = j.ERROR[1];
 					if (s) {
 						CueReader cd = (CueReader) j.jobData.cd;						
-						onComplete(s,cd.getFirstDataTrackMD5(),j.jobData.crushedSize); // Hack, send CDINFO and SIZE as well
+						onComplete(s,j.jobData.crushedSize); // Hack, send CDINFO and SIZE as well
 					}
 					else {
-						onComplete(s, "", 0);
+						onComplete(s, 0);
 					}
 				};
 
@@ -263,7 +295,7 @@ namespace cdcrush.prog
 		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
 		/// <param name="onComplete">(completeStatus)</param>
 		/// <returns></returns>
-		public static bool restoreARC(string _Input, string _Output,
+		public static bool startJob_RestoreCD(string _Input, string _Output,
 			bool flag_folder, bool flag_forceSingle, Action<bool> onComplete)
 		{
 			// NOTE : JOB checks for input file

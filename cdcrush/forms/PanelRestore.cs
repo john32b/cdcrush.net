@@ -177,7 +177,7 @@ public partial class PanelRestore : UserControl
 	{
 		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
-		bool res = CDCRUSH.restoreARC(preparedArcPath, input_out.Text, toggle_subf.Checked, toggle_single.Checked,
+		bool res = CDCRUSH.startJob_RestoreCD(preparedArcPath, input_out.Text, toggle_subf.Checked, toggle_single.Checked,
 			(complete)=>{
 				FormTools.invoke(this, () =>
 				{

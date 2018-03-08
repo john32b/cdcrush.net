@@ -48,7 +48,7 @@ class FreeArc : AbArchiver
 	/// <param name="listOfFiles">ALL files must be in the same directory!!!</param>
 	/// <param name="destinationFile">Final archive filename</param>
 	/// <returns>Return Preliminary Success</returns>
-	public override bool compress(string[] listOfFiles,string destinationFile)
+	public override bool compress(string[] listOfFiles,string destinationFile, int compressionLevel = 4)
 	{
 		progress = 0;
 		foreach(string f in listOfFiles) {
@@ -63,7 +63,13 @@ class FreeArc : AbArchiver
 		foreach(var s in listOfFiles) filesStr += "\"" + Path.GetFileName(s) + "\" ";
 		
 		LOG.log("[ARC] : Compressing {0} into '{1}'", filesStr, destinationFile);
-		proc.start(string.Format("a -m4 -md32m -s -o+ --diskpath=\"{1}\" \"{0}\" {2}", destinationFile, sourceFolder, filesStr));
+
+		if(compressionLevel<0) compressionLevel = 0;
+		if(compressionLevel>9) compressionLevel = 9;
+
+		// -md32m is dictionary size -- removed since 1.2.3
+		// -m4 is the default compression
+		proc.start(string.Format("a -m{3} -s -o+ --diskpath=\"{1}\" \"{0}\" {2}", destinationFile, sourceFolder, filesStr, compressionLevel));
 		// NOTE: -m4 requires 128Mb for packing and unpacking
 		return true;
 	}// -----------------------------------------

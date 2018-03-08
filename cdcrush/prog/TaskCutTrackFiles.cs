@@ -8,7 +8,10 @@ namespace cdcrush.prog
 
 /// <summary>
 /// - Cut the CD BIN to multiple trackfiles
-/// - Set track.workingFile to the new cut track
+/// 
+/// CHANGES : 
+/// - track.workingFile : is set to the new cut track full path
+/// 
 /// </summary>
 class TaskCutTrackFiles:cdcrush.lib.task.CTask
 {

@@ -1,10 +1,11 @@
+
 # CDCRUSH dot NET
 
 **Name**: CDCrush, *Highy compress cd-image games*\
 **Author:** John Dimi, <johndimi@outlook.com> *twitter*: [@jondmt](https://twitter.com/jondmt)\
 **Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)\
 **Language:** C# dotNET 4.5, VS2017 **Licence:** MIT\
-**Version:** 1.2.2 **Platform:** Windows
+**Version:** 1.2.3 **Platform:** Windows
 
 ## Download
 To get the latest version check [the releases page here on github](https://github.com/johndimi/cdcrush.net/releases). Available for **windows** only.
@@ -17,13 +18,13 @@ To get the latest version check [the releases page here on github](https://githu
 
 - The program separates the tracks of the cd image and compress them separately.
 - For **data** tracks it will use **ecm tools** to remove Error Correction/Detection Codes (ECC/EDC) data from the sectors. *( redundant data )*
-- For  **audio** tracks it will use the **ogg OPUS** audio codec to produce a decent quality audio file (*custom bitrate 32-320kbps vbr*) with a much smaller filesize compared to the uncompressed PCM audio original.
-- **NEW:** You can choose to encode the **audio tracks** with the **FLAC** lossless codec.
+- For **audio** tracks, it will use an encoder of your choice. You can select a lossy encoder like (**opus** or **vorbis**) to produce a decent quality audio file with a much smaller filesize compared to the uncompressed PCM audio original.
+- **OR** you can choose to encode audio with **FLAC**  which is lossless.
 - Finally it compresses everything into a single archive using the **FreeArc** archiver.
  
 **Then**  it can  **restore** the crushed CD image back to it's original form, a **.bin/.cue** image that is ready to be used however you like.
 
-**NEW from V1.2.1**: Archives with the audio tracks encoded with **FLAC**, will be restored to a 1:1 copy, byte for byte, of the original source CD
+**NOTE**: Archives with the audio tracks encoded with **FLAC**, will be restored to a 1:1 copy, byte for byte, of the original source CD
  
 ### Some example of game sizes archived with 7zip and cdcrush:
 
@@ -39,6 +40,7 @@ To get the latest version check [the releases page here on github](https://githu
 
 ## USAGE
 
+
 ### General Infos
 
 - **cdcrush** is only compatible with `.cue/.bin` type CD images
@@ -47,14 +49,23 @@ To get the latest version check [the releases page here on github](https://githu
 - **[!]** The progress bar is a bit clunky, if it gets stuck just wait a bit. It's working.
 - You can download the release without **FFmpeg** if you already have it, just be sure to set it up in the `settings` tab.
 
+### New Feature - Convert to .cue/encoded audio
+
+You can now **convert** a `.cue/.bin` CD, into another `.cue/.bin` combo with **encoded audio tracks called from the cue file**\
+This is really useful if you want to play a CD in an emulator that supports loading `.cue` files with encoded audio. (*e.g. mednafen supports libvorbis and FLAC audio*)
+
+To convert a CD, go to the **compress a cd** screen and **tick** the`convert to .CUE/encoded Audio` checkbox, then hit the button. The new files are going to be generated under a subfolder to avoid overwriting the source .cue/.bin files
+
 ### Crushing  (*Compressing* )
 
-![](https://i.imgur.com/SGJcHUo.png)
+![](https://i.imgur.com/45mv53u.png)
 - Select an input file ( **.cue** ). You can drop it in the window or click the **[...]** button to select one
 - Optionally set an output folder, the final **.arc** file will be created there, auto-named after the CD title
 - Optionally set a cover image by dropping a **.png** file in the window, or by clicking on the image placeholder
-- Choose the audio bitrate to compress the audio tracks (*when audio tracks are present on the cd*) **NEW** You can choose the **FLAC** codec here
+- Choose an **audio codec** and **bitrate** to encode the audio tracks with (*if any*)
+- You can choose a compression level. The default is **4** and it's very solid. You can try experimenting, but **WARNING** don't go above **6** since you'll need HUGE amounts of RAM to encode and decode (*also it will take forever*)
 - You can optionally change the CD Title, in case the automatic name is wrong
+- **Leave** the `Convert to .Cue/Encoded audio` checkbox **UNTICKED**
 - Press the **CRUSH** button
 - Wait for the operation to end
 
@@ -86,6 +97,11 @@ How many tracks to process at the same time. *(For when compressing or restoring
 
 ## CHANGELOG
 
+### V1.2.3
+- Added ability to select the compression level of the final archive from 1-9
+- Function to convert a `.cue/.bin` to a .cue with encoded audio files. This can be really useful as some emulators support this .cue format.
+- Re-added ogg vorbis support and now user can choose between (flac, opus, vorbis). This is for when creating cue/encoded audio, some emulators might only support ogg vorbis (*like mednafen*)
+
 ### V1.2.2
 - Replaced the vorbis audio codec with the **opus** codec. It seems to be a better encoder and even supports lower bitrates (*like 32k*)
 
@@ -108,9 +124,9 @@ How many tracks to process at the same time. *(For when compressing or restoring
 **A** : Theoretically it should support all valid **.cue/.bin** files, try it out.
 
 **Q** : I am worried about the audio quality.\
-**A** : The OGG ~~vorbis~~ (new **OPUS**) codec is decent and it can produce very good results even at 96kbps. ~~Also, implementing a **FLAC** codec is coming at a later version.~~
+**A** : The OGG ~~vorbis~~ (new **OPUS**) codec is decent and it can produce very good results even at 96kbps. ~~Also, implementing a **FLAC** codec is coming at a later version.~~ *flac is ready to go*
 
-**Q**: Is storing the entire CD with FLAC really lossless? I am worried about byte integrity.
+**Q**: Is storing the entire CD with FLAC really lossless? I am worried about byte integrity.\
 **A**: YES, to the last byte. The filesize and checksums of the restored tracks are the same as the original ones. (data&audio). You can check for yourself by calculating the checksums of restored files vs original source. **ALSO Checksum reports** are coming at a later version.
 
 **Q** : Why there are two versions of the program?\
@@ -123,7 +139,8 @@ This project is a continuation of [**cdcrush npm**](https://www.npmjs.com/packag
 
 ## About
 
-Feel free to provide feedback and contact me on social media and email. Donations are always welcome! :smile: \
+Feel free to provide feedback and contact me on social media and email. Donations are always welcome! :smile:
+
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/johndimi)
 
 Thanks for checking this out,\
