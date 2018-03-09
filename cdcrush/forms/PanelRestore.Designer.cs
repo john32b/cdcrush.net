@@ -53,9 +53,10 @@
 			this.info_md5 = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.toggle_subf = new System.Windows.Forms.CheckBox();
-			this.toggle_single = new System.Windows.Forms.CheckBox();
+			this.toggle_merged = new System.Windows.Forms.CheckBox();
 			this.btn_RESTORE = new System.Windows.Forms.Button();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.toggle_cueaudio = new System.Windows.Forms.CheckBox();
 			tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			table_IO = new System.Windows.Forms.TableLayoutPanel();
@@ -79,7 +80,7 @@
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.41975F));
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.5679F));
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.01235F));
-			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 123F));
+			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 126F));
 			tableLayoutPanel3.Controls.Add(this.label8, 3, 0);
 			tableLayoutPanel3.Controls.Add(this.label7, 2, 0);
 			tableLayoutPanel3.Controls.Add(this.label5, 0, 0);
@@ -101,9 +102,9 @@
 			// 
 			this.label8.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label8.Location = new System.Drawing.Point(209, 0);
+			this.label8.Location = new System.Drawing.Point(206, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(118, 13);
+			this.label8.Size = new System.Drawing.Size(121, 13);
 			this.label8.TabIndex = 7;
 			this.label8.Text = "Audio Quality :";
 			// 
@@ -111,9 +112,9 @@
 			// 
 			this.label7.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(149, 0);
+			this.label7.Location = new System.Drawing.Point(147, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(54, 13);
+			this.label7.Size = new System.Drawing.Size(53, 13);
 			this.label7.TabIndex = 5;
 			this.label7.Text = "Tracks :";
 			// 
@@ -123,7 +124,7 @@
 			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(3, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(69, 13);
+			this.label5.Size = new System.Drawing.Size(68, 13);
 			this.label5.TabIndex = 0;
 			this.label5.Text = "Crushed Size :";
 			// 
@@ -131,9 +132,9 @@
 			// 
 			this.label6.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label6.Location = new System.Drawing.Point(78, 0);
+			this.label6.Location = new System.Drawing.Point(77, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(65, 13);
+			this.label6.Size = new System.Drawing.Size(64, 13);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "Full Size :";
 			// 
@@ -142,10 +143,10 @@
 			this.info_audio.BackColor = System.Drawing.SystemColors.Info;
 			this.info_audio.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_audio.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_audio.Location = new System.Drawing.Point(209, 16);
+			this.info_audio.Location = new System.Drawing.Point(206, 16);
 			this.info_audio.Name = "info_audio";
 			this.info_audio.ReadOnly = true;
-			this.info_audio.Size = new System.Drawing.Size(118, 13);
+			this.info_audio.Size = new System.Drawing.Size(121, 13);
 			this.info_audio.TabIndex = 8;
 			this.info_audio.Text = "96kbps";
 			this.info_audio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -155,10 +156,10 @@
 			this.info_size1.BackColor = System.Drawing.SystemColors.Info;
 			this.info_size1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_size1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_size1.Location = new System.Drawing.Point(78, 16);
+			this.info_size1.Location = new System.Drawing.Point(77, 16);
 			this.info_size1.Name = "info_size1";
 			this.info_size1.ReadOnly = true;
-			this.info_size1.Size = new System.Drawing.Size(65, 13);
+			this.info_size1.Size = new System.Drawing.Size(64, 13);
 			this.info_size1.TabIndex = 4;
 			this.info_size1.Text = "540MB";
 			this.info_size1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -171,7 +172,7 @@
 			this.info_size0.Location = new System.Drawing.Point(3, 16);
 			this.info_size0.Name = "info_size0";
 			this.info_size0.ReadOnly = true;
-			this.info_size0.Size = new System.Drawing.Size(69, 13);
+			this.info_size0.Size = new System.Drawing.Size(68, 13);
 			this.info_size0.TabIndex = 4;
 			this.info_size0.Text = "41MB";
 			this.info_size0.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -181,10 +182,10 @@
 			this.info_tracks.BackColor = System.Drawing.SystemColors.Info;
 			this.info_tracks.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_tracks.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_tracks.Location = new System.Drawing.Point(149, 16);
+			this.info_tracks.Location = new System.Drawing.Point(147, 16);
 			this.info_tracks.Name = "info_tracks";
 			this.info_tracks.ReadOnly = true;
-			this.info_tracks.Size = new System.Drawing.Size(54, 13);
+			this.info_tracks.Size = new System.Drawing.Size(53, 13);
 			this.info_tracks.TabIndex = 3;
 			this.info_tracks.Text = "20";
 			this.info_tracks.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -388,24 +389,24 @@
 			this.toggle_subf.AutoSize = true;
 			this.toggle_subf.Checked = true;
 			this.toggle_subf.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.toggle_subf.Location = new System.Drawing.Point(6, 247);
+			this.toggle_subf.Location = new System.Drawing.Point(6, 242);
 			this.toggle_subf.Name = "toggle_subf";
 			this.toggle_subf.Size = new System.Drawing.Size(105, 17);
 			this.toggle_subf.TabIndex = 12;
 			this.toggle_subf.Text = "Create Subfolder";
 			this.toggle_subf.UseVisualStyleBackColor = true;
 			// 
-			// toggle_single
+			// toggle_merged
 			// 
-			this.toggle_single.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.toggle_merged.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.toggle_single.AutoSize = true;
-			this.toggle_single.Location = new System.Drawing.Point(117, 247);
-			this.toggle_single.Name = "toggle_single";
-			this.toggle_single.Size = new System.Drawing.Size(95, 17);
-			this.toggle_single.TabIndex = 13;
-			this.toggle_single.Text = "Single bin/cue";
-			this.toggle_single.UseVisualStyleBackColor = true;
+			this.toggle_merged.AutoSize = true;
+			this.toggle_merged.Location = new System.Drawing.Point(6, 262);
+			this.toggle_merged.Name = "toggle_merged";
+			this.toggle_merged.Size = new System.Drawing.Size(158, 17);
+			this.toggle_merged.TabIndex = 13;
+			this.toggle_merged.Text = "Restore to one merged .BIN";
+			this.toggle_merged.UseVisualStyleBackColor = true;
 			// 
 			// btn_RESTORE
 			// 
@@ -413,7 +414,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn_RESTORE.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btn_RESTORE.ForeColor = System.Drawing.Color.Green;
-			this.btn_RESTORE.Location = new System.Drawing.Point(3, 270);
+			this.btn_RESTORE.Location = new System.Drawing.Point(3, 285);
 			this.btn_RESTORE.Name = "btn_RESTORE";
 			this.btn_RESTORE.Size = new System.Drawing.Size(470, 39);
 			this.btn_RESTORE.TabIndex = 17;
@@ -430,6 +431,18 @@
 			this.pictureBox1.TabIndex = 15;
 			this.pictureBox1.TabStop = false;
 			// 
+			// toggle_cueaudio
+			// 
+			this.toggle_cueaudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.toggle_cueaudio.AutoSize = true;
+			this.toggle_cueaudio.Location = new System.Drawing.Point(292, 262);
+			this.toggle_cueaudio.Name = "toggle_cueaudio";
+			this.toggle_cueaudio.Size = new System.Drawing.Size(178, 17);
+			this.toggle_cueaudio.TabIndex = 13;
+			this.toggle_cueaudio.Text = "Restore to .Cue/Encoded Audio";
+			this.toggle_cueaudio.UseVisualStyleBackColor = true;
+			this.toggle_cueaudio.CheckedChanged += new System.EventHandler(this.toggle_cueaudio_CheckedChanged);
+			// 
 			// PanelRestore
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -439,10 +452,11 @@
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.toggle_subf);
-			this.Controls.Add(this.toggle_single);
+			this.Controls.Add(this.toggle_cueaudio);
+			this.Controls.Add(this.toggle_merged);
 			this.Controls.Add(label3);
 			this.Name = "PanelRestore";
-			this.Size = new System.Drawing.Size(476, 312);
+			this.Size = new System.Drawing.Size(476, 327);
 			this.Load += new System.EventHandler(this.PanelRestore_Load);
 			tableLayoutPanel3.ResumeLayout(false);
 			tableLayoutPanel3.PerformLayout();
@@ -475,7 +489,7 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox info_cdtitle;
 		private System.Windows.Forms.CheckBox toggle_subf;
-		private System.Windows.Forms.CheckBox toggle_single;
+		private System.Windows.Forms.CheckBox toggle_merged;
 		private System.Windows.Forms.Button btn_input_in;
 		private System.Windows.Forms.TextBox input_in;
 		private System.Windows.Forms.TextBox input_out;
@@ -483,5 +497,6 @@
 		private System.Windows.Forms.Button btn_RESTORE;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.TextBox info_md5;
+		private System.Windows.Forms.CheckBox toggle_cueaudio;
 	}
 }

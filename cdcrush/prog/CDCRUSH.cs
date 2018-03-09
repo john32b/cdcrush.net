@@ -26,6 +26,9 @@ namespace cdcrush.prog
 		public const string CDCRUSH_COVER = "cover.jpg";
 		public const string CDCRUSH_EXTENSION = ".arc";
 
+
+		public const string RESTORED_CUE_FOLDER_SUFFIX = " (r)";
+
 		// -- Global
 
 		// Keep temporary files, don't delete them
@@ -296,7 +299,7 @@ namespace cdcrush.prog
 		/// <param name="onComplete">(completeStatus)</param>
 		/// <returns></returns>
 		public static bool startJob_RestoreCD(string _Input, string _Output,
-			bool flag_folder, bool flag_forceSingle, Action<bool> onComplete)
+			bool flag_folder, bool flag_forceSingle, bool flag_encCue, Action<bool> onComplete)
 		{
 			// NOTE : JOB checks for input file
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
@@ -308,7 +311,8 @@ namespace cdcrush.prog
 				inputFile = _Input,     // Checked in the JOB
 				outputDir = _Output,    // Checked in the JOB
 				flag_folder = flag_folder,
-				flag_forceSingle = flag_forceSingle // SINGLE FILE
+				flag_forceSingle = flag_forceSingle,
+				flag_encCue = flag_encCue 
 			};
 
 			var j = new JobRestore(par);

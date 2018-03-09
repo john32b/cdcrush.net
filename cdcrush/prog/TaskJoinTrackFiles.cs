@@ -7,7 +7,7 @@ namespace cdcrush.prog
 
 /// <summary>
 /// - Joins all the trackfiles together
-/// - changes track.workingFile from seconds track up to null
+/// - Changes track.workingFile from second's track up to null
 /// </summary>
 class TaskJoinTrackFiles:cdcrush.lib.task.CTask
 {

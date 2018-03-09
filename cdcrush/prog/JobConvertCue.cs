@@ -16,8 +16,6 @@ namespace cdcrush.prog
 /// </summary>
 class JobConvertCue:CJob
 {
-	
-	const string FOLDER_SUFFIX = " (c)";
 
 	// --
 	public JobConvertCue(CrushParams p):base("Convert CD")
@@ -36,7 +34,7 @@ class JobConvertCue:CJob
 			// : NEW :
 			// : ALWAYS Create a subfolder to avoid overwriting the source files
 			try {
-				p.outputDir = Path.Combine(p.outputDir, p.cdTitle + FOLDER_SUFFIX);
+				p.outputDir = Path.Combine(p.outputDir, p.cdTitle + CDCRUSH.RESTORED_CUE_FOLDER_SUFFIX);
 			}
 			catch(ArgumentException) {
 				fail("Output Dir Error " + p.outputDir);
@@ -116,7 +114,6 @@ class JobConvertCue:CJob
 			// -- Move files to output folder
 			foreach(var track in cd.tracks) 
 			{
-
 				if(!cd.MULTIFILE){
 					// Fix the index times to start with 00:00:00
 					track.setNewTimesReset();

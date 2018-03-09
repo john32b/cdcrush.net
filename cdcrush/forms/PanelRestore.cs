@@ -53,7 +53,7 @@ public partial class PanelRestore : UserControl
 				btn_input_in.Enabled = !_lock;
 				btn_input_out.Enabled = !_lock;
 				input_out.Enabled = !_lock;
-				toggle_single.Enabled = !_lock;
+				toggle_merged.Enabled = !_lock;
 				toggle_subf.Enabled = !_lock;
 
 				form_lockSection("action", _lock);
@@ -177,7 +177,8 @@ public partial class PanelRestore : UserControl
 	{
 		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
-		bool res = CDCRUSH.startJob_RestoreCD(preparedArcPath, input_out.Text, toggle_subf.Checked, toggle_single.Checked,
+		bool res = CDCRUSH.startJob_RestoreCD(preparedArcPath, input_out.Text, 
+			toggle_subf.Checked, toggle_merged.Checked, toggle_cueaudio.Checked,
 			(complete)=>{
 				FormTools.invoke(this, () =>
 				{
@@ -238,6 +239,17 @@ public partial class PanelRestore : UserControl
 		}
 	}// -----------------------------------------
 
+	// --
+	private void toggle_cueaudio_CheckedChanged(object sender, EventArgs e)
+	{
+		if(toggle_cueaudio.Checked)
+		{
+			toggle_merged.Checked = false;
+			toggle_merged.Enabled = false;
+		}else{
+			toggle_merged.Enabled = true;
+		}
+	}// -----------------------------------------
 
 }// --
 }// --

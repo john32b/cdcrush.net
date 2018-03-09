@@ -39,8 +39,6 @@ class TaskRestoreTrack : lib.task.CTask
 
 		p = (RestoreParams)jobData;
 
-		log("Restoring track -" + track.storedFileName);
-
 		// --
 		crushedTrackPath = Path.Combine(p.tempDir, track.storedFileName);
 		// Set the final track pathname now, I need this for later.
@@ -67,6 +65,14 @@ class TaskRestoreTrack : lib.task.CTask
 		}
 		else
 		{
+			// No need to convert back
+			if(p.flag_encCue) {
+				// Fix current file
+				track.workingFile = crushedTrackPath;
+				complete();
+				return;
+			}
+
 			if(Path.GetExtension(track.storedFileName) == ".ogg") {
 				isOgg = true;
 			}else{
@@ -95,7 +101,9 @@ class TaskRestoreTrack : lib.task.CTask
 			ffmp.audioToPCM(crushedTrackPath);
 			killExtra = () => ffmp.kill();
 		}
-		
+
+		log("Restoring track -" + track.storedFileName);
+
 	}// -----------------------------------------
 
 	// --

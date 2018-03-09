@@ -17,6 +17,7 @@ public struct RestoreParams
 	public string outputDir;		// Output Directory. Will change to subfolder if `flag_folder`
 	public bool flag_forceSingle;	// TRUE: Create a single cue/bin file, even if the archive was MULTIFILE
 	public bool flag_folder;		// TRUE: Create a subfolder with the game name in OutputDir
+	public bool flag_encCue;		// TRUE: Will not restore audio tracks and create a cue with enc audio
 
 	// : Internal Use :
 
@@ -28,8 +29,9 @@ public struct RestoreParams
 }// --
 
 
+
 /// <summary>
-/// A collection of tasks, that will CRUSH a cd,
+/// A collection of tasks, that will Restore a cd,
 /// Tasks will run in order, and some will run in parallel
 /// </summary>
 class JobRestore: CJob
@@ -37,9 +39,8 @@ class JobRestore: CJob
 	// --
 	public JobRestore(RestoreParams p) : base("Restore CD")
 	{
-
 		// Check for input files
-		// :: --------------------
+		// --------------------
 
 		if(!CDCRUSH.check_file_(p.inputFile, CDCRUSH.CDCRUSH_EXTENSION)) {
 			fail(msg: CDCRUSH.ERROR);
@@ -71,6 +72,12 @@ class JobRestore: CJob
 			return;
 		}
 
+		// Safeguard
+		if(p.flag_encCue)
+		{
+			p.flag_forceSingle = false;
+		}
+
 		// IMPORTANT!! sharedData gets set by value, NOT A POINTER, do not make changes to p after this
 		jobData = p;
 
@@ -92,21 +99,22 @@ class JobRestore: CJob
 		//  - JOIN if it has to
 		// -----------------------
 		add(new CTask((t) => {
-			var cd = new CueReader();
-			jobData.cd = cd;
-			// This runs in sync:
+			var cd = new CueReader(); jobData.cd = cd;
+
+			// --
 			if(!cd.loadJson(Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS))) {
 				t.fail(msg: cd.ERROR);
 				return;
-			}//--
+			}
 
 			#if DEBUG
 				cd.debugInfo();
 			#endif
 
 			// - Push TASK RESTORE tasks right after this one
-			foreach(CueTrack tr in cd.tracks) {
-				addNextAsync(new TaskRestoreTrack(tr));
+			foreach(CueTrack tr in cd.tracks) 
+			{
+				addNextAsync(new TaskRestoreTrack(tr)); // Note: Task will take care of encoded cue case
 			}//--
 
 			t.complete();
@@ -115,8 +123,9 @@ class JobRestore: CJob
 
 
 
-		// - Join Tracks
+		// - Join Tracks, but only when not creating .Cue/Enc Audio
 		// -----------------------
+		if(!p.flag_encCue) 
 		add(new CTask((t) => {
 			CueReader cd = jobData.cd;
 			// -- Join tracks
@@ -143,23 +152,34 @@ class JobRestore: CJob
 
 			// --
 			foreach(var track in cd.tracks) {
-				if(p.flag_forceSingle && cd.MULTIFILE) // :: CONVERT MULTI TO SINGLE
+
+				if(p.flag_encCue)
 				{
-					track.setNewTimesBasedOnSector();
+					string ext = Path.GetExtension(track.workingFile);
+					track.trackFile = $"{cd.CD_TITLE} (track {track.trackNo}){ext}";
+					
+					if(!cd.MULTIFILE) track.setNewTimesReset(); // :: CONVERTS SINGLE TO MULTI
 				}
+				else
+				{
 
-				if(cd.MULTIFILE && !p.flag_forceSingle) {
-					track.trackFile = cd.CD_TITLE + " " + track.getFilenameRaw();
+					if(p.flag_forceSingle && cd.MULTIFILE) // :: CONVERT MULTI TO SINGLE
+					{
+						track.setNewTimesBasedOnSector();
+					}
+
+					if(cd.MULTIFILE && !p.flag_forceSingle) {
+						track.trackFile = cd.CD_TITLE + " " + track.getFilenameRaw();
+					}
+
+					if(!cd.MULTIFILE || p.flag_forceSingle) {
+						if(track.trackNo == 1)
+							track.trackFile = cd.CD_TITLE + ".bin";
+						else
+							track.trackFile = null;
+					}
+
 				}
-
-				if(!cd.MULTIFILE || p.flag_forceSingle) {
-					if(track.trackNo == 1)
-						track.trackFile = cd.CD_TITLE + ".bin";
-					else
-						track.trackFile = null;
-
-				}
-
 				// --
 				// Move ALL files to final output folder
 				// NULL workingFile means that is has been deleted
