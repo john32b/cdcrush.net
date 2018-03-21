@@ -18,6 +18,7 @@ public struct RestoreParams
 	public bool flag_forceSingle;	// TRUE: Create a single cue/bin file, even if the archive was MULTIFILE
 	public bool flag_folder;		// TRUE: Create a subfolder with the game name in OutputDir
 	public bool flag_encCue;		// TRUE: Will not restore audio tracks and create a cue with enc audio
+	public int expectedTracks;		// In order for the progress report to work. set num of CD tracks here.
 
 	// : Internal Use :
 
@@ -51,21 +52,21 @@ class JobRestore: CJob
 			p.outputDir = Path.GetDirectoryName(p.inputFile);
 		}
 
+		// -- Output folder check
 		if(p.flag_folder) {
-			try {
-				p.outputDir = Path.Combine(p.outputDir, Path.GetFileNameWithoutExtension(p.inputFile));
-			}
-			catch(ArgumentException) {
+			p.outputDir = CDCRUSH.checkCreateUniqueOutput(p.outputDir, Path.GetFileNameWithoutExtension(p.inputFile));
+			if(p.outputDir==null) {
 				fail("Output Dir Error " + p.outputDir);
+				return;
+			}
+		}else{
+			if(!FileTools.createDirectory(p.outputDir)) {
+				fail(msg: "Can't create Output Dir " + p.outputDir);
 				return;
 			}
 		}
 
-		if(!FileTools.createDirectory(p.outputDir)) {
-			fail(msg: "Can't create Output Dir " + p.outputDir);
-			return;
-		}
-
+		// --
 		p.tempDir = Path.Combine(CDCRUSH.TEMP_FOLDER, Guid.NewGuid().ToString().Substring(0, 12));
 		if(!FileTools.createDirectory(p.tempDir)) {
 			fail(msg: "Can't create TEMP dir");
@@ -81,18 +82,22 @@ class JobRestore: CJob
 		// IMPORTANT!! sharedData gets set by value, NOT A POINTER, do not make changes to p after this
 		jobData = p;
 
+		// --
+		hack_setExpectedProgTracks(p.expectedTracks + 3);
+
 		// - Extract the Archive
 		// -----------------------
 		add(new CTask((t) => {
 			var arc = new FreeArc(CDCRUSH.TOOLS_PATH);
 			t.handleCliReport(arc);
 			arc.extractAll(p.inputFile, p.tempDir);
+			arc.onProgress = (pr) => t.PROGRESS=pr;
 			// In case the operation is aborted
 			t.killExtra = () => {
 				arc.kill();
 			};
 
-		}, "Extracting", true));
+		}, "Extracting"));
 
 		//  - Read JSON data
 		//  - Restore tracks
@@ -119,7 +124,8 @@ class JobRestore: CJob
 
 			t.complete();
 
-		}, "Preparing to Restore"));
+		}, "-Preparing to Restore"));
+
 
 
 
@@ -138,7 +144,7 @@ class JobRestore: CJob
 
 			t.complete();
 
-		}, "Preparing to Join"));
+		}, "-Preparing to Join"));
 
 
 		// - Prepare tracks `trackfile` which is the track written to the CUE
@@ -150,14 +156,18 @@ class JobRestore: CJob
 		add(new CTask((t) => {
 			CueReader cd = jobData.cd;
 
+			int progressStep = (int)Math.Round(100.0f/cd.tracks.Count);
 			// --
 			foreach(var track in cd.tracks) {
 
 				if(p.flag_encCue)
 				{
 					string ext = Path.GetExtension(track.workingFile);
-					track.trackFile = $"{cd.CD_TITLE} (track {track.trackNo}){ext}";
-					
+					if(cd.tracks.Count==1) {
+						track.trackFile = $"{cd.CD_TITLE}{ext}";
+					}else {
+						track.trackFile = $"{cd.CD_TITLE} (track {track.trackNo}){ext}";
+					}
 					if(!cd.MULTIFILE) track.setNewTimesReset(); // :: CONVERTS SINGLE TO MULTI
 				}
 				else
@@ -185,6 +195,7 @@ class JobRestore: CJob
 				// NULL workingFile means that is has been deleted
 				if(track.workingFile != null) {
 					FileTools.tryMove(track.workingFile, Path.Combine(p.outputDir, track.trackFile));
+					t.PROGRESS+=progressStep;
 				}
 
 			}// -- end track processing

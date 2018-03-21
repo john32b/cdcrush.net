@@ -33,27 +33,26 @@ class JobConvertCue:CJob
 
 			// : NEW :
 			// : ALWAYS Create a subfolder to avoid overwriting the source files
-			try {
-				p.outputDir = Path.Combine(p.outputDir, p.cdTitle + CDCRUSH.RESTORED_CUE_FOLDER_SUFFIX);
-			}
-			catch(ArgumentException) {
+			p.outputDir = CDCRUSH.checkCreateUniqueOutput(p.outputDir, p.cdTitle + CDCRUSH.RESTORED_CUE_FOLDER_SUFFIX);
+			if(p.outputDir==null) {
 				fail("Output Dir Error " + p.outputDir);
 				return;
 			}
 
-			if(!FileTools.createDirectory(p.outputDir)) {
-				fail(msg: "Can't create Output Dir " + p.outputDir);
-				return;
-			}
-
+			// -
 			p.tempDir = Path.Combine(CDCRUSH.TEMP_FOLDER,Guid.NewGuid().ToString().Substring(0, 12));
 			if(!FileTools.createDirectory(p.tempDir)) {
 				fail(msg: "Can't create TEMP dir");
 				return;
 			}
 
+		// Useful to know.
+		p.flag_convert_only = true;
+
 		// IMPORTANT!! sharedData gets set by value, NOT A POINTER, do not make changes to p after this
 		jobData = p;
+
+		hack_setExpectedProgTracks(p.expectedTracks + 2);
 
 		// --
 		// - Read the CUE file ::
@@ -67,7 +66,15 @@ class JobConvertCue:CJob
 				return;
 			}
 
-			// Post CD CUE load ::
+			// --
+			if(cd.tracks.Count==1)
+			{
+				t.fail(msg:"No point in converting. No audio tracks on the cd.");
+				return;
+			}
+
+			// Meaning the tracks are going to be extracted in the temp folder
+			jobData.flag_sourceTracksOnTemp = (!cd.MULTIFILE && cd.tracks.Count>1);
 
 			// In case user named the CD, otherwise it's going to be the same
 			if(!string.IsNullOrWhiteSpace(p.cdTitle))
@@ -78,12 +85,9 @@ class JobConvertCue:CJob
 			// Real quality to string name
 			cd.CD_AUDIO_QUALITY = CDCRUSH.getAudioQualityString(p.audioQuality);
 
-			// This flag notes that all files will go to the TEMP folder
-			jobData.workFromTemp = !cd.MULTIFILE;
-
 			t.complete();
 
-		},"Reading",true));
+		},"-Reading"));
 
 		
 		// - Cut tracks
@@ -99,7 +103,7 @@ class JobConvertCue:CJob
 				if(!tr.isData) addNextAsync(new TaskCompressTrack(tr));
 			}
 			t.complete();
-		},"Preparing"));
+		},"-Preparing"));
 
 		// - Create new CUE file
 		// --------------------
@@ -110,6 +114,8 @@ class JobConvertCue:CJob
 			// DEV: So far :
 			// track.trackFile is UNSET. cd.saveCue needs it to be set.
 			// track.workingFile points to a valid file, some might be in TEMP folder and some in input folder (data tracks)
+
+			int stepProgress = (int)Math.Round(100.0f/cd.tracks.Count);
 
 			// -- Move files to output folder
 			foreach(var track in cd.tracks) 
@@ -127,12 +133,14 @@ class JobConvertCue:CJob
 				// It's in the input folder, don't move it
 				if(track.isData && cd.MULTIFILE)
 				{
-					FileTools.tryCopy(track.workingFile,Path.Combine(p.outputDir, track.trackFile));
+					FileTools.tryCopy(track.workingFile, Path.Combine(p.outputDir, track.trackFile));
 				}
 				else
 				{
+					// Audio tracks are already there, moving won't do anything.
 					FileTools.tryMove(track.workingFile, Path.Combine(p.outputDir, track.trackFile));
 				}
+				t.PROGRESS += stepProgress;
 			}
 
 			//-- Create the new CUE file

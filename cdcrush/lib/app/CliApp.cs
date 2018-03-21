@@ -20,12 +20,15 @@ class CliApp
 		set { proc.StartInfo.FileName = value; } 
 	}
 	
-	// --
-	// Called when process ends along with exit code, { Usually 0 = OK, 1 = Error, 2 = Could not run EXE }
-	public Action<int> onComplete;  // #Userset
-	public Action<string> onStdOut;	// #Userset
-	public Action<string> onStdErr; // #Userset
+	// #USERSET::
+	public Action<int> onComplete;  // 0 = OK, 1 = Error, 2 = Could not run EXE
+	public Action<string> onStdOut;
+	public Action<string> onStdErr;
 
+	public Action<string> onStdOutWord;	// Used if you enable HACK_STDOUT_RAW on the constructor
+										// Will push out words read from StdOut.
+
+	// --
 	StringBuilder builderStdOut;
 	StringBuilder builderStdErr;
 
@@ -35,13 +38,16 @@ class CliApp
 	// Helpers
 	private bool _hasStarted = false;
 
+	// When some CLI apps don't flush their stdOut, capture it raw word by word.
+	private bool HACK_STDOUT_RAW = false;
+
 	// -----------------------------------------
 	/// <summary>
 	/// Starts a CLI app in a new thread
 	/// </summary>
 	/// <param name="exec">Path to the executable</param>
-	/// <param name="sync">Run this in sync</param>
-	public CliApp(string exec)
+	/// <param name="enableStdOutHack">Enable Raw word capture from stdOut. Use `onStdOutWord` to capture</param>
+	public CliApp(string exec,bool enableStdOutHack = false)
 	{
 		proc = new Process();
 		executable = exec; // uses setter
@@ -50,28 +56,27 @@ class CliApp
 		proc.StartInfo.RedirectStandardOutput = true;
 		proc.StartInfo.RedirectStandardError = true;
 
-		//proc.EnableRaisingEvents = true; // { Needed for .Exited Event }
-		//proc.Exited += proc_Exited;
-
 		builderStdOut = new StringBuilder();
 		builderStdErr = new StringBuilder();
 
-		StringBuilder g = new StringBuilder();
+		HACK_STDOUT_RAW = enableStdOutHack;
 
-		proc.OutputDataReceived += (sender, e) =>
+		if(!HACK_STDOUT_RAW)
 		{
-			builderStdOut.Append(e.Data);
-			if(!String.IsNullOrEmpty(e.Data) && onStdOut!=null)
-				onStdOut(e.Data);
-		};
+			proc.OutputDataReceived += (sender, e) =>
+			{
+				builderStdOut.Append(e.Data);
+				if(!String.IsNullOrEmpty(e.Data) && onStdOut!=null)
+					onStdOut(e.Data);
+			};
 
-		proc.ErrorDataReceived += (sender, e) =>
-		{
-			builderStdErr.Append(e.Data);
-			if(!String.IsNullOrEmpty(e.Data) && onStdErr!=null)
-				onStdErr(e.Data);
-		};
-
+			proc.ErrorDataReceived += (sender, e) =>
+			{
+				builderStdErr.Append(e.Data);
+				if(!String.IsNullOrEmpty(e.Data) && onStdErr!=null)
+					onStdErr(e.Data);
+			};
+		}
 	}// -----------------------------------------
 
 	// --
@@ -98,27 +103,62 @@ class CliApp
 		
 		LOG.log("[CLI.APP] : start() : {0} {1}", executable, proc.StartInfo.Arguments);
 
+		// Note: I really need a Thread here, If I don't, it will lock the main thread and forms
 		var th = new Thread(new ThreadStart(
+
 			 () => {
-			 
+
 				try{
-					 proc.Start();
-				}catch(System.ComponentModel.Win32Exception e){
+					proc.Start();
+				}catch(System.ComponentModel.Win32Exception){
 					// Could not find the executable
 					builderStdErr.Append($"Problem running {executable}");
 					onComplete?.Invoke(2);
 					return;	
 				}
-				 _hasStarted = true;
-				 proc.BeginErrorReadLine();
-				 proc.BeginOutputReadLine();
-				 proc.WaitForExit();
-				 LOG.log("[CLI.APP] : Process \'{0}\' Exited with code {1}", executable, proc.ExitCode);
-				 onComplete?.Invoke(proc.ExitCode);
+
+				_hasStarted = true;
+				 
+				if(HACK_STDOUT_RAW && onStdOutWord!=null)
+				{
+					int byte_r  = 0;
+					StringBuilder word = new StringBuilder();
+
+					while( (byte_r = proc.StandardOutput.BaseStream.ReadByte()) > -1 )
+					{	
+						if(byte_r==32 || byte_r==13) // SPACE or ENTER
+						{
+							if(word.Length>0)
+							{
+								onStdOutWord(word.ToString());
+								word.Clear();
+							}
+
+						}else
+						{
+							if(byte_r>32) // No special characters in the stringbuilder
+							{
+								word.Append(Char.ConvertFromUtf32(byte_r));
+							}
+						}
+					} // end while
+				}//--
+
+				if(!HACK_STDOUT_RAW) // Didn't use else because could be (hack=true, onStdOutWord=false)
+				{
+					proc.BeginErrorReadLine();
+					proc.BeginOutputReadLine();
+				}// -
+
+				proc.WaitForExit();
+
+				LOG.log("[CLI.APP] : Process \'{0}\' Exited with code {1}", executable, proc.ExitCode);
+				onComplete?.Invoke(proc.ExitCode);
+
 			 }));
 
 		th.IsBackground = true;
-		th.Name = "cliApp(" + executable + ")";
+		th.Name = $"cliApp({executable})";
 		th.Start();
 	}// -----------------------------------------
 

@@ -167,14 +167,21 @@ public partial class PanelRestore : UserControl
 		// handle the file
 		if (System.IO.Path.GetExtension(file).ToLower() == ".arc")
 			form_quickLoadFile(file);
-		else
-			FormMain.sendMessage("Unsupported file type. Drop an `.arc` file", 3);
+		else{
+			FormMain.sendMessage("Unsupported file type. Drop an .ARC file", 3);
+			FormMain.FLAG_CLEAR_STATUS = true;
+		}
 	}// -----------------------------------------
 
 
 	// --
 	private void btn_RESTORE_Click(object sender, EventArgs e)
 	{
+		// --
+		FormMain.sendMessage("", 1);
+
+		CDCRUSH.HACK_CD_TRACKS = int.Parse(info_tracks.Text);
+
 		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
 		bool res = CDCRUSH.startJob_RestoreCD(preparedArcPath, input_out.Text, 
@@ -183,16 +190,21 @@ public partial class PanelRestore : UserControl
 				FormTools.invoke(this, () =>
 				{
 					form_lockSection("all", false);
-					form_lockSection("action", true); // Just restored this image, why restore it again?
-				});
+					FormMain.FLAG_CLEAR_STATUS = true;
 
-				if(complete)
-				{
-					FormMain.sendMessage("Complete", 2);
-				}else
-				{
-					FormMain.sendMessage(CDCRUSH.ERROR,3);
-				}
+					if(complete)
+					{
+						// Just restored this image, why restore it again?
+						form_lockSection("action", true);
+						FormMain.sendMessage("Complete", 2);
+						// Form progress will be at 100% from the job update
+					}else 
+					{
+						// job update-fail won't push progress, do it manually
+						FormMain.sendProgress(0);
+						FormMain.sendMessage(CDCRUSH.ERROR,3);
+					}
+				});
 			});
 
 		if(res)
@@ -200,6 +212,7 @@ public partial class PanelRestore : UserControl
 			form_lockSection("all", true);
 		}else{
 			FormMain.sendMessage(CDCRUSH.ERROR, 3);
+			FormMain.FLAG_CLEAR_STATUS = true;
 		}
 	}// -----------------------------------------
 

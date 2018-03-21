@@ -23,13 +23,13 @@ class TaskCompressTrack : lib.task.CTask
 	CrushParams p;
 	CueTrack track;
 
-	string trackFile;  // Temp name, Autocalculated
+	string sourceTrackFile;  // Temp name, Autocalculated
 
 	// --
-	public TaskCompressTrack(CueTrack tr):base(null,"Compressing")
+	public TaskCompressTrack(CueTrack tr):base(null,"Encoding")
 	{
 		name = "Compress";
-		desc = string.Format("Compressing track {0}", tr.trackNo);
+		desc = string.Format("Encoding track {0}", tr.trackNo);
 		track = tr;
 	}// -----------------------------------------
 
@@ -41,12 +41,12 @@ class TaskCompressTrack : lib.task.CTask
 		p = (CrushParams) jobData;
 
 		// Working file is already set and points to either TEMP or INPUT folder
-		trackFile = track.workingFile;
+		sourceTrackFile = track.workingFile;
 
 		// Before compressing the tracks, get and store the MD5 of the track
 		using(var md5 = System.Security.Cryptography.MD5.Create())
 		{
-			using(var str = File.OpenRead(trackFile))
+			using(var str = File.OpenRead(sourceTrackFile))
 			{
 				track.md5 = BitConverter.ToString(md5.ComputeHash(str)).Replace("-","").ToLower();
 			}
@@ -56,6 +56,7 @@ class TaskCompressTrack : lib.task.CTask
 		if(track.isData)
 		{
 			var ecm = new EcmTools(CDCRUSH.TOOLS_PATH);
+			ecm.onProgress = handleProgress;
 			ecm.onComplete = (s) => {
 				if(s) {
 					deleteOldFile();
@@ -69,13 +70,13 @@ class TaskCompressTrack : lib.task.CTask
 			killExtra = () => ecm.kill();
 
 			// New filename that is going to be generated:
-			track.storedFileName = track.getTrackName() + ".bin.ecm";
-			track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-			ecm.ecm(trackFile,track.workingFile);	// old .bin file from wherever it was to temp/bin.ecm
+			setupFiles(".bin.ecm");
+			ecm.ecm(sourceTrackFile,track.workingFile);	// old .bin file from wherever it was to temp/bin.ecm
 		}
 		else // AUDIO TRACK :
 		{
 			var ffmp = new FFmpeg(CDCRUSH.FFMPEG_PATH);
+			ffmp.onProgress = handleProgress;
 			ffmp.onComplete = (s) => {
 				if(s) {
 					deleteOldFile();
@@ -91,24 +92,27 @@ class TaskCompressTrack : lib.task.CTask
 			// Cast for easy coding
 			Tuple<int,int> audioQ = jobData.audioQuality;
 
+			// NOTE: I know this redundant, but it works :
 			switch(audioQ.Item1)
 			{
 				case 0: // FLAC
-					track.storedFileName = track.getTrackName() + ".flac";
-					track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-					ffmp.audioPCMToFlac(trackFile,track.workingFile);
+					setupFiles(".flac");
+					ffmp.audioPCMToFlac(sourceTrackFile,track.workingFile);
 					break;
 
 				case 1: // VORBIS
-					track.storedFileName = track.getTrackName() + ".ogg";
-					track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-					ffmp.audioPCMToOggVorbis(trackFile, audioQ.Item2, track.workingFile);
+					setupFiles(".ogg");
+					ffmp.audioPCMToOggVorbis(sourceTrackFile, audioQ.Item2, track.workingFile);
 					break;
 
 				case 2: // OPUS
-					track.storedFileName = track.getTrackName() + ".ogg";
-					track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
-					ffmp.audioPCMToOggOpus(trackFile, CDCRUSH.OPUS_QUALITY[audioQ.Item2], track.workingFile);
+					setupFiles(".ogg");
+					ffmp.audioPCMToOggOpus(sourceTrackFile, FFmpeg.OPUS_QUALITY[audioQ.Item2], track.workingFile);
+					break;
+				
+				case 3: // MP3
+					setupFiles(".mp3");
+					ffmp.audioPCMToMP3(sourceTrackFile,audioQ.Item2,track.workingFile);
 					break;
 
 			}//- end switch
@@ -117,13 +121,38 @@ class TaskCompressTrack : lib.task.CTask
 		
 	}// -----------------------------------------
 
+	// Qucikly set :
+	// + storedFileName
+	// + workingFile
+	void setupFiles(string ext)
+	{
+		track.storedFileName = track.getTrackName() + ext;
+
+		if(p.flag_convert_only) {
+			// Convert files to output folder directly
+			track.workingFile = Path.Combine(jobData.outputDir, track.storedFileName);
+		}else{
+			// Convert files to temp folder, since they are going to be archived later
+			track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
+		}
+	}// -----------------------------------------
+
+	// --
+	void handleProgress(int p)
+	{
+		PROGRESS = p;
+	}// -----------------------------------------
+
 	// --
 	// Delete old files ONLY IF they reside in the TEMP folder!
 	void deleteOldFile()
 	{
 		if(CDCRUSH.FLAG_KEEP_TEMP) return;
-		if(jobData.workFromTemp) {
-			File.Delete(trackFile); // Delete it if it was cut from a single bin
+
+		// Make sure the file is in the TEMP folder ::
+		if(jobData.flag_sourceTracksOnTemp)
+		{
+			File.Delete(sourceTrackFile); 
 		}
 	}// -----------------------------------------
 

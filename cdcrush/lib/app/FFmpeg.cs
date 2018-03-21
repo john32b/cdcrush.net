@@ -27,8 +27,14 @@ class FFmpeg:ICliReport
 	int secondsConverted, targetSeconds;
 	public int progress {get; private set;} // Current progress % of the current conversion
 
-	// Ogg vorbis Quality Number to kbps.
+	// Ogg vorbis Quality (index), VBR kbps
 	public static readonly int[] VORBIS_QUALITY = { 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500 };
+
+	// MP3 quality (index), VBR kbps
+	public static readonly int[] MP3_QUALITY = { 245, 225, 190, 175, 165, 130, 115, 100, 85, 65};
+
+	// OPUS quality (index), VBR kbps
+	public static readonly int[] OPUS_QUALITY = { 32, 48, 64, 80, 96, 112, 128, 160, 320};
 	// -----------------------------------------
 
 	/// <summary>
@@ -236,6 +242,36 @@ class FFmpeg:ICliReport
 
 		return true;
 	}// -----------------------------------------
+
+
+	/// <summary>
+	/// Convert a PCM audio file to MP3 Variable Bitrate
+	/// ! Overwrites all generated files !
+	/// ! Does not check INPUT file !
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="quality">9 to 0 (lowest -> highest)</param>
+	/// <param name="output"></param>
+	/// <returns></returns>
+	public bool audioPCMToMP3(string input, int quality, string output = null)
+	{
+		if(string.IsNullOrEmpty(output)) {
+			output = Path.ChangeExtension(input,"mp3");
+		}else{
+			//[safeguard] Make sure it's a FLAC
+			if(!output.ToLower().EndsWith(".mp3")) {
+				output += ".mp3"; // try to fix it
+			}
+		}
+
+		LOG.log("[FFMPEG] : Converting \"{0}\" to MP3 {1}kbps", input, MP3_QUALITY[quality]);
+
+		_initProgressVars(input);
+		proc.start($"-y -f s16le -ar 44.1k -ac 2 -i \"{input}\" -c:a libmp3lame -q:a {quality} \"{output}\"");
+		// https://trac.ffmpeg.org/wiki/Encode/MP3
+		return true;
+	}// -----------------------------------------
+
 
 
 	// Helper

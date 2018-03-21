@@ -23,7 +23,7 @@ class TaskJoinTrackFiles:cdcrush.lib.task.CTask
 	public TaskJoinTrackFiles()
 	{
 		name = "Join";
-		desc = "Joining tracks into a single file";
+		desc = "Joining tracks";
 	}// -----------------------------------------
 
 	// --
@@ -50,7 +50,7 @@ class TaskJoinTrackFiles:cdcrush.lib.task.CTask
 
 		output = cd.tracks[0].workingFile;
 
-		int progressStep = (int)Math.Round((double) (100 / inputs.Length));
+		int progressStep = (int)Math.Round((double) (100.0f / inputs.Length));
 
 		// NOTE:
 		// If I didn't use FileMode.Append , the file would be overwritten

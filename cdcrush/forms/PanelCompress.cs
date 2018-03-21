@@ -111,7 +111,7 @@ public partial class PanelCompress : UserControl
 	/// </summary>
 	void form_set_proper_action_name()
 	{
-		btn_CRUSH.Text = chk_encodedCue.Checked?"CONVERT CUE":"CRUSH";
+		btn_CRUSH.Text = chk_encodedCue.Checked?"CONVERT":"CRUSH";
 	}// -----------------------------------------
 
 
@@ -197,7 +197,7 @@ public partial class PanelCompress : UserControl
 		else if (ext == ".jpg")
 			form_set_cover(file);
 		else {
-			FormMain.sendMessage("Unsupported file extension.",3);
+			FormMain.sendMessage("Unsupported file extension. Drop a .CUE file",3);
 			FormMain.FLAG_CLEAR_STATUS = true;
 		}
 	}// -----------------------------------------
@@ -212,21 +212,31 @@ public partial class PanelCompress : UserControl
 		// Since I can fire 2 jobs from here, have a common callback
 		Action<bool,int> jobCallback = (complete, newSize) => {
 			FormTools.invoke(this, () =>{
-				form_lockSection("all", false);
-				form_lockSection("action", true);
-				form_set_crushed_size(newSize);
-			});
 
-			if(complete) {
-				FormMain.sendMessage("Complete", 2);
-			}else {
-				FormMain.sendMessage(CDCRUSH.ERROR,3);
-			}
+				FormMain.FLAG_CLEAR_STATUS = true;
+				form_lockSection("all", false);
+				form_set_crushed_size(newSize);
+
+				if(complete)
+				{
+					form_lockSection("action", true); 
+					FormMain.sendMessage("Complete", 2);
+				}else 
+				{
+					FormMain.sendProgress(0);
+					FormMain.sendMessage(CDCRUSH.ERROR,3);
+				}
+			});
 		};
+
+		// Reset the message color, incase it was red
+		FormMain.sendMessage("", 1);
 
 		// Engine request job result
 		bool res = false;
 
+		// Fix progress reporting. HACKY WAY :-/
+		CDCRUSH.HACK_CD_TRACKS = int.Parse(info_tracks.Text);
 
 		// Either compress to an archive, or just convert
 		// Note : Progress updates are automatically being handled by the main FORM
@@ -234,7 +244,6 @@ public partial class PanelCompress : UserControl
 			res = CDCRUSH.startJob_ConvertCue(preparedCue, input_out.Text, audioQ, 
 				info_cdtitle.Text, jobCallback);
 		}else {
-			
 			res = CDCRUSH.startJob_CrushCD(preparedCue, input_out.Text, audioQ, 
 				preparedCover, info_cdtitle.Text, combo_data_c.SelectedIndex+1, jobCallback);
 		}
@@ -246,6 +255,7 @@ public partial class PanelCompress : UserControl
 			FormMain.sendMessage(CDCRUSH.ERROR, 3);
 			FormMain.FLAG_CLEAR_STATUS = true;
 		}
+
 	}// -----------------------------------------
 
 	// --
@@ -313,15 +323,21 @@ public partial class PanelCompress : UserControl
 				combo_audio_q.Enabled = false;
 				break;
 			case 1: // VORBIS
-				for(int i=0;i<CDCRUSH.VORBIS_QUALITY.Length;i++) {
-					combo_audio_q.Items.Add(CDCRUSH.VORBIS_QUALITY[i].ToString() + "k Vbr");
+				for(int i=0;i<FFmpeg.VORBIS_QUALITY.Length;i++) {
+					combo_audio_q.Items.Add(FFmpeg.VORBIS_QUALITY[i].ToString() + "k Vbr");
 				}
 				combo_audio_q.Enabled = true;
 				break;
 			case 2: // OPUS
-				for(int i=0;i<CDCRUSH.OPUS_QUALITY.Length;i++) {
-					combo_audio_q.Items.Add(CDCRUSH.OPUS_QUALITY[i].ToString() + "k Vbr");
+				for(int i=0;i<FFmpeg.OPUS_QUALITY.Length;i++) {
+					combo_audio_q.Items.Add(FFmpeg.OPUS_QUALITY[i].ToString() + "k Vbr");
 				}				
+				combo_audio_q.Enabled = true;
+				break;
+			case 3: // MP3
+				for(int i=0;i<FFmpeg.MP3_QUALITY.Length;i++) {
+					combo_audio_q.Items.Add(FFmpeg.MP3_QUALITY[i].ToString() + "k Vbr");
+				}
 				combo_audio_q.Enabled = true;
 				break;
 		}

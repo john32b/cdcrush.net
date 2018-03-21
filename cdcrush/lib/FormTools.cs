@@ -91,10 +91,10 @@ class FormTools
 	/// </summary>
 	/// <param name="id"></param>
 	/// <param name="filter">"ARC files (*.arc)|*.arc|All files (*.*)|*.*" Check inside for more </param>
-	public static void fileLoadDialogPrepare(string id = "",string filter = "")
+	public static void fileLoadDialogPrepare(string id = null,string filter = null)
 	{
-		if (id == "") id = "all";
-		if (filter=="") filter = "All files (*.*)|*.*";
+		if (id == null) id = "all";
+		if (filter == null) filter = "All files (*.*)|*.*";
 
 		// Filter Examples::
 		// "ARC files (*.arc)|*.arc|All files (*.*)|*.*"
@@ -124,7 +124,7 @@ class FormTools
 	}// -----------------------------------------
 
 	/// <summary>
-	/// Currently just ONE file
+	/// Array of files selected or NULL
 	/// </summary>
 	/// <param name="id">An ID previously set with prepareDialogFileLoad()</param>
 	/// <param name="dir">Start in this directory</param>
@@ -149,9 +149,9 @@ class FormTools
 		if(res==DialogResult.OK)
 		{
 			if (multi)
-				return new[] { fileOpenD.FileName };
-			else
 				return fileOpenD.FileNames;
+			else
+				return new[] { fileOpenD.FileName };
 		}
 
 		return null;
@@ -168,6 +168,78 @@ class FormTools
 	{
 		ctrl.BeginInvoke((MethodInvoker) act);
 	}// -----------------------------------------
+
+
+	/// <summary>
+	/// Present a YES NO popup
+	/// </summary>
+	/// <param name="question"></param>
+	/// <param name="title"></param>
+	/// <returns></returns>
+	public static bool PopupYesNo(string question,string title=null)
+	{
+		DialogResult r = MessageBox.Show(question,title,MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+		return(r==DialogResult.Yes);
+	}// -----------------------------------------
+
+
+	[System.Runtime.InteropServices.DllImport("User32.dll")]
+	[return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+	static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+ 
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct FLASHWINFO {
+            public UInt32 cbSize;
+            public IntPtr hwnd;
+            public UInt32 dwFlags;
+            public UInt32 uCount;
+            public UInt32 dwTimeout;
+        }
+ 
+		[Flags]
+        public enum FlashMode {
+            /// 
+            /// Stop flashing. The system restores the window to its original state.
+            /// 
+            FLASHW_STOP = 0,
+            /// 
+            /// Flash the window caption.
+            /// 
+            FLASHW_CAPTION = 1,
+            /// 
+            /// Flash the taskbar button.
+            /// 
+            FLASHW_TRAY = 2,
+            /// 
+            /// Flash both the window caption and taskbar button.
+            /// This is equivalent to setting the FLASHW_CAPTION | FLASHW_TRAY flags.
+            /// 
+            FLASHW_ALL = 3,
+            /// 
+            /// Flash continuously, until the FLASHW_STOP flag is set.
+            /// 
+            FLASHW_TIMER = 4,
+            /// 
+            /// Flash continuously until the window comes to the foreground.
+            /// 
+            FLASHW_TIMERNOFG = 0x0000000C
+        }
+ 
+		// BLINK A FEW TIMES
+		// --
+        public static bool FlashWindow(IntPtr hWnd) 
+		{
+            FLASHWINFO fInfo = new FLASHWINFO();
+            fInfo.cbSize = Convert.ToUInt32(System.Runtime.InteropServices.Marshal.SizeOf(fInfo));
+            fInfo.hwnd = hWnd;
+            fInfo.dwFlags = (UInt32)FlashMode.FLASHW_TRAY;
+			fInfo.uCount = 2;
+			// fInfo.uCount = UInt32.MaxValue;
+            fInfo.dwTimeout = 0;
+            return FlashWindowEx(ref fInfo);
+		}
+
+
 
 }// -- end class
 

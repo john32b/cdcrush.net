@@ -37,7 +37,7 @@ public class LOG
 	public static void attachTextBox(TextBox box)
 	{
 		// Just point to a new box
-		detachTextBox();
+		detachTextBox(); // Just in case
 		textBoxTrace = new TextBoxTraceListener(box);
 		Debug.Listeners.Add(textBoxTrace);
 	}// -----------------------------------------
@@ -48,7 +48,7 @@ public class LOG
 	{
 		if(textBoxTrace!=null)
 		{
-			LOG.log("Detaching");
+			LOG.log("[LOG] Detaching Text Box");
 			Debug.Listeners.Remove(textBoxTrace);
 			textBoxTrace.Dispose();
 			textBoxTrace = null;

@@ -80,7 +80,7 @@
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.41975F));
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.5679F));
 			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.01235F));
-			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 126F));
+			tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 127F));
 			tableLayoutPanel3.Controls.Add(this.label8, 3, 0);
 			tableLayoutPanel3.Controls.Add(this.label7, 2, 0);
 			tableLayoutPanel3.Controls.Add(this.label5, 0, 0);
@@ -102,9 +102,9 @@
 			// 
 			this.label8.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label8.Location = new System.Drawing.Point(206, 0);
+			this.label8.Location = new System.Drawing.Point(204, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(121, 13);
+			this.label8.Size = new System.Drawing.Size(123, 13);
 			this.label8.TabIndex = 7;
 			this.label8.Text = "Audio Quality :";
 			// 
@@ -112,9 +112,9 @@
 			// 
 			this.label7.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(147, 0);
+			this.label7.Location = new System.Drawing.Point(146, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(53, 13);
+			this.label7.Size = new System.Drawing.Size(52, 13);
 			this.label7.TabIndex = 5;
 			this.label7.Text = "Tracks :";
 			// 
@@ -124,7 +124,7 @@
 			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(3, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(68, 13);
+			this.label5.Size = new System.Drawing.Size(67, 13);
 			this.label5.TabIndex = 0;
 			this.label5.Text = "Crushed Size :";
 			// 
@@ -132,7 +132,7 @@
 			// 
 			this.label6.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label6.Location = new System.Drawing.Point(77, 0);
+			this.label6.Location = new System.Drawing.Point(76, 0);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(64, 13);
 			this.label6.TabIndex = 0;
@@ -143,10 +143,10 @@
 			this.info_audio.BackColor = System.Drawing.SystemColors.Info;
 			this.info_audio.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_audio.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_audio.Location = new System.Drawing.Point(206, 16);
+			this.info_audio.Location = new System.Drawing.Point(204, 16);
 			this.info_audio.Name = "info_audio";
 			this.info_audio.ReadOnly = true;
-			this.info_audio.Size = new System.Drawing.Size(121, 13);
+			this.info_audio.Size = new System.Drawing.Size(123, 13);
 			this.info_audio.TabIndex = 8;
 			this.info_audio.Text = "96kbps";
 			this.info_audio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -156,7 +156,7 @@
 			this.info_size1.BackColor = System.Drawing.SystemColors.Info;
 			this.info_size1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_size1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_size1.Location = new System.Drawing.Point(77, 16);
+			this.info_size1.Location = new System.Drawing.Point(76, 16);
 			this.info_size1.Name = "info_size1";
 			this.info_size1.ReadOnly = true;
 			this.info_size1.Size = new System.Drawing.Size(64, 13);
@@ -172,7 +172,7 @@
 			this.info_size0.Location = new System.Drawing.Point(3, 16);
 			this.info_size0.Name = "info_size0";
 			this.info_size0.ReadOnly = true;
-			this.info_size0.Size = new System.Drawing.Size(68, 13);
+			this.info_size0.Size = new System.Drawing.Size(67, 13);
 			this.info_size0.TabIndex = 4;
 			this.info_size0.Text = "41MB";
 			this.info_size0.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -182,10 +182,10 @@
 			this.info_tracks.BackColor = System.Drawing.SystemColors.Info;
 			this.info_tracks.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_tracks.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_tracks.Location = new System.Drawing.Point(147, 16);
+			this.info_tracks.Location = new System.Drawing.Point(146, 16);
 			this.info_tracks.Name = "info_tracks";
 			this.info_tracks.ReadOnly = true;
-			this.info_tracks.Size = new System.Drawing.Size(53, 13);
+			this.info_tracks.Size = new System.Drawing.Size(52, 13);
 			this.info_tracks.TabIndex = 3;
 			this.info_tracks.Text = "20";
 			this.info_tracks.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -403,9 +403,9 @@
 			this.toggle_merged.AutoSize = true;
 			this.toggle_merged.Location = new System.Drawing.Point(6, 262);
 			this.toggle_merged.Name = "toggle_merged";
-			this.toggle_merged.Size = new System.Drawing.Size(158, 17);
+			this.toggle_merged.Size = new System.Drawing.Size(180, 17);
 			this.toggle_merged.TabIndex = 13;
-			this.toggle_merged.Text = "Restore to one merged .BIN";
+			this.toggle_merged.Text = "Restore to one merged .bin/.cue";
 			this.toggle_merged.UseVisualStyleBackColor = true;
 			// 
 			// btn_RESTORE

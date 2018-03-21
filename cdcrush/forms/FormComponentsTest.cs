@@ -1,121 +1,128 @@
-﻿using cdcrush.lib;
-using cdcrush.lib.app;
-using System;
+﻿using System;
+using System.IO;
 using System.Windows.Forms;
+using cdcrush.lib;
+using cdcrush.lib.app;
 
 namespace cdcrush.forms
 {
 
-/**
- * Test form to test various functionalities
- * ----
- * IN DEVELOPMENT
- * ------------------------------------------*/
+	/**
+	 * Test form to test various functionalities
+	 * ----
+	 * IN DEVELOPMENT
+	 * ------------------------------------------*/
 
 	public partial class FormComponentsTest : Form
 	{
+		// --
 		public FormComponentsTest()
 		{
 			InitializeComponent();
 		}// --
+		
+		
+		private void FormComponentsTest_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			LOG.log("[FormComponents] Destroying");
+			LOG.detachTextBox();
+		}// -----------------------------------------
 
+		// --
 		private void FormComponentsTest_Load(object sender, EventArgs e)
 		{
-			LOG.log("Components Form Load");
-			LOG.attachTextBox(textBox1);
+			LOG.log("Components Form Load ------");
+			LOG.attachTextBox(textbox_log);
 			FormTools.fileLoadDialogPrepare("ecm", "ECM files (*.ecm)|*.ecm");
 			FormTools.fileLoadDialogPrepare("arc", "ARC files (*.arc)|*.arc");
-		
-		}
+			FormTools.fileLoadDialogPrepare(); // all files
+		}// -----------------------------------------
 
-		protected override void OnFormClosed(FormClosedEventArgs e)
+
+		// -
+		// Select files to apply operations
+		// -
+		string[] SELECTED_FILES;
+		private void txt_files_TextChanged(object sender, EventArgs e)
 		{
-			base.OnFormClosed(e);
-			//LOG.detachTextBox();
-		}
+			SELECTED_FILES = FormTools.fileLoadDialog("all","",true);
+			if(SELECTED_FILES != null)
+			{
+				txt_files.Text = string.Join(",", SELECTED_FILES);
+				LOG.log(txt_files.Text);
+			}else{
+				txt_files.Text = "";
+				SELECTED_FILES = null;
+			}
+		}// -----------------------------------------
 
-		// UNECM - UNECM
+
 		// --
-		private void button4_Click(object sender, EventArgs e)
+		// Create ARC 
+		private void btn_arc_Click(object sender, EventArgs e)
 		{
-			var app = new EcmTools();
-			app.onComplete = (s) =>
-			{
-				if(!s)
-				{
-					LOG.log(app.ERROR);
-				}else{
-					LOG.log("ECM COMPLETE");
-				}
-
-				FormTools.invoke(this, () => {
-					this.Enabled = true;
-				});
-			};
-
-			string file = FormTools.fileLoadDialog("ecm")[0];
-
-			if(file!=null)
-			{
-				app.unecm(file+"1");
-				this.Enabled = false;
-			}
-
-		}
-
-
-		// UN ARC
-		private void button6_Click(object sender, EventArgs e)
-		{
-			var app = new FreeArc();
+			if(SELECTED_FILES==null) return;
+			
+			var app = new FreeArc(prog.CDCRUSH.TOOLS_PATH);
 			app.onComplete = (s) => {
-				if(!s)
-				{
-					LOG.log(app.ERROR);
-				}else{
-					LOG.log("ARC COMPLETE");
-				}
-				FormTools.invoke(this, () => {
-					this.Enabled = true;
-				});
+				LOG.log("--FreeArc Complete :: {0}", s);
 			};
 
-			string file = FormTools.fileLoadDialog("arc")[0];
-			if(file!=null)
-			{
-				app.extractAll(file);
-				this.Enabled = false;
-			}
+			app.onProgress = (p) => {
+				LOG.log("--FreeArc Got Progress :: {0}", p);
+			};
 
-		}
+			string destFolder = Path.GetDirectoryName(SELECTED_FILES[0]);
+			string destFilename = Path.GetFileNameWithoutExtension(SELECTED_FILES[0]);
+			string finalpath = Path.Combine(destFolder,destFilename + "_test_.arc");
+			app.compress(SELECTED_FILES,finalpath);
+		}// -----------------------------------------
 
-		string[] FILES_TO_JOIN;
-		/// <summary>
-		/// JOIN FILES
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void button7_Click(object sender, EventArgs e)
+		// --
+		// UN ARC
+		private void btn_unarc_Click(object sender, EventArgs e)
 		{
-			if(FILES_TO_JOIN==null)
-			{
-				LOG.log("No files to join");
-			}
-		}// --
+			if(SELECTED_FILES==null) return;
 
-		/// <summary>
-		/// SELECT FILES TO JOIN
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void join_files_Click(object sender, EventArgs e)
+			var app = new FreeArc(prog.CDCRUSH.TOOLS_PATH);
+			app.onComplete = (s) => {
+				LOG.log("--FreeArc Complete :: {0}", s);
+			};
+			app.onProgress = (p) => {
+				LOG.log("--FreeArc Got Progress :: {0}", p);
+			};
+			string destFolder = Path.GetDirectoryName(SELECTED_FILES[0]);
+			string destFilename = Path.GetFileNameWithoutExtension(SELECTED_FILES[0]);
+			string finalpath = Path.Combine(destFolder,destFilename + "_test_");
+			app.extractAll(SELECTED_FILES[0],finalpath);
+		}// -----------------------------------------
+
+
+		// 
+		private void btn_ecm_Click(object sender, EventArgs e)
 		{
-			FILES_TO_JOIN = FormTools.fileLoadDialog("all","",true);
-			join_files.Text = FILES_TO_JOIN.ToString();
-			LOG.log(FILES_TO_JOIN);
-		}//--
+			if(SELECTED_FILES==null) return;
+			var app = new EcmTools(prog.CDCRUSH.TOOLS_PATH);
+			app.onComplete = (s) => {
+				LOG.log("--ECM Complete :: {0}", s);
+			};
+			app.onProgress = (p) => {
+				LOG.log("--ECM Progress :: {0}", p);
+			};
+			app.ecm(SELECTED_FILES[0]);
+		}// -----------------------------------------
 
-
+		private void btn_unecm_Click(object sender, EventArgs e)
+		{
+			if(SELECTED_FILES==null) return;
+			var app = new EcmTools(prog.CDCRUSH.TOOLS_PATH);
+			app.onComplete = (s) => {
+				LOG.log("--ECM Complete :: {0}", s);
+			};
+			app.onProgress = (p) => {
+				LOG.log("--ECM Progress :: {0}", p);
+			};
+			app.unecm(SELECTED_FILES[0]);
+		}// -----------------------------------------
 	}// --
-
 }// --

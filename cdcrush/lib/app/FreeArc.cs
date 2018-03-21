@@ -15,10 +15,11 @@ namespace cdcrush.lib.app {
 class FreeArc : AbArchiver
 {
 	const string EXECUTABLE_NAME = "Arc.exe";
+
 	// --
 	public FreeArc(string exePath = "")
 	{
-		proc = new CliApp(Path.Combine(exePath,EXECUTABLE_NAME));
+		proc = new CliApp(Path.Combine(exePath,EXECUTABLE_NAME),true);
 
 		proc.onComplete = (code) =>
 		{
@@ -33,12 +34,7 @@ class FreeArc : AbArchiver
 			}
 		};
 
-		// FREEARC writes to stdout
-		//proc.onStdOut = (s) =>
-		//{
-			// Tried to read the progress, but can't
-		//};
-
+		proc.onStdOutWord = onStdOutWordGetProgress;
 	}// -----------------------------------------
 
 
@@ -51,6 +47,9 @@ class FreeArc : AbArchiver
 	public override bool compress(string[] listOfFiles,string destinationFile, int compressionLevel = 4)
 	{
 		progress = 0;
+		flag_is_capturing = false;
+		capt_off_switch = "Compressed";
+
 		foreach(string f in listOfFiles) {
 				if (!System.IO.File.Exists(f)) {
 					ERROR = string.Format("File '{0}' does not exist",f); return false;
@@ -69,7 +68,10 @@ class FreeArc : AbArchiver
 
 		// -md32m is dictionary size -- removed since 1.2.3
 		// -m4 is the default compression
-		proc.start(string.Format("a -m{3} -s -o+ --diskpath=\"{1}\" \"{0}\" {2}", destinationFile, sourceFolder, filesStr, compressionLevel));
+		// -s	= Solid Compression, To merge all files in one solid block
+		// -i1	= Display progress info only
+		proc.start(string.Format("a -m{3} -s -i1 -o+ --diskpath=\"{1}\" \"{0}\" {2}", destinationFile, sourceFolder, filesStr, compressionLevel));
+
 		// NOTE: -m4 requires 128Mb for packing and unpacking
 		return true;
 	}// -----------------------------------------
@@ -83,6 +85,9 @@ class FreeArc : AbArchiver
 	public override bool extractAll(string inputFile, string destinationFolder = null)
 	{
 		progress = 0;
+		flag_is_capturing = false;
+		capt_off_switch = "Extracted";
+
 		if(destinationFolder==null) {
 			destinationFolder = Path.GetDirectoryName(inputFile);
 		}
@@ -90,7 +95,9 @@ class FreeArc : AbArchiver
 		LOG.log("[ARC] : Extracting '{0}' into '{1}'", inputFile, destinationFolder);
 
 		// Actual extract ::
-		proc.start(string.Format("e -o+ -i0 \"{0}\" -dp\"{1}\"", inputFile, destinationFolder));
+		// -o+ = Overwrite
+		// -i1 = Display progress info only
+		proc.start(string.Format("e -o+ -i1 \"{0}\" -dp\"{1}\"", inputFile, destinationFolder));
 		
 		return true;
 	}// -----------------------------------------
@@ -100,7 +107,6 @@ class FreeArc : AbArchiver
 	/// </summary>
 	/// <param name="files"></param>
 	/// <param name="archive"></param>
-	/// <returns></returns>
 	public bool appendFiles(string[] files, string archive)
 	{
 		if(!File.Exists(archive))
@@ -131,6 +137,9 @@ class FreeArc : AbArchiver
 	public override bool extractFiles(string inputFile, string[] listOfFiles, string destinationFolder = null)
 	{		
 		progress = 0;
+		flag_is_capturing = false;
+		capt_off_switch = "Extracted";
+
 		if(destinationFolder==null) {
 			destinationFolder = Path.GetDirectoryName(inputFile);
 		}
@@ -142,10 +151,44 @@ class FreeArc : AbArchiver
 
 		LOG.log("[ARC] : Extracting '{0}' files:[{2}] into '{1}'", inputFile, destinationFolder,filesStr);
 
-		proc.start(string.Format("e -o+ \"{0}\" {2} -dp\"{1}\"", inputFile, destinationFolder, filesStr));
+		proc.start(string.Format("e -o+ -i1 \"{0}\" {2} -dp\"{1}\"", inputFile, destinationFolder, filesStr));
 		return true;
 	}// -----------------------------------------
 
+	// CAPTURING STDOUT WORD BY WORD
+	// -------------------------------
+
+
+	// Read words
+	string capt_on_switch = "Processed"; // Same for all operations
+	string capt_off_switch; // "Compressed" or "Extracted".
+	bool flag_is_capturing; // Always start with false
+	// --
+	private void onStdOutWordGetProgress(string word)
+	{
+		if(flag_is_capturing)
+		{
+			if(word==capt_off_switch){
+				flag_is_capturing = false;
+				return;
+			}
+		}else
+		{
+			if(word==capt_on_switch){
+				flag_is_capturing = true;
+			}
+
+			return; // Either not capturing, or just began to capture
+		}
+
+		// Is capturing ::
+		float fp;
+		if(float.TryParse(word.Split('%')[0],out fp)) 
+		{
+			int p = (int)System.Math.Round(fp);
+			if(p>progress) progress = p;
+		}
+	}// -----------------------------------------
 
 }// -- end class
 }// -- end namespace

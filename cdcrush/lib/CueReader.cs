@@ -225,6 +225,8 @@ public class CueReader
 
 			if (tr.trackFile == null) continue;
 
+			// --> Is a track with an associated file.
+
 			cc++;
 
 			tr.workingFile = Path.Combine(loadedFile_dir, tr.trackFile);
@@ -465,7 +467,7 @@ public class CueReader
 // --
 	public void convertMultiToSingle()
 	{
-		// TODO:
+		throw new Exception("not implemented");
 	}// -----------------------------------------
 
 
@@ -857,7 +859,8 @@ public class CueTrack
 	// --
 	public override string ToString()
 	{
-		return String.Format(@"Track No:{0:00} | TYPE:{1} | SecStart:{2} | SecLen:{3} | Size:{4} | MD5:{5}", trackNo, trackType, sectorStart, sectorSize,byteSize,md5);
+		//return String.Format(@"Track No:{0:00} | TYPE:{1} | SecStart:{2} | SecLen:{3} | Size:{4} | MD5:{5}", trackNo, trackType, sectorStart, sectorSize,byteSize,md5);
+		return $"NO:{trackNo:00}  TYPE:{trackType} SECTORS:{sectorSize} SIZE:{byteSize} MD5:{md5}";
 	}// -----------------------------------------
 
 }// -- end CueTrack

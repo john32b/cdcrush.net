@@ -27,6 +27,7 @@ class TaskCutTrackFiles:cdcrush.lib.task.CTask
 	}// -----------------------------------------
 
 	// --
+	// Gets called regardless of number of tracks:
 	public override void start()
 	{
 		base.start();
@@ -35,14 +36,23 @@ class TaskCutTrackFiles:cdcrush.lib.task.CTask
 		CueReader cd = jobData.cd;
 		input = cd.tracks[0].workingFile;
 
-		// Gets called regardless of number of tracks:
-		// --
+		// No need to cut an already cut CD
+		// Multifiles `workingfile` is already set to proper
 		if(cd.MULTIFILE)
 		{
-			// No need to cut tracks, if they are already cut
 			complete();
 			return;
 		}
+
+		// No need to copy the bytes to the temp folder, just work from the source
+		if(cd.tracks.Count==1)
+		{
+			complete();
+			return;
+		}
+
+
+		int progressStep = (int)Math.Round((double) (100 / cd.tracks.Count));
 
 		// -- Cut the tracks ::
 
@@ -60,6 +70,7 @@ class TaskCutTrackFiles:cdcrush.lib.task.CTask
 			FileStream outStr = new FileStream(track.workingFile, FileMode.CreateNew, FileAccess.Write);
 			copyStream(inStr,outStr,byteStart,byteLen);
 			outStr.Dispose();
+			PROGRESS += progressStep;
 		}// --
 
 		inStr.Dispose();

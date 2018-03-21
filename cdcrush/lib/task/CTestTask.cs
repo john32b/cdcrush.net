@@ -9,36 +9,26 @@ namespace cdcrush.lib.task
 /// </summary>
 class CTestTask:CTask
 {
-
 	Timer timer;
 	
 	// --
-	public CTestTask(string Name="TestTask", float time=2000, int steps=10)
+	public CTestTask(string Name="TestTask", float time=2000, int steps=10,bool reportsProgress=true):base(null,Name)
 	{
 		float every = time / steps;
 		int progressInc = (int) Math.Ceiling(100.0f/steps);
 		int triggers = 0;
 		
-		name = Name;
-
 		timer = new Timer(every);
 		timer.Elapsed += (s, a) =>
 		{
 			triggers++;
-			if(triggers == steps)
-			{
+			if(triggers == steps) {
 				complete();
 			}else{
 				PROGRESS += progressInc;
 			}
 		};
-	}// -----------------------------------------
-
-	// --
-	public override void kill()
-	{
-		timer.Dispose();
-		base.kill();
+		killExtra = ()=> timer.Stop();
 	}// -----------------------------------------
 
 	// --
@@ -47,7 +37,6 @@ class CTestTask:CTask
 		base.start();
 		timer.Start();
 	}// -----------------------------------------
-
 
 }// --
 }// --

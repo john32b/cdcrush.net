@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "CDCRUSH";
-		public const string PROGRAM_VERSION = "1.2.3";
+		public const string PROGRAM_VERSION = "1.2.4";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -61,6 +61,7 @@ namespace cdcrush.prog
 
 		// Lock any user interaction with the engine, allow only one operation at a time
 		// NOTE: This is temporary, as more than one jobs are more than capable to exist
+		// NOTE: Also means that the engine is currently working
 		public static bool LOCKED { get; private set; }
 
 		// In addition to the completion callbacks, set this to get status reports
@@ -74,6 +75,11 @@ namespace cdcrush.prog
 
 		// --
 		private static bool isInited = false;
+
+		// Hacky way of pushing number of expected tracks on the jobs.
+		// MUST BE SET RIGHT BEFORE CREATING AJOB.
+		// Until I implement progress reporting in a better way, this works fine.
+		public static int HACK_CD_TRACKS=0;
 		// -----------------------------------------
 
 		// :: AUDIO QUALITY ::
@@ -82,15 +88,9 @@ namespace cdcrush.prog
 		public static readonly string[] AUDIO_CODECS = {
 			"FLAC",
 			"Ogg Vorbis",
-			"Ogg Opus"
+			"Ogg Opus",
+			"MP3"
 		};
-
-		// The quality options for encoding with OPUS OGG
-		public static readonly int[] OPUS_QUALITY = { 32, 48, 64, 80, 96, 112, 128, 160, 320};
-
-		// The quality options for encoding with VORBIS OGG
-		// Ogg vorbis Quality Number to kbps.
-		public static readonly int[] VORBIS_QUALITY = { 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500 };
 
 		// -----------------------------------
 
@@ -138,8 +138,9 @@ namespace cdcrush.prog
 		/// Sets and Checks a new FFMPEG PATH
 		/// </summary>
 		/// <param name="ffmpeg_path">Folder FFMPEG is in,</param>
-		public static void setFFMPEGPath(string ffmpeg_path = "")
+		public static void setFFMPEGPath(string ffmpeg_path = null)
 		{
+			if(ffmpeg_path == null) ffmpeg_path = "";
 			if(CliApp.exists(Path.Combine(ffmpeg_path,FFMPEG_EXE)))
 			{
 				FFMPEG_OK = true;
@@ -196,10 +197,13 @@ namespace cdcrush.prog
 				case 0:	// FLAC;
 					break;
 				case 1: // VORBIS
-					res += $" {VORBIS_QUALITY[A.Item2]}k Vbr";
+					res += $" {FFmpeg.VORBIS_QUALITY[A.Item2]}k Vbr";
 					break;
 				case 2: // OPUS
-					res += $" {OPUS_QUALITY[A.Item2]}k Vbr";
+					res += $" {FFmpeg.OPUS_QUALITY[A.Item2]}k Vbr";
+					break;
+				case 3: // MP3
+					res += $" {FFmpeg.MP3_QUALITY[A.Item2]}k Vbr";
 					break;
 			}
 
@@ -228,6 +232,7 @@ namespace cdcrush.prog
 				par.outputDir = _Output;
 				par.audioQuality = _Audio;
 				par.cdTitle = _Title;
+				par.expectedTracks = HACK_CD_TRACKS;	// Don't pollute the function parameters
 
 			var j = new JobConvertCue(par);
 				j.MAX_CONCURRENT = MAX_TASKS;
@@ -269,6 +274,7 @@ namespace cdcrush.prog
 				par.cover = _Cover;
 				par.cdTitle = _Title;
 				par.compressionLevel = compressionLevel;
+				par.expectedTracks = HACK_CD_TRACKS;	// Don't pollute the function parameters
 
 			var j = new JobCrush(par);
 				j.MAX_CONCURRENT = MAX_TASKS;
@@ -312,7 +318,8 @@ namespace cdcrush.prog
 				outputDir = _Output,    // Checked in the JOB
 				flag_folder = flag_folder,
 				flag_forceSingle = flag_forceSingle,
-				flag_encCue = flag_encCue 
+				flag_encCue = flag_encCue,
+				expectedTracks = HACK_CD_TRACKS
 			};
 
 			var j = new JobRestore(par);
@@ -397,6 +404,7 @@ namespace cdcrush.prog
 
 				if(success) // OK
 				{
+
 					// Continue
 					var cd = new CueReader();
 					if(!cd.loadJson(Path.Combine(TEMP_FOLDER,CDCRUSH_SETTINGS)))
@@ -456,6 +464,34 @@ namespace cdcrush.prog
 			}
 
 			return true;
+		}// -----------------------------------------
+
+		/// <summary>
+		/// Check if path exists and create it
+		/// If it exists, rename it to a new safe name, then return the new name
+		/// </summary>
+		/// <returns></returns>
+		public static string checkCreateUniqueOutput(string partA, string partB = "")
+		{
+			string path;
+
+			// -
+			try{
+				path = Path.Combine(partA, partB);
+			}catch(ArgumentException) {
+				return null;
+			}
+
+			// Get unique path
+			while(Directory.Exists(path)) {
+				path = path + "_";
+			}
+			// Path now is unique
+			if(!FileTools.createDirectory(path)) {
+				return null;
+			}
+			// Path is created OK
+			return path;
 		}// -----------------------------------------
 
 	}// --

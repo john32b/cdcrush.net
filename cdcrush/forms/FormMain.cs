@@ -1,6 +1,7 @@
 ﻿using cdcrush.lib;
 using cdcrush.lib.task;
 using cdcrush.prog;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -44,6 +45,9 @@ public partial class FormMain : Form
 	// If true, will clear the status at the next tab change. accessible from everywhere
 	public static bool FLAG_CLEAR_STATUS = false;
 
+	// Keep the window title
+	string windowTitle;
+
 	// =========================================================
 	// --
 	public FormMain() 
@@ -58,6 +62,16 @@ public partial class FormMain : Form
 	// --
 	private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
 	{
+		// --To cancel. e.cancel = true
+
+		if(CDCRUSH.LOCKED)
+		{
+			if(!FormTools.PopupYesNo("An operation is in progress, really quit?","Confirm"))
+			{
+				e.Cancel = true;
+			}
+		}
+			
 		Properties.Settings.Default.Save();
 		CDCRUSH.kill();
 	}// -----------------------------------------
@@ -78,7 +92,8 @@ public partial class FormMain : Form
 		form_setText("Ready.", 1);
 
 		// - Set Infos tab
-		this.Text = CDCRUSH.PROGRAM_NAME + "  v" + CDCRUSH.PROGRAM_VERSION;
+		windowTitle = CDCRUSH.PROGRAM_NAME + "  v" + CDCRUSH.PROGRAM_VERSION;
+		this.Text = windowTitle;
 
 		// - Links
 		info_ver.Text = CDCRUSH.PROGRAM_VERSION;
@@ -113,6 +128,7 @@ public partial class FormMain : Form
 		#if (!DEBUG)
 			group_debug.Visible = false;
 		#endif
+
 	}// -----------------------------------------
 
 
@@ -222,19 +238,26 @@ public partial class FormMain : Form
 			{
 				progressBar1.Style = ProgressBarStyle.Marquee;
 				progressBar1.MarqueeAnimationSpeed = 15;
+				TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate);
 				return;
 			}
 			else
 				if (per == 0)
 				{
 					progressBar1.Style = ProgressBarStyle.Blocks;
+					progressBar1.Value = per;
+					this.Text = windowTitle;
+					TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
+					TaskbarManager.Instance.SetProgressValue(0,100);
+				}else
+				{
+					if (per > 100) per = 100;
+					progressBar1.Value = per;
+					this.Text =  $"[{per}%] " + windowTitle;
+					TaskbarManager.Instance.SetProgressValue(per,100);
 				}
-
-				else if (per > 100) per = 100;
-
-			progressBar1.Value = per;
-
 		});
+
 	}// -----------------------------------------
 
 
@@ -242,7 +265,7 @@ public partial class FormMain : Form
 	// == EVENTS
 	// ============================================================
 
-	
+	private string lastTaskName="";
 	/// <summary>
 	/// Generic progress report of any CJob type object
 	/// Changes progress bar and sets simple status messages
@@ -253,36 +276,43 @@ public partial class FormMain : Form
 	{
 		switch(s)
 		{
-			case CJobStatus.taskStart:
-
-				if(j.TASK_LAST.PROGRESS_UNKNOWN) {
-					form_setProgress(-1);
-					// ("PROGRESS BAR WORKING-----------");
-				}
-
-				if (string.IsNullOrEmpty(j.TASK_LAST.desc))
-					form_setText(j.TASK_LAST.name, 0);
-				else
-					form_setText(j.TASK_LAST.desc, 0);
+			case CJobStatus.start:
+				lastTaskName = null;
 				break;
 
-			case CJobStatus.taskEnd:
+			case CJobStatus.taskStart:
 
-				if(j.TASK_LAST.PROGRESS_UNKNOWN) {
-					form_setProgress(0); // Restore the progress bar to normal 
-				}else{
-					form_setProgress(j.TASKS_COMPLETION_PERCENT);
+				if(j.TASK_LAST.FLAG_PROGRESS_DISABLE) {
+					lastTaskName = null;
+					return;
 				}
 
+				if(!string.IsNullOrEmpty(j.TASK_LAST.desc)) {
+					lastTaskName = j.TASK_LAST.desc;
+				}else{
+					lastTaskName = j.TASK_LAST.name;
+				}
+
+				form_setText(lastTaskName, 0);
+				break;
+
+			case CJobStatus.progress:
+				form_setProgress((int)Math.Ceiling(j.PROGRESS_TOTAL));
+				form_setText($"[{j.PROGRESS_TOTAL.ToString("0.#")}%] {lastTaskName}", 0);
 				break;
 
 			case CJobStatus.complete:
-				form_setText(j.name + " complete ", 2);
+				form_setText(j.name + " Complete ", 2);
+				form_setProgress(100);
 				FLAG_CLEAR_STATUS = true;
+				FormTools.invoke(this,()=>{
+					TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
+					FormTools.FlashWindow(this.Handle);
+				});
 				break;
 
 			case CJobStatus.fail:
-				form_setText(j.name + " failed ", 3);
+				form_setText(j.name + " Failed ", 3);
 				FLAG_CLEAR_STATUS = true;
 				break;
 		}
@@ -298,6 +328,7 @@ public partial class FormMain : Form
 		if(FLAG_CLEAR_STATUS)
 		{
 			form_setProgress(0);
+			TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
 			form_setText("Ready", 1);
 			FLAG_CLEAR_STATUS = false;
 		}
@@ -402,5 +433,14 @@ public partial class FormMain : Form
 
 		CDCRUSH.FLAG_KEEP_TEMP = chk_keepTemp.Checked;
 	}// -----------------------------------------
-	}// end class
-}// --
+
+
+	// --
+	private void btn_toolsTest_Click(object sender, EventArgs e)
+	{
+		var f = new FormComponentsTest();
+			f.ShowDialog();
+	}// -----------------------------------------
+
+}// -- end class
+}// -- end namespace

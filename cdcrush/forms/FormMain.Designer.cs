@@ -44,11 +44,10 @@
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabRestore = new System.Windows.Forms.TabPage();
-			this.panelRestore1 = new cdcrush.forms.PanelRestore();
 			this.tabCrush = new System.Windows.Forms.TabPage();
-			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			this.tabSettings = new System.Windows.Forms.TabPage();
 			this.group_debug = new System.Windows.Forms.GroupBox();
+			this.btn_toolsTest = new System.Windows.Forms.Button();
 			this.chk_keepTemp = new System.Windows.Forms.CheckBox();
 			this.info_ffmpeg_status = new System.Windows.Forms.Label();
 			this.num_threads = new System.Windows.Forms.NumericUpDown();
@@ -62,6 +61,8 @@
 			this.link_donate = new System.Windows.Forms.LinkLabel();
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
+			this.panelRestore1 = new cdcrush.forms.PanelRestore();
+			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -195,6 +196,7 @@
 			this.info_status.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.info_status.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.info_status.Enabled = false;
 			this.info_status.Location = new System.Drawing.Point(12, 402);
 			this.info_status.Name = "info_status";
 			this.info_status.ReadOnly = true;
@@ -239,18 +241,10 @@
 			this.tabRestore.Location = new System.Drawing.Point(4, 25);
 			this.tabRestore.Name = "tabRestore";
 			this.tabRestore.Padding = new System.Windows.Forms.Padding(3);
-			this.tabRestore.Size = new System.Drawing.Size(459, 325);
+			this.tabRestore.Size = new System.Drawing.Size(459, 330);
 			this.tabRestore.TabIndex = 0;
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
-			// 
-			// panelRestore1
-			// 
-			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
-			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(453, 319);
-			this.panelRestore1.TabIndex = 0;
 			// 
 			// tabCrush
 			// 
@@ -263,14 +257,6 @@
 			this.tabCrush.TabIndex = 1;
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
-			// 
-			// panelCompress1
-			// 
-			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
-			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(453, 324);
-			this.panelCompress1.TabIndex = 0;
 			// 
 			// tabSettings
 			// 
@@ -288,7 +274,7 @@
 			this.tabSettings.Controls.Add(this.info_tempFolder);
 			this.tabSettings.Location = new System.Drawing.Point(4, 25);
 			this.tabSettings.Name = "tabSettings";
-			this.tabSettings.Size = new System.Drawing.Size(459, 358);
+			this.tabSettings.Size = new System.Drawing.Size(459, 330);
 			this.tabSettings.TabIndex = 2;
 			this.tabSettings.Text = "Settings";
 			this.tabSettings.UseVisualStyleBackColor = true;
@@ -297,6 +283,7 @@
 			// 
 			this.group_debug.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.group_debug.Controls.Add(this.btn_toolsTest);
 			this.group_debug.Controls.Add(this.chk_keepTemp);
 			this.group_debug.Location = new System.Drawing.Point(3, 212);
 			this.group_debug.Name = "group_debug";
@@ -304,6 +291,16 @@
 			this.group_debug.TabIndex = 8;
 			this.group_debug.TabStop = false;
 			this.group_debug.Text = "Debugging";
+			// 
+			// btn_toolsTest
+			// 
+			this.btn_toolsTest.Location = new System.Drawing.Point(117, 27);
+			this.btn_toolsTest.Name = "btn_toolsTest";
+			this.btn_toolsTest.Size = new System.Drawing.Size(75, 23);
+			this.btn_toolsTest.TabIndex = 7;
+			this.btn_toolsTest.Text = "Tools Test";
+			this.btn_toolsTest.UseVisualStyleBackColor = true;
+			this.btn_toolsTest.Click += new System.EventHandler(this.btn_toolsTest_Click);
 			// 
 			// chk_keepTemp
 			// 
@@ -429,7 +426,7 @@
 			this.tabInfo.Controls.Add(label1);
 			this.tabInfo.Location = new System.Drawing.Point(4, 25);
 			this.tabInfo.Name = "tabInfo";
-			this.tabInfo.Size = new System.Drawing.Size(459, 358);
+			this.tabInfo.Size = new System.Drawing.Size(459, 330);
 			this.tabInfo.TabIndex = 3;
 			this.tabInfo.Text = "Info";
 			this.tabInfo.UseVisualStyleBackColor = true;
@@ -464,6 +461,22 @@
 			this.info_ver.TabIndex = 1;
 			this.info_ver.Text = "0.0";
 			// 
+			// panelRestore1
+			// 
+			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
+			this.panelRestore1.Name = "panelRestore1";
+			this.panelRestore1.Size = new System.Drawing.Size(453, 324);
+			this.panelRestore1.TabIndex = 0;
+			// 
+			// panelCompress1
+			// 
+			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
+			this.panelCompress1.Name = "panelCompress1";
+			this.panelCompress1.Size = new System.Drawing.Size(453, 324);
+			this.panelCompress1.TabIndex = 0;
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -478,6 +491,7 @@
 			this.MinimumSize = new System.Drawing.Size(502, 420);
 			this.Name = "FormMain";
 			this.Text = "CDCRUSH";
+			this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
 			this.Load += new System.EventHandler(this.FormMain_Load);
 			this.tabControl1.ResumeLayout(false);
@@ -518,5 +532,6 @@
 		private System.Windows.Forms.LinkLabel link_donate;
 		private System.Windows.Forms.GroupBox group_debug;
 		private System.Windows.Forms.CheckBox chk_keepTemp;
+		private System.Windows.Forms.Button btn_toolsTest;
 	}
 }

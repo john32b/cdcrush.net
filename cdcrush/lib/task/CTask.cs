@@ -30,21 +30,25 @@ public class CTask
 	// Task Description
 	public string desc {get; set;}
 
-	// CJob sets this
-	// SYNC tasks run by themselves while no other task is running on the Job
-	// ASYNC tasks can run in parallel with other ASYNC tasks on the Job
-	internal bool async = false;
-
 	// Current progress from 0 to 100
 	int progress_percent = 0;
+
+	// Set this to autopush updates
 	public int PROGRESS {
 		get { return progress_percent; }
 		set{
 			progress_percent = value;
-			onStatus(CTaskStatus.progress, this);
+			if(progress_percent>100) progress_percent = 100;
+			if(!FLAG_PROGRESS_DISABLE) onStatus(CTaskStatus.progress, this);
 		}
-	}
+	}//--
 
+	// If true will not report progress or count towards job progress
+	// Useful for small tasks that start and end instantaneously
+	public bool FLAG_PROGRESS_DISABLE = false;
+
+	// Custom flag, handled by user
+	public bool FLAG_PROGRESS_UKNOWN = false;
 
 	// Current lifecycle step
 	public CTaskStatus status;
@@ -72,15 +76,23 @@ public class CTask
 	// Pointer to the Job holding this task
 	internal CJob parent;
 
+	// CJob sets this
+	// SYNC tasks run by themselves while no other task is running on the Job
+	// ASYNC tasks can run in parallel with other ASYNC tasks on the Job
+	internal bool async = false;
+
 	// -- Data
 	// Pointer to JOB's shared data object
 	public dynamic jobData { 
 		get { return parent.jobData; }
 	}
+
 	// Data read from the previous task
 	internal object dataGet;
+
 	// Data to send to the next task
 	internal object dataSend = null;
+
 	// Data that is unique to the task, perhaps you might need this sometimes
 	public object custom = null;
 
@@ -92,25 +104,25 @@ public class CTask
 	// [1] is Error Message
 	public string[] ERROR {get; private set;}
 
-	// # USER SET
-	// Custom var works if you want to know when a task doesn't report progress or
-	// if not all tasks have been added yet, etc.
-	public bool PROGRESS_UNKNOWN;
-
 	/// <summary>
 	/// Create a Task for use in a CJob manager
 	/// </summary>
 	/// <param name="Qrun">If you want to create a quick task without extending it</param>
 	/// <param name="Name">Optional task name, used for logging</param>
-	/// <param name="extraData">Optional extra data</param>
-	public CTask(Action<CTask> Qrun=null, string Name=null, bool unknown=false)
+	public CTask(Action<CTask> Qrun=null, string Name=null)
 	{
 		uid = ++UID;
 		name = Name ?? string.Format("task_{0}", uid);
 		desc = "";
 		quick_run = Qrun;
 		status = CTaskStatus.waiting;
-		PROGRESS_UNKNOWN = unknown;
+		
+		if(name.StartsWith("-"))	// NO PROGRESS
+		{
+			FLAG_PROGRESS_DISABLE = true;
+			name = name.Substring(1);
+		}
+
 	}// -----------------------------------------
 
 	// # USER EXTEND
@@ -119,7 +131,7 @@ public class CTask
 	{
 		status = CTaskStatus.start;
 		onStatus(CTaskStatus.start, this);
-		PROGRESS = 0;
+		PROGRESS = 0; // Make sure you call this after pushing the "start" event
 		quick_run?.Invoke(this);
 	}// -----------------------------------------
 
@@ -154,13 +166,13 @@ public class CTask
 	/// <param name="str"></param>
 	public void log(string str)
 	{
-		LOG.log("[CTASK] ({0}) : {1}", name, str);
+		LOG.log("[CTASK] ({0}): {1}", name, str);
 	}// -----------------------------------------
 
 	// --
 	public override string ToString()
 	{
-		return string.Format("uid:{2} | name:{0} | desc:{1}", name, desc, uid);
+		return string.Format("uid:{2}, name:{0}, desc:{1}", name, desc, uid);
 	}// -----------------------------------------
 	
 	/// <summary>

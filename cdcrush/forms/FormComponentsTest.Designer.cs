@@ -28,22 +28,106 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.button1 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.label3 = new System.Windows.Forms.Label();
-			this.button5 = new System.Windows.Forms.Button();
-			this.button6 = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
-			this.button3 = new System.Windows.Forms.Button();
-			this.button4 = new System.Windows.Forms.Button();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+			System.Windows.Forms.GroupBox groupBox1;
+			this.btn_join = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
-			this.button7 = new System.Windows.Forms.Button();
-			this.join_files = new System.Windows.Forms.TextBox();
-			this.tableLayoutPanel1.SuspendLayout();
+			this.label2 = new System.Windows.Forms.Label();
+			this.btn_ecm = new System.Windows.Forms.Button();
+			this.btn_unecm = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
+			this.button2 = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
+			this.btn_unarc = new System.Windows.Forms.Button();
+			this.btn_arc = new System.Windows.Forms.Button();
+			this.label3 = new System.Windows.Forms.Label();
+			this.txt_files = new System.Windows.Forms.TextBox();
+			this.textbox_log = new System.Windows.Forms.TextBox();
+			this.label5 = new System.Windows.Forms.Label();
+			tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			groupBox1 = new System.Windows.Forms.GroupBox();
+			tableLayoutPanel1.SuspendLayout();
+			groupBox1.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// tableLayoutPanel1
+			// 
+			tableLayoutPanel1.ColumnCount = 3;
+			tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78F));
+			tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 44.44444F));
+			tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55.55556F));
+			tableLayoutPanel1.Controls.Add(this.btn_join, 1, 3);
+			tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
+			tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
+			tableLayoutPanel1.Controls.Add(this.btn_ecm, 1, 1);
+			tableLayoutPanel1.Controls.Add(this.btn_unecm, 2, 1);
+			tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+			tableLayoutPanel1.Controls.Add(this.button2, 2, 0);
+			tableLayoutPanel1.Controls.Add(this.button1, 1, 0);
+			tableLayoutPanel1.Controls.Add(this.btn_unarc, 2, 2);
+			tableLayoutPanel1.Controls.Add(this.btn_arc, 1, 2);
+			tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+			tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+			tableLayoutPanel1.Name = "tableLayoutPanel1";
+			tableLayoutPanel1.RowCount = 4;
+			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			tableLayoutPanel1.Size = new System.Drawing.Size(223, 147);
+			tableLayoutPanel1.TabIndex = 2;
+			// 
+			// btn_join
+			// 
+			this.btn_join.Location = new System.Drawing.Point(81, 111);
+			this.btn_join.Name = "btn_join";
+			this.btn_join.Size = new System.Drawing.Size(49, 28);
+			this.btn_join.TabIndex = 9;
+			this.btn_join.Text = "JOIN";
+			this.btn_join.UseVisualStyleBackColor = true;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label4.Location = new System.Drawing.Point(3, 108);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(35, 13);
+			this.label4.TabIndex = 8;
+			this.label4.Text = "JOIN";
+			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(3, 36);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(33, 13);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "ECM";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// btn_ecm
+			// 
+			this.btn_ecm.Location = new System.Drawing.Point(81, 39);
+			this.btn_ecm.Name = "btn_ecm";
+			this.btn_ecm.Size = new System.Drawing.Size(49, 28);
+			this.btn_ecm.TabIndex = 3;
+			this.btn_ecm.Text = "ecm";
+			this.btn_ecm.UseVisualStyleBackColor = true;
+			this.btn_ecm.Click += new System.EventHandler(this.btn_ecm_Click);
+			// 
+			// btn_unecm
+			// 
+			this.btn_unecm.Location = new System.Drawing.Point(145, 39);
+			this.btn_unecm.Name = "btn_unecm";
+			this.btn_unecm.Size = new System.Drawing.Size(58, 28);
+			this.btn_unecm.TabIndex = 4;
+			this.btn_unecm.Text = "unEcm";
+			this.btn_unecm.UseVisualStyleBackColor = true;
+			this.btn_unecm.Click += new System.EventHandler(this.btn_unecm_Click);
 			// 
 			// label1
 			// 
@@ -56,166 +140,111 @@
 			this.label1.Text = "FFMPEG";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(123, 3);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(58, 28);
-			this.button1.TabIndex = 1;
-			this.button1.Text = "toOGG";
-			this.button1.UseVisualStyleBackColor = true;
-			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(205, 3);
+			this.button2.Location = new System.Drawing.Point(145, 3);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(58, 28);
 			this.button2.TabIndex = 1;
 			this.button2.Text = "toPCM";
 			this.button2.UseVisualStyleBackColor = true;
 			// 
-			// tableLayoutPanel1
+			// button1
 			// 
-			this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.tableLayoutPanel1.ColumnCount = 3;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.29167F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 57.70833F));
-			this.tableLayoutPanel1.Controls.Add(this.join_files, 2, 3);
-			this.tableLayoutPanel1.Controls.Add(this.button7, 1, 3);
-			this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
-			this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
-			this.tableLayoutPanel1.Controls.Add(this.button5, 0, 2);
-			this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.button3, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.button4, 2, 1);
-			this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.button2, 2, 0);
-			this.tableLayoutPanel1.Controls.Add(this.button1, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.button6, 2, 2);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 4;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(480, 136);
-			this.tableLayoutPanel1.TabIndex = 2;
+			this.button1.Location = new System.Drawing.Point(81, 3);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(49, 28);
+			this.button1.TabIndex = 1;
+			this.button1.Text = "toOGG";
+			this.button1.UseVisualStyleBackColor = true;
+			// 
+			// btn_unarc
+			// 
+			this.btn_unarc.Location = new System.Drawing.Point(145, 75);
+			this.btn_unarc.Name = "btn_unarc";
+			this.btn_unarc.Size = new System.Drawing.Size(58, 28);
+			this.btn_unarc.TabIndex = 7;
+			this.btn_unarc.Text = "unARC";
+			this.btn_unarc.UseVisualStyleBackColor = true;
+			this.btn_unarc.Click += new System.EventHandler(this.btn_unarc_Click);
+			// 
+			// btn_arc
+			// 
+			this.btn_arc.Location = new System.Drawing.Point(81, 75);
+			this.btn_arc.Name = "btn_arc";
+			this.btn_arc.Size = new System.Drawing.Size(49, 28);
+			this.btn_arc.TabIndex = 6;
+			this.btn_arc.Text = "toARC";
+			this.btn_arc.UseVisualStyleBackColor = true;
+			this.btn_arc.Click += new System.EventHandler(this.btn_arc_Click);
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
 			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label3.Location = new System.Drawing.Point(3, 68);
+			this.label3.Location = new System.Drawing.Point(3, 72);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(32, 13);
 			this.label3.TabIndex = 5;
 			this.label3.Text = "ARC";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// button5
+			// groupBox1
 			// 
-			this.button5.Location = new System.Drawing.Point(123, 71);
-			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(58, 28);
-			this.button5.TabIndex = 6;
-			this.button5.Text = "toARC";
-			this.button5.UseVisualStyleBackColor = true;
+			groupBox1.Controls.Add(tableLayoutPanel1);
+			groupBox1.Location = new System.Drawing.Point(12, 12);
+			groupBox1.Name = "groupBox1";
+			groupBox1.Size = new System.Drawing.Size(229, 166);
+			groupBox1.TabIndex = 5;
+			groupBox1.TabStop = false;
+			groupBox1.Text = "Tools";
 			// 
-			// button6
+			// txt_files
 			// 
-			this.button6.Location = new System.Drawing.Point(205, 71);
-			this.button6.Name = "button6";
-			this.button6.Size = new System.Drawing.Size(58, 28);
-			this.button6.TabIndex = 7;
-			this.button6.Text = "unARC";
-			this.button6.UseVisualStyleBackColor = true;
-			this.button6.Click += new System.EventHandler(this.button6_Click);
+			this.txt_files.Location = new System.Drawing.Point(250, 44);
+			this.txt_files.Name = "txt_files";
+			this.txt_files.Size = new System.Drawing.Size(246, 20);
+			this.txt_files.TabIndex = 4;
+			this.txt_files.Click += new System.EventHandler(this.txt_files_TextChanged);
 			// 
-			// label2
+			// textbox_log
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(3, 34);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(33, 13);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "ECM";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// button3
-			// 
-			this.button3.Location = new System.Drawing.Point(123, 37);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(58, 28);
-			this.button3.TabIndex = 3;
-			this.button3.Text = "ecm";
-			this.button3.UseVisualStyleBackColor = true;
-			// 
-			// button4
-			// 
-			this.button4.Location = new System.Drawing.Point(205, 37);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(58, 28);
-			this.button4.TabIndex = 4;
-			this.button4.Text = "unEcm";
-			this.button4.UseVisualStyleBackColor = true;
-			this.button4.Click += new System.EventHandler(this.button4_Click);
-			// 
-			// textBox1
-			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.textbox_log.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.Location = new System.Drawing.Point(12, 226);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(480, 208);
-			this.textBox1.TabIndex = 3;
+			this.textbox_log.Location = new System.Drawing.Point(12, 184);
+			this.textbox_log.Multiline = true;
+			this.textbox_log.Name = "textbox_log";
+			this.textbox_log.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.textbox_log.Size = new System.Drawing.Size(480, 250);
+			this.textbox_log.TabIndex = 3;
 			// 
-			// label4
+			// label5
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label4.Location = new System.Drawing.Point(3, 102);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(35, 13);
-			this.label4.TabIndex = 8;
-			this.label4.Text = "JOIN";
-			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// button7
-			// 
-			this.button7.Location = new System.Drawing.Point(123, 105);
-			this.button7.Name = "button7";
-			this.button7.Size = new System.Drawing.Size(58, 28);
-			this.button7.TabIndex = 9;
-			this.button7.Text = "JOIN";
-			this.button7.UseVisualStyleBackColor = true;
-			this.button7.Click += new System.EventHandler(this.button7_Click);
-			// 
-			// join_files
-			// 
-			this.join_files.Location = new System.Drawing.Point(205, 105);
-			this.join_files.Name = "join_files";
-			this.join_files.Size = new System.Drawing.Size(272, 20);
-			this.join_files.TabIndex = 4;
-			this.join_files.Click += new System.EventHandler(this.join_files_Click);
+			this.label5.AutoSize = true;
+			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label5.Location = new System.Drawing.Point(247, 28);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(73, 13);
+			this.label5.TabIndex = 6;
+			this.label5.Text = "Select Files";
 			// 
 			// FormComponentsTest
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(508, 446);
-			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.tableLayoutPanel1);
+			this.Controls.Add(this.label5);
+			this.Controls.Add(this.txt_files);
+			this.Controls.Add(groupBox1);
+			this.Controls.Add(this.textbox_log);
 			this.Name = "FormComponentsTest";
 			this.Text = "FormComponentsTest";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormComponentsTest_FormClosing);
 			this.Load += new System.EventHandler(this.FormComponentsTest_Load);
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
+			tableLayoutPanel1.ResumeLayout(false);
+			tableLayoutPanel1.PerformLayout();
+			groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -226,16 +255,16 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button button3;
-		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.Button btn_ecm;
+		private System.Windows.Forms.Button btn_unecm;
+		private System.Windows.Forms.TextBox textbox_log;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Button button5;
-		private System.Windows.Forms.Button button6;
-		private System.Windows.Forms.TextBox join_files;
-		private System.Windows.Forms.Button button7;
+		private System.Windows.Forms.Button btn_arc;
+		private System.Windows.Forms.Button btn_unarc;
+		private System.Windows.Forms.TextBox txt_files;
+		private System.Windows.Forms.Button btn_join;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label5;
 	}
 }

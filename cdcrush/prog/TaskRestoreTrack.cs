@@ -18,8 +18,6 @@ class TaskRestoreTrack : lib.task.CTask
 	RestoreParams p;
 	CueTrack track;
 
-	
-	bool isOgg = false;
 	bool isFlac = false;
 
 	string crushedTrackPath;  // Autocalculated
@@ -49,6 +47,7 @@ class TaskRestoreTrack : lib.task.CTask
 		{
 			var ecm = new EcmTools(CDCRUSH.TOOLS_PATH);
 			ecm.onComplete = (s) => {
+			ecm.onProgress = handleProgress;
 				if(s){
 					deleteOldFile();
 					if(!checkTrackMD5()) {
@@ -73,20 +72,20 @@ class TaskRestoreTrack : lib.task.CTask
 				return;
 			}
 
-			if(Path.GetExtension(track.storedFileName) == ".ogg") {
-				isOgg = true;
-			}else{
-				isFlac = true; // must be flac
-			}
+			// --
+			isFlac = (Path.GetExtension(track.storedFileName) == ".flac");
 
 			var ffmp = new FFmpeg(CDCRUSH.FFMPEG_PATH);
+			ffmp.onProgress = handleProgress;
 			ffmp.onComplete = (s) => {
 				if(s){
 					deleteOldFile(); // Don't need it
-					if(isOgg) {
+					if(!isFlac) {
+						// OGG and MP3 don't restore to the exact byte length
 						correctPCMSize();
-					}
-					if(isFlac) {
+					}else
+					{
+						// FLAC restores to exact bytes
 						if(!checkTrackMD5()){
 							fail(msg:"MD5 checksum is wrong!");
 							return;
@@ -104,6 +103,12 @@ class TaskRestoreTrack : lib.task.CTask
 
 		log("Restoring track -" + track.storedFileName);
 
+	}// -----------------------------------------
+
+	// --
+	void handleProgress(int p)
+	{
+		PROGRESS = p;
 	}// -----------------------------------------
 
 	// --

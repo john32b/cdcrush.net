@@ -15,6 +15,7 @@ public enum CJobStatus
 	complete,	// Job is complete
 	start,		// Job has just started
 	fail,		// Job has failed
+	progress,	// Job progress has been updated
 	taskStart,	// A New task has started
 	taskEnd		// A task has ended
 };
@@ -62,14 +63,14 @@ public class CJob
 	public int TASKS_TOTAL { get; private set; }	// # USER READ
 	// Number of completed tasks
 	public int TASKS_COMPLETE { get; private set; } // # USER READ
-	// Percentage of number of tasks completed
-	public int TASKS_COMPLETION_PERCENT {get; private set;} // # USER READ
+	// Number of tasks currently running
+	public int TASKS_RUNNING {get; private set;} // # USER READ
 
-	// The last task running, pointer
+	// The last task, pointer, usen on callbacks
 	public CTask TASK_LAST { get; private set; }	// # USER READ
 
 	// Currently active slots for ASYNC tasks.
-	bool[] slots;
+	bool[] slots_active;
 
 	// Holds all the tasks that are waiting to be executed
 	List<CTask> taskQueue;
@@ -96,6 +97,7 @@ public class CJob
 	//	waiting		:	Job hasn't started yet
 	//	complete	:	Job is complete
 	//	start		:	Job has just started
+	//  progress	:	Job progress % updates  (Read job.PROGRESS)
 	//  taskStart	:	A new task just started (Read job.TASK_LAST)
 	//  taskEnd		:	A task just ended		(Read job.TASK_LAST)
 	//	fail		:	Job has failed
@@ -106,7 +108,7 @@ public class CJob
 	// #USERSET  
 	// Called whenever the status changes
 	// A, status message :
-	//		run		:	The task has just started
+	//		start	:	The task has just started
 	//		progress:	The task progress has changed
 	//		complete:	The task has been completed
 	//		fail	:	The task has failed, see the ERROR field
@@ -121,6 +123,27 @@ public class CJob
 	// Keep track of whether the job is done and properly shutdown
 	private bool IS_KILLED = false;
 
+
+	// : NEW :
+	
+	// How much a task will contribute to the job progress %
+	// Can be #USERSET, if you want to hack it. Else it is autocalculated
+	float TASK_PROGRESS_RATIO;
+
+	// Store the progress of the currently ongoing tasks, (using slot index)
+	// -1 to indicate no progress, 0-100 for standard progress
+	int[] slots_progress;
+
+	// Progress % of past completed tasks. ! NOT TOTAL PROGRESS !
+	float TASKS_COMPLETED_PROGRESS;
+
+	// This is the REAL progress %
+	// Percentage of tasks completed
+	public float PROGRESS_TOTAL {get; private set;}
+
+	// ====================================================
+
+
 	// --
 	// Create a new Job handler for Custom Tasks
 	public CJob(string _name = null, object _taskData = null)
@@ -128,11 +151,13 @@ public class CJob
 		taskQueue = new List<CTask>();
 		currentTasks = new List<CTask>();
 		taskData = _taskData;
-		TASKS_TOTAL = 0;
 		name = _name ?? "Unnamed Job, " + DateTime.Now.ToString();
 		timer = new Stopwatch();
 		status = CJobStatus.waiting;
 		ERROR = new string[2];
+		TASKS_RUNNING = 0; TASKS_COMPLETE = 0; TASKS_TOTAL = 0;
+		TASKS_COMPLETED_PROGRESS = 0; PROGRESS_TOTAL = 0;
+		TASK_PROGRESS_RATIO = 0;
 	}// -----------------------------------------
 
 	// --
@@ -140,6 +165,13 @@ public class CJob
 	~CJob()
 	{
 		kill();
+	}// -----------------------------------------
+
+	// --
+	// Incase a job adds tasks while running. Set this to get proper progress output
+	public void hack_setExpectedProgTracks(int num)
+	{
+		TASK_PROGRESS_RATIO = 1.0f/num;
 	}// -----------------------------------------
 
 	// Adds a task in the queue that will be executed ASYNC
@@ -179,12 +211,18 @@ public class CJob
 			throw new Exception("A CJob object can only run once");
 		}
 
+		// If not set by user, autoset it
+		if(TASK_PROGRESS_RATIO==0)
+		{
+			// num of tasks that report progress
+			int tp=taskQueue.Where(t=>t.FLAG_PROGRESS_DISABLE==false).Count();
+			TASK_PROGRESS_RATIO = 1.0f/tp;
+		}
+
 		// Fill in the slot array 
-		slots = Enumerable.Repeat<bool>(false, MAX_CONCURRENT).ToArray();
-
-		TASKS_COMPLETION_PERCENT = 0;
-		TASKS_COMPLETE = 0;
-
+		slots_active = Enumerable.Repeat(false, MAX_CONCURRENT).ToArray();
+		slots_progress = Enumerable.Repeat(-1,MAX_CONCURRENT).ToArray();
+		
 		timer.Start();
 		status = CJobStatus.start;
 		onJobStatus(CJobStatus.start, this);
@@ -249,13 +287,14 @@ public class CJob
 			taskQueue.RemoveAt(0);
 			currentTasks.Add(t);
 		
-			// Find the next available slot[]
-			var fr = Array.FindIndex(slots, s => s == false);
-			slots[fr] = true;
+			// Find the next available slot[] index
+			var fr = Array.FindIndex(slots_active, s => s == false);
+			slots_active[fr] = true;
 			t.SLOT = fr; // SLOTS :: Set t.TASK to a unique number between tasks from 0->MAX_CONCURRENT
 		}	// end lock
 
-		LOG.log("[CJOB] : Task Start: {0} | Remaining: {1} ", t.name, taskQueue.Count);
+		TASKS_RUNNING ++;
+		LOG.log("[CJOB]: Task Start | {0} | Remaining:{1} | Running:{2}", t, taskQueue.Count, currentTasks.Count);
 		await Task.Factory.StartNew(() => t.start());
 	}// -----------------------------------------
 
@@ -264,11 +303,23 @@ public class CJob
 	// Task has either Completed or Failed
 	private void killTask(CTask t)
 	{
-		slots[t.SLOT] = false;
+		TASKS_RUNNING --;
+		slots_active[t.SLOT] = false;
+		slots_progress[t.SLOT] = -1;
+		if(!t.FLAG_PROGRESS_DISABLE) TASKS_COMPLETED_PROGRESS += TASK_PROGRESS_RATIO * 100;
 		currentTasks.Remove(t);
 		t.kill();
 	}// -----------------------------------------
 
+	// --
+	// Calculate the Total Progress
+	private void calculateProgress()
+	{
+		PROGRESS_TOTAL = TASKS_COMPLETED_PROGRESS;
+		for(int i=0;i<MAX_CONCURRENT;i++) {
+			if(slots_active[i]) PROGRESS_TOTAL += slots_progress[i] * TASK_PROGRESS_RATIO;
+		}
+	}// -----------------------------------------
 
 	//-- Internal task status handler
 	private void _onTaskStatus(CTaskStatus s,CTask t)
@@ -279,20 +330,28 @@ public class CJob
 		switch(s)
 		{
 			case CTaskStatus.complete:
-				LOG.log("[CJOB] : Task Completed: {0} ", t);
+				LOG.log("[CJOB]: Task Completed: {0} ", t);
 				taskData = t.dataSend;
 				TASKS_COMPLETE++;
-				TASKS_COMPLETION_PERCENT = (int)Math.Ceiling( (100.0f/TASKS_TOTAL) * TASKS_COMPLETE);
 				TASK_LAST = t;
 				onJobStatus(CJobStatus.taskEnd, this);
 				killTask(t);
 				feedQueue();
 				break;
 
+			// TODO: I could report the progress on a timer
+			//		 This is not ideal if there are many tasks running at once (CPU wise)
+			// NOTE: Will not get called from FLAG_NO_PROGRESS tasks
+			case CTaskStatus.progress:
+				slots_progress[t.SLOT] = t.PROGRESS;
+				// LOG.log("Task:{0}, slot:{2} progress:{1}",t.name,t.PROGRESS,t.SLOT);
+				calculateProgress();
+				onJobStatus(CJobStatus.progress,this);
+				break;
+
 			case CTaskStatus.fail:
 				// Fail the whole job
-				// FUTURE, make non-important tasks where the job won't fail?
-				LOG.log("[CJOB] : Error : Task Failed: {0}", t);
+				LOG.log("[CJOB]: Error : Task Failed: {0}", t);
 				killTask(t);
 				fail(t.ERROR[0], t.ERROR[1]);
 				break;
@@ -330,7 +389,7 @@ public class CJob
 	{
 		if(IS_KILLED) return; IS_KILLED = true;
 
-		LOG.log("[CJOB] : Killing Job :: ", name);
+		LOG.log("[CJOB]: Killing Job :: ", name);
 
 		// Clear any running task
 		foreach(var t1 in currentTasks) t1.kill();
