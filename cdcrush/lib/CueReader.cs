@@ -23,10 +23,8 @@ public class CueReader
 	public const string SUPPORTED_FORMATS = "cue"; // Separate with |  <-important!
 
 	// --
-	static int getSectorsByDataType(string t)
-	{
-		switch (t)
-		{
+	static int getSectorsByDataType(string t) {
+		switch (t) {
 			case "AUDIO": 		return 2352;	// PCM Audio
 			case "CDG" : 		return 2352;	// Karaoke cd+g
 			case "MODE1/2048":	return 2048;	// CDROM Mode1 Data (cooked)
@@ -35,31 +33,30 @@ public class CueReader
 			case "MODE2/2352":	return 2352;	// CDROM XA Mode2 Data
 			case "CDI/2336":	return 2336;	// CDI Mode2 Data
 			case "CDI/2352":	return 2352;	// CDI Mode2 Data
-			default: return 0; // Why throw an exception? throw new Exception("Unsuported type : " + _type);
+			default: return 0;
 		}
+	}//-----------------------------------
 
-	}//------------------------------------
+	// :: VARS ::
 
 
-	// :: Saved to JSON ::
-
+	// --
+	// These are saved to JSON
 	public string CD_TITLE	{ get; set; }
 	public string CD_TYPE { get; private set; }
 	public string CD_AUDIO_QUALITY {get; set; }		// Describe the audio quality in a string. SET EXTERNALLY.
 	public int CD_TOTAL_SIZE { get; private set; }	// Size of all tracks of the CD in bytes
 	public int SECTOR_SIZE { get; private set; }
-	public bool MULTIFILE {get; private set; } // The CD was read from a CUE with multiple files, (every track own file)
-	
-	// :: VARS
+	public bool MULTIFILE {get; private set; }		// The CD was read from a CUE with multiple files, (every track own file)
 
 	// Hold all the tracks
 	public List<CueTrack> tracks;
 
 	// -- Loaded CUE file information ::
-	public string loadedFile_path {get; private set; }	// full path of the file loaded
-	public string loadedFile_dir {get; private set; }	// directory the file belongs to
-	public string loadedFile_ext {get; private set; }	// extension without the dot (.), always lowercase
-	string[] loadedFile;	// the actual file contents
+	string loadedFile_path;	// full path of the file loaded
+	string loadedFile_dir;	// directory the file belongs to
+	string loadedFile_ext;	// extension without the dot (.), always lowercase
+	string[] loadedFile;	// the actual file contents of the CUE read
 
 	// -- Holds the latest error occured so the user can read it
 	public string ERROR { get; private set; }
@@ -67,8 +64,6 @@ public class CueReader
 	// -- Parser Helpers ::
 	private CueTrack openTrack;	// a track that is being parsed
 	private string openFile;	// stores image file filenames
-
-	// -----------------------------------------
 
 	// --
 	public CueReader()
@@ -801,15 +796,22 @@ public class CueTrack
 		var ind = indexes.ToList();
 			indexes.Clear();
 
-		// Keep the master time
-		var d1 = new DateTime(2000,1,1,0,ind[0].minutes,ind[0].seconds,ind[0].millisecs);
 		
-		// Zero out first index
+		// Get the time difference between the indexes
+		// Usually it's just a couple of seconds, but just to make sure
+		// I do this this way.
+
+		// Hack, for minutes>60, throwing error
+		// Fix minutes and return hour
+		int h = ind[0].hack_removeHour();
+		var d1 = new DateTime(2000,1,1,h,ind[0].minutes,ind[0].seconds,ind[0].millisecs);
+		// First Index is always going to be 00:00:00
 		addIndex(0,0,0,0);
-			
+
 		for(int c=1;c<ind.Count;c++)
 		{
-			var d2 = new DateTime(2000,1,1,0,ind[c].minutes,ind[c].seconds,ind[c].millisecs);
+			h = ind[c].hack_removeHour();
+			var d2 = new DateTime(2000,1,1,h,ind[c].minutes,ind[c].seconds,ind[c].millisecs);
 			var diff = d2 - d1;
 			addIndex(c,diff.Minutes,diff.Seconds,diff.Milliseconds);
 		}
@@ -867,13 +869,17 @@ public class CueTrack
 
 
 	// -- Helper
-	public struct CueIndex {
+	// NOTE: Turned into class because couldn't get around with changing a struct easily
+	public class CueIndex {
 		public int no, minutes, seconds, millisecs;
 		public int toSector() {
 			int sector = minutes * 4500;
 				sector += seconds * 75;
 				sector += millisecs;
 			return sector;
+		}// --
+		public int hack_removeHour() {
+			if(minutes>=60) { minutes-=60; return 1; } return 0;
 		}// --
 	}// -- 
 

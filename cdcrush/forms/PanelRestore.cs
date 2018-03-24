@@ -14,7 +14,11 @@ public partial class PanelRestore : UserControl
 {
 	// This is the last quick loaded ARC file dropped/opened
 	// It's a valid file everytime, since it is checked
-	public string preparedArcPath;
+	public string loadedArcPath;
+
+	// CD Info of the CD prepared to be restored
+	// Primarily used to getting the checksum data
+	CueReader loadedCDInfo;
 
 	// -----------------------------------------
 
@@ -31,7 +35,8 @@ public partial class PanelRestore : UserControl
 		form_lockSection("action", true);
 		form_setCdInfo(null);
 		form_setCoverImage(null);
-		preparedArcPath = null;
+		loadedArcPath = null;
+		loadedCDInfo = null;
 	}// -----------------------------------------
 
 
@@ -66,28 +71,46 @@ public partial class PanelRestore : UserControl
 
 	/// <summary>
 	/// Set form infos from a CueReader object
+	/// - Called when quickloading a CD
+	/// - Called to clear fields
 	/// </summary>
-	/// <param name="cdInfo">title,size0,size1,tracks,audio</param>
+	/// <param name="cdInfo">Object CDCURSH,loadQuickInfo() sends</param>
 	void form_setCdInfo(dynamic cdInfo = null)
 	{
 		if(cdInfo==null)
 		{
 			// set all to none
 			info_cdtitle.Text = "";
-			info_size0.Text = "";
-			info_size1.Text = "";
+			info_size0.Text = "";	// Small
+			info_size1.Text = "";	// Full
 			info_tracks.Text = "";
 			info_audio.Text = "";
-			info_md5.Text = "";
+			btn_chksm.Enabled = false;
+			loadedCDInfo = null;
 			return;
 		}
 
-		info_cdtitle.Text = cdInfo.title;
-		info_size0.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.size0));
-		info_size1.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.size1));
-		info_audio.Text = cdInfo.audio;
-		info_md5.Text = cdInfo.md5;
-		info_tracks.Text = String.Format("{0}", cdInfo.tracks);
+		loadedCDInfo = cdInfo.cd;
+		btn_chksm.Enabled = true;
+
+		int numberOfTracks = loadedCDInfo.tracks.Count;
+
+		info_cdtitle.Text = loadedCDInfo.CD_TITLE;
+		info_size0.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.sizeArc));
+		info_size1.Text =  String.Format("{0}MB", FormTools.bytesToMB(loadedCDInfo.CD_TOTAL_SIZE));
+		info_audio.Text = loadedCDInfo.CD_AUDIO_QUALITY;
+		info_tracks.Text = numberOfTracks.ToString();
+
+		// Init some controls dependant on track count
+		toggle_merged.Enabled = (numberOfTracks>1);
+		toggle_cueaudio.Enabled = (numberOfTracks>1);
+
+		if(numberOfTracks==1)
+		{
+			toggle_merged.Checked = false;
+			toggle_cueaudio.Checked = false;
+		}
+
 	}// -----------------------------------------
 
 
@@ -100,25 +123,24 @@ public partial class PanelRestore : UserControl
 	{
 		if(!FormTools.imageSetFile(pictureBox1, file))
 		{
-			pictureBox1.Image = cdcrush.Properties.Resources.cd128;
+			pictureBox1.Image = Properties.Resources.cd128;
 		}
 	}// -----------------------------------------
 
 
 
 	/// <summary>
-	/// Quick load an .arc file and display info
+	/// Quick load an .arc file and display info about the CD loaded
 	/// </summary>
 	void form_quickLoadFile(string file)
 	{
-		
+		//	-
 		Action<object> onLoad = (o) => 
 		{
 			FormTools.invoke(this, () => {
 
 				FormMain.sendProgress(0);
 				form_lockSection("all", false);
-				FormMain.FLAG_CLEAR_STATUS = true;
 
 				if(o == null) 
 				{
@@ -129,7 +151,7 @@ public partial class PanelRestore : UserControl
 				}
 
 				// This file will be restored when the button is clicked
-				preparedArcPath = file;
+				loadedArcPath = file;
 
 				input_in.Text = file;
 				form_setCdInfo(o);
@@ -140,6 +162,9 @@ public partial class PanelRestore : UserControl
 			});
 
 		}; // --
+
+		// Clear the status infos at next tab change
+		FormMain.FLAG_REQUEST_STATUS_CLEAR = true;
 
 		if(CDCRUSH.loadQuickInfo(file, onLoad))
 		{
@@ -169,7 +194,6 @@ public partial class PanelRestore : UserControl
 			form_quickLoadFile(file);
 		else{
 			FormMain.sendMessage("Unsupported file type. Drop an .ARC file", 3);
-			FormMain.FLAG_CLEAR_STATUS = true;
 		}
 	}// -----------------------------------------
 
@@ -180,24 +204,24 @@ public partial class PanelRestore : UserControl
 		// --
 		FormMain.sendMessage("", 1);
 
-		CDCRUSH.HACK_CD_TRACKS = int.Parse(info_tracks.Text);
+		// Send the nuber of tracks for proper progress reporting
+		CDCRUSH.HACK_CD_TRACKS = loadedCDInfo.tracks.Count;
 
 		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
-		bool res = CDCRUSH.startJob_RestoreCD(preparedArcPath, input_out.Text, 
+		bool res = CDCRUSH.startJob_RestoreCD(loadedArcPath, input_out.Text, 
 			toggle_subf.Checked, toggle_merged.Checked, toggle_cueaudio.Checked,
 			(complete)=>{
 				FormTools.invoke(this, () =>
 				{
 					form_lockSection("all", false);
-					FormMain.FLAG_CLEAR_STATUS = true;
-
+					
 					if(complete)
 					{
-						// Just restored this image, why restore it again?
-						form_lockSection("action", true);
+						// DEVNOTE: Should I lock the button in case user presses it again?
+						//			I don't think so right?
+						// form_lockSection("action", true);
 						FormMain.sendMessage("Complete", 2);
-						// Form progress will be at 100% from the job update
 					}else 
 					{
 						// job update-fail won't push progress, do it manually
@@ -207,12 +231,10 @@ public partial class PanelRestore : UserControl
 				});
 			});
 
-		if(res)
-		{
+		if(res){
 			form_lockSection("all", true);
 		}else{
 			FormMain.sendMessage(CDCRUSH.ERROR, 3);
-			FormMain.FLAG_CLEAR_STATUS = true;
 		}
 	}// -----------------------------------------
 
@@ -231,7 +253,7 @@ public partial class PanelRestore : UserControl
 	private void btn_input_out_Click(object sender, EventArgs e)
 	{
 		string lastDir = null;
-		if (preparedArcPath != null) lastDir = System.IO.Path.GetDirectoryName(preparedArcPath);
+		if (loadedArcPath != null) lastDir = System.IO.Path.GetDirectoryName(loadedArcPath);
 		SaveFileDialog d = new SaveFileDialog();
 		d.FileName = "HERE.cue";
 		d.CheckPathExists = true;
@@ -253,8 +275,12 @@ public partial class PanelRestore : UserControl
 	}// -----------------------------------------
 
 	// --
+	// Control the state of the `merged` toggle
 	private void toggle_cueaudio_CheckedChanged(object sender, EventArgs e)
 	{
+		// Avoid non-user sets
+		if(!toggle_cueaudio.Enabled) return; 
+
 		if(toggle_cueaudio.Checked)
 		{
 			toggle_merged.Checked = false;
@@ -264,5 +290,11 @@ public partial class PanelRestore : UserControl
 		}
 	}// -----------------------------------------
 
-}// --
+	// --
+	private void btn_chksm_Click(object sender, EventArgs e)
+	{
+		FormMain.showCdInfo(loadedCDInfo);
+	}// -----------------------------------------
+
+	}// --
 }// --

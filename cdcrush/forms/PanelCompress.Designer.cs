@@ -57,6 +57,7 @@
 			this.info_size1 = new System.Windows.Forms.TextBox();
 			this.info_size0 = new System.Windows.Forms.TextBox();
 			this.chk_encodedCue = new System.Windows.Forms.CheckBox();
+			this.btn_chksm = new System.Windows.Forms.Button();
 			table_IO = new System.Windows.Forms.TableLayoutPanel();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -98,13 +99,13 @@
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			table_IO.Size = new System.Drawing.Size(477, 82);
+			table_IO.Size = new System.Drawing.Size(449, 82);
 			table_IO.TabIndex = 17;
 			// 
 			// btn_input_in
 			// 
 			this.btn_input_in.Dock = System.Windows.Forms.DockStyle.Top;
-			this.btn_input_in.Location = new System.Drawing.Point(435, 16);
+			this.btn_input_in.Location = new System.Drawing.Point(407, 16);
 			this.btn_input_in.Name = "btn_input_in";
 			this.btn_input_in.Size = new System.Drawing.Size(39, 23);
 			this.btn_input_in.TabIndex = 2;
@@ -126,7 +127,7 @@
 			this.input_in.Dock = System.Windows.Forms.DockStyle.Top;
 			this.input_in.Location = new System.Drawing.Point(3, 16);
 			this.input_in.Name = "input_in";
-			this.input_in.Size = new System.Drawing.Size(426, 20);
+			this.input_in.Size = new System.Drawing.Size(398, 20);
 			this.input_in.TabIndex = 1;
 			// 
 			// input_out
@@ -134,13 +135,13 @@
 			this.input_out.Dock = System.Windows.Forms.DockStyle.Top;
 			this.input_out.Location = new System.Drawing.Point(3, 58);
 			this.input_out.Name = "input_out";
-			this.input_out.Size = new System.Drawing.Size(426, 20);
+			this.input_out.Size = new System.Drawing.Size(398, 20);
 			this.input_out.TabIndex = 1;
 			// 
 			// btn_input_out
 			// 
 			this.btn_input_out.Dock = System.Windows.Forms.DockStyle.Top;
-			this.btn_input_out.Location = new System.Drawing.Point(435, 58);
+			this.btn_input_out.Location = new System.Drawing.Point(407, 58);
 			this.btn_input_out.Name = "btn_input_out";
 			this.btn_input_out.Size = new System.Drawing.Size(39, 23);
 			this.btn_input_out.TabIndex = 2;
@@ -181,7 +182,7 @@
 			label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			label6.Location = new System.Drawing.Point(3, 0);
 			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(65, 13);
+			label6.Size = new System.Drawing.Size(59, 13);
 			label6.TabIndex = 6;
 			label6.Text = "Tracks";
 			// 
@@ -189,9 +190,9 @@
 			// 
 			label7.Dock = System.Windows.Forms.DockStyle.Top;
 			label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label7.Location = new System.Drawing.Point(198, 0);
+			label7.Location = new System.Drawing.Point(182, 0);
 			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(142, 13);
+			label7.Size = new System.Drawing.Size(130, 13);
 			label7.TabIndex = 9;
 			label7.Text = "Quality";
 			// 
@@ -199,9 +200,9 @@
 			// 
 			label3.Dock = System.Windows.Forms.DockStyle.Top;
 			label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label3.Location = new System.Drawing.Point(74, 0);
+			label3.Location = new System.Drawing.Point(68, 0);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(118, 13);
+			label3.Size = new System.Drawing.Size(108, 13);
 			label3.TabIndex = 5;
 			label3.Text = "Codec";
 			// 
@@ -210,7 +211,7 @@
 			label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			label9.AutoSize = true;
 			label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label9.Location = new System.Drawing.Point(309, 242);
+			label9.Location = new System.Drawing.Point(282, 250);
 			label9.Name = "label9";
 			label9.Size = new System.Drawing.Size(79, 13);
 			label9.TabIndex = 23;
@@ -221,7 +222,7 @@
 			label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			label10.AutoSize = true;
 			label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label10.Location = new System.Drawing.Point(303, 261);
+			label10.Location = new System.Drawing.Point(276, 269);
 			label10.Name = "label10";
 			label10.Size = new System.Drawing.Size(85, 13);
 			label10.TabIndex = 24;
@@ -234,7 +235,7 @@
 			label8.AutoSize = true;
 			label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			label8.ForeColor = System.Drawing.SystemColors.ControlDark;
-			label8.Location = new System.Drawing.Point(29, 247);
+			label8.Location = new System.Drawing.Point(29, 255);
 			label8.Name = "label8";
 			label8.Size = new System.Drawing.Size(175, 13);
 			label8.TabIndex = 26;
@@ -250,12 +251,12 @@
 			tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			tableLayoutPanel2.Controls.Add(label11, 0, 0);
 			tableLayoutPanel2.Controls.Add(this.combo_data_c, 0, 1);
-			tableLayoutPanel2.Location = new System.Drawing.Point(137, 192);
+			tableLayoutPanel2.Location = new System.Drawing.Point(137, 181);
 			tableLayoutPanel2.Name = "tableLayoutPanel2";
 			tableLayoutPanel2.RowCount = 2;
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 34.21053F));
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 65.78947F));
-			tableLayoutPanel2.Size = new System.Drawing.Size(343, 41);
+			tableLayoutPanel2.Size = new System.Drawing.Size(315, 41);
 			tableLayoutPanel2.TabIndex = 27;
 			// 
 			// label11
@@ -284,7 +285,7 @@
             "9 - Not recommended"});
 			this.combo_data_c.Location = new System.Drawing.Point(3, 17);
 			this.combo_data_c.Name = "combo_data_c";
-			this.combo_data_c.Size = new System.Drawing.Size(337, 21);
+			this.combo_data_c.Size = new System.Drawing.Size(309, 21);
 			this.combo_data_c.TabIndex = 1;
 			// 
 			// tableLayoutPanel3
@@ -302,12 +303,12 @@
 			this.tableLayoutPanel3.Controls.Add(this.combo_audio_q, 1, 1);
 			this.tableLayoutPanel3.Controls.Add(this.info_tracks, 0, 1);
 			this.tableLayoutPanel3.Controls.Add(label6, 0, 0);
-			this.tableLayoutPanel3.Location = new System.Drawing.Point(137, 146);
+			this.tableLayoutPanel3.Location = new System.Drawing.Point(137, 142);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
 			this.tableLayoutPanel3.RowCount = 2;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(343, 40);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(315, 40);
 			this.tableLayoutPanel3.TabIndex = 24;
 			// 
 			// combo_audio_c
@@ -315,9 +316,9 @@
 			this.combo_audio_c.Dock = System.Windows.Forms.DockStyle.Top;
 			this.combo_audio_c.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.combo_audio_c.FormattingEnabled = true;
-			this.combo_audio_c.Location = new System.Drawing.Point(74, 16);
+			this.combo_audio_c.Location = new System.Drawing.Point(68, 16);
 			this.combo_audio_c.Name = "combo_audio_c";
-			this.combo_audio_c.Size = new System.Drawing.Size(118, 21);
+			this.combo_audio_c.Size = new System.Drawing.Size(108, 21);
 			this.combo_audio_c.TabIndex = 8;
 			this.combo_audio_c.SelectedIndexChanged += new System.EventHandler(this.combo_audio_c_SelectedIndexChanged);
 			// 
@@ -326,9 +327,9 @@
 			this.combo_audio_q.Dock = System.Windows.Forms.DockStyle.Top;
 			this.combo_audio_q.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.combo_audio_q.FormattingEnabled = true;
-			this.combo_audio_q.Location = new System.Drawing.Point(198, 16);
+			this.combo_audio_q.Location = new System.Drawing.Point(182, 16);
 			this.combo_audio_q.Name = "combo_audio_q";
-			this.combo_audio_q.Size = new System.Drawing.Size(142, 21);
+			this.combo_audio_q.Size = new System.Drawing.Size(130, 21);
 			this.combo_audio_q.TabIndex = 4;
 			// 
 			// info_tracks
@@ -339,7 +340,7 @@
 			this.info_tracks.Location = new System.Drawing.Point(3, 16);
 			this.info_tracks.Name = "info_tracks";
 			this.info_tracks.ReadOnly = true;
-			this.info_tracks.Size = new System.Drawing.Size(65, 20);
+			this.info_tracks.Size = new System.Drawing.Size(59, 20);
 			this.info_tracks.TabIndex = 7;
 			this.info_tracks.Text = "25";
 			this.info_tracks.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -357,7 +358,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(343, 32);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(315, 32);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// info_cdtitle
@@ -367,7 +368,7 @@
 			this.info_cdtitle.Dock = System.Windows.Forms.DockStyle.Top;
 			this.info_cdtitle.Location = new System.Drawing.Point(3, 16);
 			this.info_cdtitle.Name = "info_cdtitle";
-			this.info_cdtitle.Size = new System.Drawing.Size(337, 13);
+			this.info_cdtitle.Size = new System.Drawing.Size(309, 13);
 			this.info_cdtitle.TabIndex = 1;
 			this.info_cdtitle.Text = "Dummy Info, CD title with a really long name etc";
 			this.info_cdtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -390,9 +391,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn_CRUSH.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btn_CRUSH.ForeColor = System.Drawing.Color.Green;
-			this.btn_CRUSH.Location = new System.Drawing.Point(3, 284);
+			this.btn_CRUSH.Location = new System.Drawing.Point(3, 292);
 			this.btn_CRUSH.Name = "btn_CRUSH";
-			this.btn_CRUSH.Size = new System.Drawing.Size(477, 39);
+			this.btn_CRUSH.Size = new System.Drawing.Size(449, 39);
 			this.btn_CRUSH.TabIndex = 22;
 			this.btn_CRUSH.Text = "_dynamic_name_";
 			this.btn_CRUSH.UseVisualStyleBackColor = true;
@@ -402,7 +403,7 @@
 			// 
 			this.info_size1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.info_size1.BackColor = System.Drawing.SystemColors.Info;
-			this.info_size1.Location = new System.Drawing.Point(394, 239);
+			this.info_size1.Location = new System.Drawing.Point(367, 247);
 			this.info_size1.Name = "info_size1";
 			this.info_size1.ReadOnly = true;
 			this.info_size1.Size = new System.Drawing.Size(83, 20);
@@ -414,7 +415,7 @@
 			// 
 			this.info_size0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.info_size0.BackColor = System.Drawing.SystemColors.Info;
-			this.info_size0.Location = new System.Drawing.Point(394, 258);
+			this.info_size0.Location = new System.Drawing.Point(367, 266);
 			this.info_size0.Name = "info_size0";
 			this.info_size0.ReadOnly = true;
 			this.info_size0.Size = new System.Drawing.Size(83, 20);
@@ -426,7 +427,7 @@
 			// 
 			this.chk_encodedCue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.chk_encodedCue.AutoSize = true;
-			this.chk_encodedCue.Location = new System.Drawing.Point(3, 261);
+			this.chk_encodedCue.Location = new System.Drawing.Point(3, 269);
 			this.chk_encodedCue.Name = "chk_encodedCue";
 			this.chk_encodedCue.Size = new System.Drawing.Size(205, 17);
 			this.chk_encodedCue.TabIndex = 25;
@@ -434,10 +435,22 @@
 			this.chk_encodedCue.UseVisualStyleBackColor = true;
 			this.chk_encodedCue.CheckedChanged += new System.EventHandler(this.chk_encodedCue_CheckedChanged);
 			// 
+			// btn_chksm
+			// 
+			this.btn_chksm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_chksm.Location = new System.Drawing.Point(139, 223);
+			this.btn_chksm.Name = "btn_chksm";
+			this.btn_chksm.Size = new System.Drawing.Size(81, 21);
+			this.btn_chksm.TabIndex = 28;
+			this.btn_chksm.Text = "Checksums";
+			this.btn_chksm.UseVisualStyleBackColor = true;
+			this.btn_chksm.Click += new System.EventHandler(this.btn_chksm_Click);
+			// 
 			// PanelCompress
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.btn_chksm);
 			this.Controls.Add(tableLayoutPanel2);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.tableLayoutPanel3);
@@ -452,7 +465,7 @@
 			this.Controls.Add(table_IO);
 			this.Controls.Add(this.pictureBox1);
 			this.Name = "PanelCompress";
-			this.Size = new System.Drawing.Size(483, 327);
+			this.Size = new System.Drawing.Size(455, 335);
 			this.Load += new System.EventHandler(this.PanelCompress_Load);
 			table_IO.ResumeLayout(false);
 			table_IO.PerformLayout();
@@ -485,5 +498,6 @@
 		private System.Windows.Forms.TextBox info_size1;
 		private System.Windows.Forms.CheckBox chk_encodedCue;
 		private System.Windows.Forms.ComboBox combo_data_c;
+		private System.Windows.Forms.Button btn_chksm;
 	}
 }

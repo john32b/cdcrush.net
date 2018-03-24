@@ -17,7 +17,7 @@ public struct RestoreParams
 	public string outputDir;		// Output Directory. Will change to subfolder if `flag_folder`
 	public bool flag_forceSingle;	// TRUE: Create a single cue/bin file, even if the archive was MULTIFILE
 	public bool flag_folder;		// TRUE: Create a subfolder with the game name in OutputDir
-	public bool flag_encCue;		// TRUE: Will not restore audio tracks and create a cue with enc audio
+	public bool flag_encCue;		// TRUE: Will not restore audio tracks. Will create a cue with enc audio
 	public int expectedTracks;		// In order for the progress report to work. set num of CD tracks here.
 
 	// : Internal Use :
@@ -73,7 +73,7 @@ class JobRestore: CJob
 			return;
 		}
 
-		// Safeguard
+		// Safeguard, even if the GUI doesn't allow it
 		if(p.flag_encCue)
 		{
 			p.flag_forceSingle = false;
@@ -125,7 +125,6 @@ class JobRestore: CJob
 			t.complete();
 
 		}, "-Preparing to Restore"));
-
 
 
 

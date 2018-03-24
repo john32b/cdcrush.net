@@ -220,7 +220,7 @@ namespace cdcrush.prog
 		/// <param name="onComplete">Completed (completeStatus,final Size)</param>
 		/// <returns></returns>
 		public static bool startJob_ConvertCue(string _Input, string _Output, Tuple<int,int> _Audio, 
-			string _Title, Action<bool,int> onComplete)
+			string _Title, Action<bool,int,CueReader> onComplete)
 		{
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
 			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
@@ -239,7 +239,7 @@ namespace cdcrush.prog
 				j.onComplete = (s) =>{
 					LOCKED = false;
 					ERROR = j.ERROR[1];
-					onComplete(s, 0); // Disregard final filesize
+					onComplete(s, 0, j.jobData.cd); // Disregard final filesize, because it's not an archive
 				};
 
 				j.onJobStatus = jobStatusHandler;	// For status and progress updates
@@ -260,13 +260,14 @@ namespace cdcrush.prog
 		/// <param name="onComplete">Completed (completeStatus,CrushedSize)</param>
 		/// <returns></returns>
 		public static bool startJob_CrushCD(string _Input, string _Output, Tuple<int,int> _Audio, 
-			string _Cover, string _Title, int compressionLevel, Action<bool,int> onComplete)
+			string _Cover, string _Title, int compressionLevel, Action<bool,int,CueReader> onComplete)
 		{
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
 			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
 
 			LOCKED = true;
 
+			// Set the running parameters for the Crush (compress) job
 			var par = new CrushParams();
 				par.inputFile = _Input;
 				par.outputDir = _Output;
@@ -276,17 +277,19 @@ namespace cdcrush.prog
 				par.compressionLevel = compressionLevel;
 				par.expectedTracks = HACK_CD_TRACKS;	// Don't pollute the function parameters
 
+			// Create the job and set it up
 			var j = new JobCrush(par);
 				j.MAX_CONCURRENT = MAX_TASKS;
 				j.onComplete = (s) => {
 					LOCKED = false;
 					ERROR = j.ERROR[1];
+					// Note: job.jobData is a general use object that was set up in the job
+					//		 I can read it and get things that I want from it
 					if (s) {
-						CueReader cd = (CueReader) j.jobData.cd;						
-						onComplete(s,j.jobData.crushedSize); // Hack, send CDINFO and SIZE as well
+						onComplete(s,j.jobData.crushedSize, j.jobData.cd); // Hack, send CDINFO and SIZE as well
 					}
 					else {
-						onComplete(s, 0);
+						onComplete(s, 0, null);
 					}
 				};
 
@@ -379,7 +382,14 @@ namespace cdcrush.prog
 		/// Take a crushed archive and extract only the info file, Returns a customized object with some info
 		/// </summary>
 		/// <param name="arcFile"></param>
-		/// <param name="onComplete">(null) if error</param>
+		/// <param name="onComplete">(null) on error,
+		///		OBJECT = 
+		///			cd:CueReader,
+		///			cover:Path of image cover or null
+		///			sizeArc:Size of ARC in bytes
+		///		
+		///	</param>
+		/// <returns>Success</returns>
 		public static bool loadQuickInfo(string arcFile, Action<Object> onComplete)
 		{
 			if (LOCKED) {
@@ -391,7 +401,7 @@ namespace cdcrush.prog
 
 			LOCKED = true;
 
-			// Delete old files from previous quickInfos
+			// Delete old files from previous quickInfos, IF ANY
 			FileTools.tryDelete(Path.Combine(TEMP_FOLDER, CDCRUSH_SETTINGS));
 			FileTools.tryDelete(Path.Combine(TEMP_FOLDER, CDCRUSH_COVER));
 
@@ -404,24 +414,19 @@ namespace cdcrush.prog
 
 				if(success) // OK
 				{
-
 					// Continue
 					var cd = new CueReader();
-					if(!cd.loadJson(Path.Combine(TEMP_FOLDER,CDCRUSH_SETTINGS)))
-					{
+					if(!cd.loadJson(Path.Combine(TEMP_FOLDER,CDCRUSH_SETTINGS))) {
 						ERROR = cd.ERROR;
 						onComplete(null);
 						return;
 					}
 
+					// This is the object with the info returned to user
 					var info = new
 					{
-						title = cd.CD_TITLE,
-						size0 = (int) new FileInfo(arcFile).Length,
-						size1 = cd.CD_TOTAL_SIZE,
-						audio = cd.CD_AUDIO_QUALITY,
-						tracks = cd.tracks.Count,
-						md5 = cd.getFirstDataTrackMD5(),
+						cd,
+						sizeArc = (int) new FileInfo(arcFile).Length,
 						cover = Path.Combine(TEMP_FOLDER,CDCRUSH_COVER)
 					};
 					

@@ -1,5 +1,4 @@
 ﻿using cdcrush.lib;
-using cdcrush.lib.app;
 using cdcrush.lib.task;
 
 using System;

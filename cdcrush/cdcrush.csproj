@@ -79,6 +79,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="forms\FormChecksums.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\FormChecksums.Designer.cs">
+      <DependentUpon>FormChecksums.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\FormComponentsTest.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +133,9 @@
     <Compile Include="prog\TaskRestoreTrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="forms\FormChecksums.resx">
+      <DependentUpon>FormChecksums.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="forms\FormComponentsTest.resx">
       <DependentUpon>FormComponentsTest.cs</DependentUpon>
     </EmbeddedResource>

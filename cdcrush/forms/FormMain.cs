@@ -32,6 +32,8 @@ public partial class FormMain : Form
 	internal static Action<int> sendProgress;
 	// Send whole form LOCK status from components
 	internal static Action<bool> sendLock;
+	// Request to open CD INFO popup
+	internal static Action<CueReader> showCdInfo;
 
 	// VARS ::
 	// ---------------
@@ -43,7 +45,7 @@ public partial class FormMain : Form
 	const int STARTING_TAB = (int)TAB_ID.RESTORE;
 
 	// If true, will clear the status at the next tab change. accessible from everywhere
-	public static bool FLAG_CLEAR_STATUS = false;
+	public static bool FLAG_REQUEST_STATUS_CLEAR = false;
 
 	// Keep the window title
 	string windowTitle;
@@ -56,6 +58,7 @@ public partial class FormMain : Form
 		sendMessage = form_setText;
 		sendProgress = form_setProgress;
 		sendLock = form_lockAll;
+		showCdInfo = form_showCdInfo;
 		CDCRUSH.jobStatusHandler = genericJobProgressReport;
 	}// -----------------------------------------
 
@@ -175,10 +178,22 @@ public partial class FormMain : Form
 	// FORM INTERACTION
 	// =============================================
 
+
+	// --
+	// Show a popup with some CD infos like checksums
+	public void form_showCdInfo(CueReader cd)
+	{
+		var f = new FormChecksums(cd);
+		f.ShowDialog();
+	}// -----------------------------------------
+
+
 	// -- AutoCalled whenever a file has been dropped
 	//
 	public void handle_dropped_file(string file)
 	{
+		FLAG_REQUEST_STATUS_CLEAR = true; // just in case
+
 		if(CURRENT_TAB==(int)TAB_ID.COMPRESS)
 		{
 			panelCompress1.handle_dropped_file(file);
@@ -304,7 +319,6 @@ public partial class FormMain : Form
 			case CJobStatus.complete:
 				form_setText(j.name + " Complete ", 2);
 				form_setProgress(100);
-				FLAG_CLEAR_STATUS = true;
 				FormTools.invoke(this,()=>{
 					TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
 					FormTools.FlashWindow(this.Handle);
@@ -313,7 +327,6 @@ public partial class FormMain : Form
 
 			case CJobStatus.fail:
 				form_setText(j.name + " Failed ", 3);
-				FLAG_CLEAR_STATUS = true;
 				break;
 		}
 	}// -----------------------------------------
@@ -325,12 +338,12 @@ public partial class FormMain : Form
 		CURRENT_TAB = tabControl1.SelectedIndex;
 
 		// Reset status message if leftover message from an operation
-		if(FLAG_CLEAR_STATUS)
+		if(FLAG_REQUEST_STATUS_CLEAR)
 		{
 			form_setProgress(0);
 			TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
 			form_setText("Ready", 1);
-			FLAG_CLEAR_STATUS = false;
+			FLAG_REQUEST_STATUS_CLEAR = false;
 		}
 
 	}// -----------------------------------------
@@ -442,5 +455,5 @@ public partial class FormMain : Form
 			f.ShowDialog();
 	}// -----------------------------------------
 
-}// -- end class
+	}// -- end class
 }// -- end namespace

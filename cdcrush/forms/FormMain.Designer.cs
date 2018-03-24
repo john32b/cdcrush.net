@@ -197,11 +197,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.info_status.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_status.Enabled = false;
-			this.info_status.Location = new System.Drawing.Point(12, 402);
+			this.info_status.Location = new System.Drawing.Point(12, 413);
 			this.info_status.Name = "info_status";
 			this.info_status.ReadOnly = true;
 			this.info_status.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.info_status.Size = new System.Drawing.Size(467, 15);
+			this.info_status.Size = new System.Drawing.Size(469, 15);
 			this.info_status.TabIndex = 19;
 			this.info_status.Text = "Ready.";
 			this.info_status.WordWrap = false;
@@ -210,9 +210,9 @@
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.progressBar1.Location = new System.Drawing.Point(12, 377);
+			this.progressBar1.Location = new System.Drawing.Point(12, 388);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(463, 24);
+			this.progressBar1.Size = new System.Drawing.Size(465, 24);
 			this.progressBar1.TabIndex = 12;
 			this.progressBar1.Value = 50;
 			// 
@@ -229,7 +229,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(467, 359);
+			this.tabControl1.Size = new System.Drawing.Size(469, 370);
 			this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabControl1.TabIndex = 20;
 			this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
@@ -241,7 +241,7 @@
 			this.tabRestore.Location = new System.Drawing.Point(4, 25);
 			this.tabRestore.Name = "tabRestore";
 			this.tabRestore.Padding = new System.Windows.Forms.Padding(3);
-			this.tabRestore.Size = new System.Drawing.Size(459, 330);
+			this.tabRestore.Size = new System.Drawing.Size(461, 341);
 			this.tabRestore.TabIndex = 0;
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
@@ -253,7 +253,7 @@
 			this.tabCrush.Location = new System.Drawing.Point(4, 25);
 			this.tabCrush.Name = "tabCrush";
 			this.tabCrush.Padding = new System.Windows.Forms.Padding(3);
-			this.tabCrush.Size = new System.Drawing.Size(459, 330);
+			this.tabCrush.Size = new System.Drawing.Size(461, 341);
 			this.tabCrush.TabIndex = 1;
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
@@ -274,7 +274,7 @@
 			this.tabSettings.Controls.Add(this.info_tempFolder);
 			this.tabSettings.Location = new System.Drawing.Point(4, 25);
 			this.tabSettings.Name = "tabSettings";
-			this.tabSettings.Size = new System.Drawing.Size(459, 330);
+			this.tabSettings.Size = new System.Drawing.Size(461, 341);
 			this.tabSettings.TabIndex = 2;
 			this.tabSettings.Text = "Settings";
 			this.tabSettings.UseVisualStyleBackColor = true;
@@ -287,7 +287,7 @@
 			this.group_debug.Controls.Add(this.chk_keepTemp);
 			this.group_debug.Location = new System.Drawing.Point(3, 212);
 			this.group_debug.Name = "group_debug";
-			this.group_debug.Size = new System.Drawing.Size(448, 78);
+			this.group_debug.Size = new System.Drawing.Size(450, 78);
 			this.group_debug.TabIndex = 8;
 			this.group_debug.TabStop = false;
 			this.group_debug.Text = "Debugging";
@@ -350,7 +350,7 @@
 			// btn_temp_def
 			// 
 			this.btn_temp_def.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_temp_def.Location = new System.Drawing.Point(399, 43);
+			this.btn_temp_def.Location = new System.Drawing.Point(401, 43);
 			this.btn_temp_def.Name = "btn_temp_def";
 			this.btn_temp_def.Size = new System.Drawing.Size(50, 20);
 			this.btn_temp_def.TabIndex = 3;
@@ -361,7 +361,7 @@
 			// btn_ffmpeg_clear
 			// 
 			this.btn_ffmpeg_clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_ffmpeg_clear.Location = new System.Drawing.Point(402, 101);
+			this.btn_ffmpeg_clear.Location = new System.Drawing.Point(404, 101);
 			this.btn_ffmpeg_clear.Name = "btn_ffmpeg_clear";
 			this.btn_ffmpeg_clear.Size = new System.Drawing.Size(48, 20);
 			this.btn_ffmpeg_clear.TabIndex = 3;
@@ -372,7 +372,7 @@
 			// btn_ffmpeg
 			// 
 			this.btn_ffmpeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_ffmpeg.Location = new System.Drawing.Point(378, 101);
+			this.btn_ffmpeg.Location = new System.Drawing.Point(380, 101);
 			this.btn_ffmpeg.Name = "btn_ffmpeg";
 			this.btn_ffmpeg.Size = new System.Drawing.Size(24, 20);
 			this.btn_ffmpeg.TabIndex = 3;
@@ -383,7 +383,7 @@
 			// btn_selectTemp
 			// 
 			this.btn_selectTemp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_selectTemp.Location = new System.Drawing.Point(375, 43);
+			this.btn_selectTemp.Location = new System.Drawing.Point(377, 43);
 			this.btn_selectTemp.Name = "btn_selectTemp";
 			this.btn_selectTemp.Size = new System.Drawing.Size(24, 20);
 			this.btn_selectTemp.TabIndex = 3;
@@ -398,7 +398,7 @@
 			this.info_ffmpeg.Location = new System.Drawing.Point(6, 101);
 			this.info_ffmpeg.Name = "info_ffmpeg";
 			this.info_ffmpeg.ReadOnly = true;
-			this.info_ffmpeg.Size = new System.Drawing.Size(370, 20);
+			this.info_ffmpeg.Size = new System.Drawing.Size(372, 20);
 			this.info_ffmpeg.TabIndex = 0;
 			// 
 			// info_tempFolder
@@ -408,7 +408,7 @@
 			this.info_tempFolder.Location = new System.Drawing.Point(7, 43);
 			this.info_tempFolder.Name = "info_tempFolder";
 			this.info_tempFolder.ReadOnly = true;
-			this.info_tempFolder.Size = new System.Drawing.Size(366, 20);
+			this.info_tempFolder.Size = new System.Drawing.Size(368, 20);
 			this.info_tempFolder.TabIndex = 0;
 			// 
 			// tabInfo
@@ -426,7 +426,7 @@
 			this.tabInfo.Controls.Add(label1);
 			this.tabInfo.Location = new System.Drawing.Point(4, 25);
 			this.tabInfo.Name = "tabInfo";
-			this.tabInfo.Size = new System.Drawing.Size(459, 330);
+			this.tabInfo.Size = new System.Drawing.Size(459, 336);
 			this.tabInfo.TabIndex = 3;
 			this.tabInfo.Text = "Info";
 			this.tabInfo.UseVisualStyleBackColor = true;
@@ -466,7 +466,7 @@
 			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
 			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(453, 324);
+			this.panelRestore1.Size = new System.Drawing.Size(455, 335);
 			this.panelRestore1.TabIndex = 0;
 			// 
 			// panelCompress1
@@ -474,14 +474,14 @@
 			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
 			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(453, 324);
+			this.panelCompress1.Size = new System.Drawing.Size(455, 335);
 			this.panelCompress1.TabIndex = 0;
 			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(491, 419);
+			this.ClientSize = new System.Drawing.Size(493, 430);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.info_status);

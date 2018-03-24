@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-
 using cdcrush.lib;
 
 namespace cdcrush.prog
