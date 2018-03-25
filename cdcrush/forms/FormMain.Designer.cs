@@ -44,7 +44,9 @@
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabRestore = new System.Windows.Forms.TabPage();
+			this.panelRestore1 = new cdcrush.forms.PanelRestore();
 			this.tabCrush = new System.Windows.Forms.TabPage();
+			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			this.tabSettings = new System.Windows.Forms.TabPage();
 			this.group_debug = new System.Windows.Forms.GroupBox();
 			this.btn_toolsTest = new System.Windows.Forms.Button();
@@ -61,8 +63,6 @@
 			this.link_donate = new System.Windows.Forms.LinkLabel();
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
-			this.panelRestore1 = new cdcrush.forms.PanelRestore();
-			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -246,6 +246,14 @@
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
 			// 
+			// panelRestore1
+			// 
+			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
+			this.panelRestore1.Name = "panelRestore1";
+			this.panelRestore1.Size = new System.Drawing.Size(455, 335);
+			this.panelRestore1.TabIndex = 0;
+			// 
 			// tabCrush
 			// 
 			this.tabCrush.Controls.Add(this.panelCompress1);
@@ -257,6 +265,14 @@
 			this.tabCrush.TabIndex = 1;
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
+			// 
+			// panelCompress1
+			// 
+			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
+			this.panelCompress1.Name = "panelCompress1";
+			this.panelCompress1.Size = new System.Drawing.Size(455, 335);
+			this.panelCompress1.TabIndex = 0;
 			// 
 			// tabSettings
 			// 
@@ -426,7 +442,7 @@
 			this.tabInfo.Controls.Add(label1);
 			this.tabInfo.Location = new System.Drawing.Point(4, 25);
 			this.tabInfo.Name = "tabInfo";
-			this.tabInfo.Size = new System.Drawing.Size(459, 336);
+			this.tabInfo.Size = new System.Drawing.Size(461, 341);
 			this.tabInfo.TabIndex = 3;
 			this.tabInfo.Text = "Info";
 			this.tabInfo.UseVisualStyleBackColor = true;
@@ -461,22 +477,6 @@
 			this.info_ver.TabIndex = 1;
 			this.info_ver.Text = "0.0";
 			// 
-			// panelRestore1
-			// 
-			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
-			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(455, 335);
-			this.panelRestore1.TabIndex = 0;
-			// 
-			// panelCompress1
-			// 
-			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
-			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(455, 335);
-			this.panelCompress1.TabIndex = 0;
-			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -491,7 +491,6 @@
 			this.MinimumSize = new System.Drawing.Size(502, 420);
 			this.Name = "FormMain";
 			this.Text = "CDCRUSH";
-			this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
 			this.Load += new System.EventHandler(this.FormMain_Load);
 			this.tabControl1.ResumeLayout(false);

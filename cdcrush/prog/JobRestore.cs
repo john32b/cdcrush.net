@@ -113,7 +113,7 @@ class JobRestore: CJob
 			}
 
 			#if DEBUG
-				cd.debugInfo();
+				LOG.log(cd.getDetailedInfo());
 			#endif
 
 			// - Push TASK RESTORE tasks right after this one

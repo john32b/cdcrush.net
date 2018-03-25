@@ -156,7 +156,7 @@ class JobCrush:CJob
 			CueReader cd = jobData.cd;
 
 			#if DEBUG
-				cd.debugInfo();
+				LOG.log(cd.getDetailedInfo());
 			#endif
 
 			string path_settings = Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS);

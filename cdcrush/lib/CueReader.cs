@@ -77,15 +77,32 @@ public class CueReader
 	}// -----------------------------------------
 
 	// --
-	// Display some info about the CD and tracks
-	public void debugInfo()
+	// Build a string dislaying info about this CD + tracks
+	public string getDetailedInfo()
 	{
-		LOG.log(this);
-		LOG.line();
-		foreach(var tt in tracks) { 
-			LOG.log(tt);
-		}
-		LOG.line();
+		// TrackNo ,Type, Pregap, Sectors, Size, MD5
+		string formatSTR = "{0,-2} {1,-10} {2,-8} {3,-8} {4,-10} {5}";
+
+		System.Text.StringBuilder str = new System.Text.StringBuilder();
+		str.Append($"Title	: {CD_TITLE}").AppendLine();
+		str.Append($"Type	: {CD_TYPE}").AppendLine();
+		str.Append($"Audio	: {CD_AUDIO_QUALITY}").AppendLine();
+		str.Append($"Tracks	: {tracks.Count}").AppendLine();
+		str.Append('-',75).AppendLine();
+		str.AppendFormat( formatSTR, "#", "Type", "Pregap", "Sectors" ,"Size", "MD5").AppendLine();
+
+		int totalSectors = 0;
+		// -- Track infos
+		foreach(var t in tracks){ 
+			totalSectors += t.sectorSize;
+			str.AppendFormat(formatSTR,
+				t.trackNo,t.trackType,t.getPregapString(),t.sectorSize,t.byteSize,t.md5
+			).AppendLine();
+		}// --
+		str.Append('-',75).AppendLine();
+		str.Append($"Total Sectors : {totalSectors}").AppendLine();
+		str.Append($"Total Size    : {CD_TOTAL_SIZE}").AppendLine();
+		return str.ToString();
 	}// -----------------------------------------
 
 	/**
@@ -812,8 +829,12 @@ public class CueTrack
 		{
 			h = ind[c].hack_removeHour();
 			var d2 = new DateTime(2000,1,1,h,ind[c].minutes,ind[c].seconds,ind[c].millisecs);
-			var diff = d2 - d1;
-			addIndex(c,diff.Minutes,diff.Seconds,diff.Milliseconds);
+			TimeSpan diff = d2 - d1;
+			// Fix bug when milliseconds turn out to be 999 in some cases?
+				int s = diff.Seconds;
+				int ms = diff.Milliseconds;
+				if(ms>99) { ms=0; s++; }
+			addIndex(c,diff.Minutes,s,ms);
 		}
 
 	}// -----------------------------------------
@@ -861,7 +882,6 @@ public class CueTrack
 	// --
 	public override string ToString()
 	{
-		//return String.Format(@"Track No:{0:00} | TYPE:{1} | SecStart:{2} | SecLen:{3} | Size:{4} | MD5:{5}", trackNo, trackType, sectorStart, sectorSize,byteSize,md5);
 		return $"NO:{trackNo:00}  TYPE:{trackType} SECTORS:{sectorSize} SIZE:{byteSize} MD5:{md5}";
 	}// -----------------------------------------
 

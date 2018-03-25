@@ -22,7 +22,20 @@ namespace cdcrush.forms
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
+
+			if(cd==null) return; // Safeguard, It's not supposed to happen
+
+			Text = "CD Info - " + cd.CD_TITLE;
+			textbox.Text = prog.CDCRUSH.PROGRAM_NAME + " v" + prog.CDCRUSH.PROGRAM_VERSION;
+			textbox.Text+= " - Detailed CD Info" + Environment.NewLine;
+			textbox.Text+= "-------------------" + Environment.NewLine;
+			textbox.Text+= cd.getDetailedInfo();
 		}// -----------------------------------------
 
+		// --
+		private void btn_close_Click(object sender, EventArgs e)
+		{
+			Close();
+		}// -----------------------------------------
 	}// --
 }// --
