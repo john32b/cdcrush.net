@@ -33,7 +33,7 @@ public struct CrushParams
 	internal string finalArcPath;
 	// If true, then all the track files are stored in temp folder and safe to delete
 	internal bool flag_sourceTracksOnTemp;
-	// True on `jobconvert`
+	// USED in `JobConvertCue`
 	internal bool flag_convert_only;
 
 }// --

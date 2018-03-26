@@ -32,7 +32,7 @@ class JobConvertCue:CJob
 
 			// : NEW :
 			// : ALWAYS Create a subfolder to avoid overwriting the source files
-			p.outputDir = CDCRUSH.checkCreateUniqueOutput(p.outputDir, p.cdTitle + CDCRUSH.RESTORED_CUE_FOLDER_SUFFIX);
+			p.outputDir = CDCRUSH.checkCreateUniqueOutput(p.outputDir, p.cdTitle + CDCRUSH.RESTORED_FOLDER_SUFFIX);
 			if(p.outputDir==null) {
 				fail("Output Dir Error " + p.outputDir);
 				return;
@@ -136,9 +136,12 @@ class JobConvertCue:CJob
 				}
 				else
 				{
-					// Audio tracks are already there, moving won't do anything.
+					// TaskCompress already put the audio files on the output folder
+					// But it's no big deal calling it again
+					// This is for the data tracks that are on the temp folder
 					FileTools.tryMove(track.workingFile, Path.Combine(p.outputDir, track.trackFile));
 				}
+
 				t.PROGRESS += stepProgress;
 			}
 

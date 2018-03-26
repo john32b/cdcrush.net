@@ -26,8 +26,8 @@ namespace cdcrush.prog
 		public const string CDCRUSH_COVER = "cover.jpg";
 		public const string CDCRUSH_EXTENSION = ".arc";
 
-
-		public const string RESTORED_CUE_FOLDER_SUFFIX = " (r)";
+		// When restoring a cd to a folder, put this at the end of the folder's name
+		public const string RESTORED_FOLDER_SUFFIX = " (r)";
 
 		// -- Global
 

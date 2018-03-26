@@ -97,7 +97,7 @@ class TaskCompressTrack : lib.task.CTask
 			{
 				case 0: // FLAC
 					setupFiles(".flac");
-					ffmp.audioPCMToFlac(sourceTrackFile,track.workingFile);
+					ffmp.audioPCMToFlac(sourceTrackFile, track.workingFile);
 					break;
 
 				case 1: // VORBIS
@@ -107,12 +107,13 @@ class TaskCompressTrack : lib.task.CTask
 
 				case 2: // OPUS
 					setupFiles(".ogg");
+					// Opus needs an actual bitrate, not an index
 					ffmp.audioPCMToOggOpus(sourceTrackFile, FFmpeg.OPUS_QUALITY[audioQ.Item2], track.workingFile);
 					break;
 				
 				case 3: // MP3
 					setupFiles(".mp3");
-					ffmp.audioPCMToMP3(sourceTrackFile,audioQ.Item2,track.workingFile);
+					ffmp.audioPCMToMP3(sourceTrackFile, audioQ.Item2, track.workingFile);
 					break;
 
 			}//- end switch
@@ -140,7 +141,7 @@ class TaskCompressTrack : lib.task.CTask
 	// --
 	void handleProgress(int p)
 	{
-		PROGRESS = p;
+		PROGRESS = p; // uses setter
 	}// -----------------------------------------
 
 	// --

@@ -185,6 +185,7 @@ public partial class PanelCompress : UserControl
 			form_lockSection("action", false);
 			form_set_info_pre(o);
 			numberOfTracks = o.tracks;
+			FormMain.sendMessage("Loaded CUE OK.", 2);
 		}
 
 	}// -----------------------------------------

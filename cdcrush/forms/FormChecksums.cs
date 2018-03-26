@@ -28,7 +28,7 @@ namespace cdcrush.forms
 			Text = "CD Info - " + cd.CD_TITLE;
 			textbox.Text = prog.CDCRUSH.PROGRAM_NAME + " v" + prog.CDCRUSH.PROGRAM_VERSION;
 			textbox.Text+= " - Detailed CD Info" + Environment.NewLine;
-			textbox.Text+= "-------------------" + Environment.NewLine;
+			textbox.Text+= "---------------------------------" + Environment.NewLine;
 			textbox.Text+= cd.getDetailedInfo();
 		}// -----------------------------------------
 
