@@ -91,6 +91,12 @@
     <Compile Include="forms\FormComponentsTest.Designer.cs">
       <DependentUpon>FormComponentsTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\FormLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\FormLog.Designer.cs">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +144,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\FormComponentsTest.resx">
       <DependentUpon>FormComponentsTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\FormLog.resx">
+      <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>

@@ -63,6 +63,7 @@
 			this.link_donate = new System.Windows.Forms.LinkLabel();
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -197,11 +198,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.info_status.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_status.Enabled = false;
-			this.info_status.Location = new System.Drawing.Point(12, 413);
+			this.info_status.Location = new System.Drawing.Point(12, 412);
 			this.info_status.Name = "info_status";
 			this.info_status.ReadOnly = true;
 			this.info_status.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.info_status.Size = new System.Drawing.Size(469, 15);
+			this.info_status.Size = new System.Drawing.Size(450, 16);
 			this.info_status.TabIndex = 19;
 			this.info_status.Text = "Ready.";
 			this.info_status.WordWrap = false;
@@ -477,11 +478,24 @@
 			this.info_ver.TabIndex = 1;
 			this.info_ver.Text = "0.0";
 			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.label12.ForeColor = System.Drawing.SystemColors.GrayText;
+			this.label12.Location = new System.Drawing.Point(460, 412);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(21, 13);
+			this.label12.TabIndex = 21;
+			this.label12.Text = "log";
+			this.label12.Click += new System.EventHandler(this.label12_Click);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(493, 430);
+			this.Controls.Add(this.label12);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.info_status);
@@ -504,6 +518,7 @@
 			this.tabInfo.ResumeLayout(false);
 			this.tabInfo.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -532,5 +547,6 @@
 		private System.Windows.Forms.GroupBox group_debug;
 		private System.Windows.Forms.CheckBox chk_keepTemp;
 		private System.Windows.Forms.Button btn_toolsTest;
+		private System.Windows.Forms.Label label12;
 	}
 }

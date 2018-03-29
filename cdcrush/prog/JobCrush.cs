@@ -105,10 +105,11 @@ class JobCrush:CJob
 
 			// Generate the final arc name now that I have the CD TITLE
 			jobData.finalArcPath = Path.Combine(p.outputDir, cd.CD_TITLE + ".arc");
+			LOG.log("- Destination Archive : {0}", jobData.finalArcPath);
 
 			t.complete();
 
-		}, "-Reading"));
+		}, "-Reading", "Reading CUE data and preparing"));
 		
 		// - Cut tracks
 		// ---------------------------
@@ -123,13 +124,14 @@ class JobCrush:CJob
 				addNextAsync(new TaskCompressTrack(tr));
 			}//--
 			t.complete();
-		}, "-Preparing"));
+		}, "-Preparing","Preparing to compress tracks"));
 
 
 		// Create Archive
 		// Add all tracks to the final archive
 		// ---------------------
-		add(new CTask((t) => {
+		add(new CTask((t) => 
+		{
 			CueReader cd = jobData.cd;
 
 			// -- Get list of files::
@@ -145,7 +147,7 @@ class JobCrush:CJob
 			arc.onProgress = (pr) => t.PROGRESS = pr;
 			t.killExtra = () => arc.kill();
 
-		}, "Compressing"));
+		}, "Compressing", "Compressing everything into an archive"));
 
 
 		// - Create CD SETTINGS and push it to the final archive
@@ -155,9 +157,8 @@ class JobCrush:CJob
 		{
 			CueReader cd = jobData.cd;
 
-			#if DEBUG
-				LOG.log(cd.getDetailedInfo());
-			#endif
+			LOG.log("== Detailed CD INFOS ==");
+			LOG.log(cd.getDetailedInfo());
 
 			string path_settings = Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS);
 			if(!cd.saveJson(path_settings))
@@ -182,7 +183,7 @@ class JobCrush:CJob
 
 			t.killExtra = () => arc.kill();
 
-		}, "Finalizing"));
+		}, "Finalizing", "Appending cover and settings into the archive"));
 
 		// - Get post data
 		add(new CTask((t) =>
@@ -195,6 +196,22 @@ class JobCrush:CJob
 
 		// -- COMPLETE --
 
+	}// -----------------------------------------
+
+	// -
+	public override void start()
+	{
+		CrushParams p = jobData;
+		LOG.line();
+		LOG.log("= COMPRESSING A CD with the following parameters :");
+		LOG.log("- Input : {0}", p.inputFile);
+		LOG.log("- Output Dir : {0}", p.outputDir);
+		LOG.log("- Temp Dir : {0}", p.tempDir);
+		LOG.log("- CD Title  : {0}", p.cdTitle);
+		LOG.log("- Audio Quality : {0}",CDCRUSH.getAudioQualityString(p.audioQuality));
+		LOG.log("- Compression Level : {0}", p.compressionLevel);
+		LOG.log("- Cover Image : {0}",p.cover);
+		base.start();
 	}// -----------------------------------------
 
 	/// <summary>
@@ -211,12 +228,9 @@ class JobCrush:CJob
 		CrushParams p = jobData;
 		if (p.tempDir != p.outputDir)  // NOTE: This is always a subdir of the master temp dir
 		{ 
-			try
-			{
+			try {
 				Directory.Delete(p.tempDir, true);
-			}
-			catch(IOException)
-			{
+			} catch(IOException) {
 				// do nothing
 			}
 		}// --	

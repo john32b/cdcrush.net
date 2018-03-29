@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### V1.3
+- Added LOG window. You can now see a realtime log by pressing the "LOG" button on the bottom right of the window
+- Upgraded version to 1.3, because many new features were added since 1.2
+
 ### V1.2.4
 - Progress Bar now reports total progress correctly and updates more frequently 
 - Progress Report on taskbar and window title

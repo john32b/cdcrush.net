@@ -17,8 +17,8 @@ namespace cdcrush.prog
 	{
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
-		public const string PROGRAM_NAME = "CDCRUSH";
-		public const string PROGRAM_VERSION = "1.2.4";
+		public const string PROGRAM_NAME = "cdcrush";
+		public const string PROGRAM_VERSION = "1.3";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -178,7 +178,7 @@ namespace cdcrush.prog
 
 			// Final sets at the end, ensuring that temp folder is OK
 			TEMP_FOLDER = TEST_FOLDER;
-			LOG.log("TEMP FOLDER = " + TEMP_FOLDER);
+			LOG.log("+ TEMP FOLDER = " + TEMP_FOLDER);
 			TEMP_FOLDER_IS_DEF = isDef;
 			return true;
 		}// -----------------------------------------
@@ -227,12 +227,13 @@ namespace cdcrush.prog
 
 			LOCKED = true;
 
-			var par = new CrushParams();	// CovertCue shares params with Crush job
-				par.inputFile = _Input;
-				par.outputDir = _Output;
-				par.audioQuality = _Audio;
-				par.cdTitle = _Title;
-				par.expectedTracks = HACK_CD_TRACKS;	// Don't pollute the function parameters
+			var par = new CrushParams {
+				inputFile = _Input,
+				outputDir = _Output,
+				audioQuality = _Audio,
+				cdTitle = _Title,
+				expectedTracks = HACK_CD_TRACKS
+			};  // CovertCue shares params with Crush job
 
 			var j = new JobConvertCue(par);
 				j.MAX_CONCURRENT = MAX_TASKS;
@@ -268,14 +269,15 @@ namespace cdcrush.prog
 			LOCKED = true;
 
 			// Set the running parameters for the Crush (compress) job
-			var par = new CrushParams();
-				par.inputFile = _Input;
-				par.outputDir = _Output;
-				par.audioQuality = _Audio;
-				par.cover = _Cover;
-				par.cdTitle = _Title;
-				par.compressionLevel = compressionLevel;
-				par.expectedTracks = HACK_CD_TRACKS;	// Don't pollute the function parameters
+			var par = new CrushParams {
+				inputFile = _Input,
+				outputDir = _Output,
+				audioQuality = _Audio,
+				cover = _Cover,
+				cdTitle = _Title,
+				compressionLevel = compressionLevel,
+				expectedTracks = HACK_CD_TRACKS
+			};
 
 			// Create the job and set it up
 			var j = new JobCrush(par);
@@ -366,6 +368,8 @@ namespace cdcrush.prog
 				ERROR = cd.ERROR; return null;
 			}
 			
+			LOG.log("= QuickLoaded `{0}' - [OK]",cueFile);
+
 			var info = new
 			{
 				title = cd.CD_TITLE,
@@ -430,6 +434,7 @@ namespace cdcrush.prog
 						cover = Path.Combine(TEMP_FOLDER,CDCRUSH_COVER)
 					};
 					
+					LOG.log("= QuickLoaded `{0}` - [OK]",arcFile);
 					onComplete(info);
 
 				}else
@@ -490,6 +495,7 @@ namespace cdcrush.prog
 			// Get unique path
 			while(Directory.Exists(path)) {
 				path = path + "_";
+				LOG.log("! OutputFolder Exists, new name: {0}", path);
 			}
 			// Path now is unique
 			if(!FileTools.createDirectory(path)) {

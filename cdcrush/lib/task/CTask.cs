@@ -109,11 +109,11 @@ public class CTask
 	/// </summary>
 	/// <param name="Qrun">If you want to create a quick task without extending it</param>
 	/// <param name="Name">Optional task name, used for logging</param>
-	public CTask(Action<CTask> Qrun=null, string Name=null)
+	public CTask(Action<CTask> Qrun=null, string Name=null, string Desc=null)
 	{
 		uid = ++UID;
 		name = Name ?? string.Format("task_{0}", uid);
-		desc = "";
+		desc = Desc;
 		quick_run = Qrun;
 		status = CTaskStatus.waiting;
 		
@@ -172,7 +172,7 @@ public class CTask
 	// --
 	public override string ToString()
 	{
-		return string.Format("uid:{2}, name:{0}, desc:{1}", name, desc, uid);
+		return string.Format("UID:{2}, NAME:{0}, ({1})", name, desc??".", uid);
 	}// -----------------------------------------
 	
 	/// <summary>

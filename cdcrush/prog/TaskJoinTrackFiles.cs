@@ -23,7 +23,7 @@ class TaskJoinTrackFiles:cdcrush.lib.task.CTask
 	public TaskJoinTrackFiles()
 	{
 		name = "Join";
-		desc = "Joining tracks";
+		desc = "Joining tracks into a single .BIN";
 	}// -----------------------------------------
 
 	// --

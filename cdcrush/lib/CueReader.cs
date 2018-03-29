@@ -215,7 +215,7 @@ public class CueReader
 
 		// :: Some Debug Info
 		LOG.log("[CUEREADER] : Loading : `{0}`", loadedFile_path);
-		LOG.log("[CUEREADER] : Title : `{0}`, Type: `{1}`, NumberOfTracks:{2}", CD_TITLE, CD_TYPE, tracks.Count );
+		LOG.log("[CUEREADER] : Title : `{0}`, Type : `{1}`, NumberOfTracks : {2}", CD_TITLE, CD_TYPE, tracks.Count );
 		LOG.indent(1);
 		// --
 
@@ -303,8 +303,9 @@ public class CueReader
 		}
 
 		LOG.log("+ Total CD SIZE : {0}", CD_TOTAL_SIZE); 
+		LOG.log("+ TRACKS :");
 		foreach(var tt in tracks) LOG.log(tt);
-		LOG.line(); LOG.indent(0);
+		LOG.indent(0);
 		return true;
 	}// -----------------------------------------
 
@@ -882,7 +883,7 @@ public class CueTrack
 	// --
 	public override string ToString()
 	{
-		return $"NO:{trackNo:00}  TYPE:{trackType} SECTORS:{sectorSize} SIZE:{byteSize} MD5:{md5}";
+		return $"TRACK #{trackNo:00} TYPE:{trackType} SECTORS:{sectorSize} SIZE:{byteSize} FILE:{workingFile}";
 	}// -----------------------------------------
 
 }// -- end CueTrack

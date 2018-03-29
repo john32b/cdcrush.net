@@ -86,7 +86,7 @@ class JobConvertCue:CJob
 
 			t.complete();
 
-		},"-Reading"));
+		},"-Reading", "Reading CUE data and preparing"));
 
 		
 		// - Cut tracks
@@ -102,7 +102,7 @@ class JobConvertCue:CJob
 				if(!tr.isData) addNextAsync(new TaskCompressTrack(tr));
 			}
 			t.complete();
-		},"-Preparing"));
+		},"-Preparing", "Preparing to compress tracks"));
 
 		// - Create new CUE file
 		// --------------------
@@ -152,10 +152,24 @@ class JobConvertCue:CJob
 
 			t.complete();
 
-		}, "Finalizing"));
+		}, "Finalizing","Calculating track data and creating .CUE"));
 
 		// -- COMPLETE --
 
+	}// -----------------------------------------
+
+	// -
+	public override void start()
+	{
+		CrushParams p = jobData;
+		LOG.line();
+		LOG.log("=== CONVERTING A CD with the following parameters :");
+		LOG.log("- Input : {0}", p.inputFile);
+		LOG.log("- Output Dir : {0}", p.outputDir);
+		LOG.log("- Temp Dir : {0}", p.tempDir);
+		LOG.log("- CD Title  : {0}", p.cdTitle);
+		LOG.log("- Audio Quality : {0}",CDCRUSH.getAudioQualityString(p.audioQuality));
+		base.start();
 	}// -----------------------------------------
 
 	/// <summary>
@@ -172,12 +186,9 @@ class JobConvertCue:CJob
 		CrushParams p = jobData;
 		if (p.tempDir != p.outputDir)  // NOTE: This is always a subdir of the master temp dir
 		{ 
-			try
-			{
+			try {
 				Directory.Delete(p.tempDir, true);
-			}
-			catch(IOException)
-			{
+			}catch(IOException){
 				// do nothing
 			}
 		}// --	

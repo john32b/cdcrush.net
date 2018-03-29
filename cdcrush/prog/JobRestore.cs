@@ -97,7 +97,7 @@ class JobRestore: CJob
 				arc.kill();
 			};
 
-		}, "Extracting"));
+		}, "Extracting","Extracting the archive to temp folder"));
 
 		//  - Read JSON data
 		//  - Restore tracks
@@ -112,9 +112,8 @@ class JobRestore: CJob
 				return;
 			}
 
-			#if DEBUG
-				LOG.log(cd.getDetailedInfo());
-			#endif
+			LOG.log("== Detailed CD INFOS ==");
+			LOG.log(cd.getDetailedInfo());
 
 			// - Push TASK RESTORE tasks right after this one
 			foreach(CueTrack tr in cd.tracks) 
@@ -124,7 +123,7 @@ class JobRestore: CJob
 
 			t.complete();
 
-		}, "-Preparing to Restore"));
+		}, "-Preparing to Restore","Reading stored CD info and preparing track restore tasks"));
 
 
 
@@ -207,10 +206,26 @@ class JobRestore: CJob
 
 			t.complete();
 
-		}, "Moving, Finalizing"));
+		}, "Moving, Finalizing","Calculating track data and creating .CUE"));
 
 		// - Complete -
 
+	}// -----------------------------------------
+
+
+	// -
+	public override void start()
+	{
+		RestoreParams p = jobData;
+		LOG.line();
+		LOG.log("=== RESTORING A CD with the following parameters :");
+		LOG.log("- Input : {0}", p.inputFile);
+		LOG.log("- Output Dir : {0}", p.outputDir);
+		LOG.log("- Temp Dir : {0}", p.tempDir);
+		LOG.log("- Force Single bin : {0}", p.flag_forceSingle);
+		LOG.log("- Create subfolder : {0}", p.flag_folder);
+		LOG.log("- Restore to encoded audio/.cue : {0}", p.flag_encCue);
+		base.start();
 	}// -----------------------------------------
 
 
@@ -227,16 +242,12 @@ class JobRestore: CJob
 		RestoreParams p = jobData;
 		if (p.tempDir != p.outputDir)  // NOTE: This is always a subdir of the master temp dir
 		{ 
-			try
-			{
+			try {
 				Directory.Delete(p.tempDir, true);
-			}
-			catch(IOException)
-			{
+			}catch(IOException){
 				// do nothing
 			}
 		}// --			
-
 	}// -----------------------------------------
 
 }// --

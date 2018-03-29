@@ -43,6 +43,7 @@ public class CJob
 {
 	// General Use Job name
 	public string name {get; set;}
+
 	// General Use String ID
 	public string sid {get; set;}
 
@@ -204,7 +205,7 @@ public class CJob
 	// Starts the JOB
 	// THIS IS ASYNC and will return execution to the caller right away'
 	// Use the onStatus and onComplete callbacks to get updates
-	public void start()
+	virtual public void start()
 	{
 		// --
 		if(status != CJobStatus.waiting) {
@@ -223,6 +224,7 @@ public class CJob
 		slots_active = Enumerable.Repeat(false, MAX_CONCURRENT).ToArray();
 		slots_progress = Enumerable.Repeat(-1,MAX_CONCURRENT).ToArray();
 		
+		LOG.log("[CJOB] Starting job : {0}", name);
 		timer.Start();
 		status = CJobStatus.start;
 		onJobStatus(CJobStatus.start, this);
@@ -260,6 +262,7 @@ public class CJob
 			if(TASKS_COMPLETE == TASKS_TOTAL)
 			{
 				// Job Complete
+				LOG.log("[CJOB]: Job COMPLETE : `{0}`", name);
 				timer.Stop();
 				kill();
 				status = CJobStatus.complete;
@@ -374,6 +377,10 @@ public class CJob
 		ERROR[0] = code;
 		ERROR[1] = msg;
 
+		LOG.log("[CJOB]: Job FAILED : `{0}`", name);
+		LOG.log("      : Code : {0}",code);
+		LOG.log("      : Text : {0}",msg);
+
 		kill();
 
 		status = CJobStatus.fail;
@@ -388,8 +395,6 @@ public class CJob
 	virtual protected void kill()
 	{
 		if(IS_KILLED) return; IS_KILLED = true;
-
-		LOG.log("[CJOB]: Killing Job :: ", name);
 
 		// Clear any running task
 		foreach(var t1 in currentTasks) t1.kill();

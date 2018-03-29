@@ -95,7 +95,7 @@ public partial class FormMain : Form
 		form_setText("Ready.", 1);
 
 		// - Set Infos tab
-		windowTitle = CDCRUSH.PROGRAM_NAME + "  v" + CDCRUSH.PROGRAM_VERSION;
+		windowTitle = CDCRUSH.PROGRAM_NAME + " v" + CDCRUSH.PROGRAM_VERSION;
 		this.Text = windowTitle;
 
 		// - Links
@@ -183,8 +183,9 @@ public partial class FormMain : Form
 	// Show a popup with some CD infos like checksums
 	public void form_showCdInfo(CueReader cd)
 	{
+		if(FormChecksums.ISOPEN) return;
 		var f = new FormChecksums(cd);
-		f.ShowDialog();
+		f.Show();
 	}// -----------------------------------------
 
 
@@ -318,6 +319,8 @@ public partial class FormMain : Form
 
 			case CJobStatus.complete:
 				form_setText(j.name + " Complete ", 2);
+				LOG.line(40);
+				LOG.log(""); // newline
 				form_setProgress(100);
 				FormTools.invoke(this,()=>{
 					TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
@@ -447,12 +450,18 @@ public partial class FormMain : Form
 		CDCRUSH.FLAG_KEEP_TEMP = chk_keepTemp.Checked;
 	}// -----------------------------------------
 
-
 	// --
 	private void btn_toolsTest_Click(object sender, EventArgs e)
 	{
 		var f = new FormComponentsTest();
 			f.ShowDialog();
+	}// -----------------------------------------
+
+	private void label12_Click(object sender, EventArgs e)
+	{
+		if(FormLog.ISOPEN) return;
+		var f = new FormLog();
+			f.Show();
 	}// -----------------------------------------
 
 	}// -- end class

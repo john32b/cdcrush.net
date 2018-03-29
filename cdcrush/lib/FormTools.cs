@@ -120,7 +120,7 @@ class FormTools
 			fileOpenD.RestoreDirectory = true;	// Remember the last directory used in the current session
 		}
 
-		LOG.log(" - FileLoadDialog init, {0},{1}", id, filter);
+		LOG.log("+ FileLoadDialog init, {0}, {1}", id, filter);
 	}// -----------------------------------------
 
 	/// <summary>

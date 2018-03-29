@@ -6,16 +6,18 @@
  */
 
 using System.Diagnostics;
+using System.Text;
 using System.Windows.Forms;
 
 namespace cdcrush.lib {
 
 
 /**
- * - Exports to file, Textbox, console
- * - Set up custom listeners
- * - Easy universal Logging
- * - Writes to DEBUG by default
+ * WARNING: This class is a mess
+ *
+ * - Simple global logging
+ * - Log History
+ * - Can attach a textbox
  * 
  * FUTURE:
  *		- Log to Files
@@ -23,23 +25,41 @@ namespace cdcrush.lib {
  */
 public class LOG
 {
-	// - If you want to use a textbox listener
+	// If you want to use a textbox listener
 	static private TextBoxTraceListener textBoxTrace = null;
 	
+	// Indentation string written at the start of every line
 	static private string indentSTR = "";
+
+	// Keep a history of the log
+	static private StringBuilder history;
+
+	// How large the log buffer will be
+	const int HISTORY_MAX_CAP = 524288; // Half a meg for logging.
 	// -----------------------------------------
 
+	// - Constructor
+	static LOG()
+	{
+		history = new StringBuilder(32, HISTORY_MAX_CAP);
+	}// -----------------------------------------
+
 	/// <summary>
-	/// Set a textbox to mirror the debug output
+	/// Set a textbox to mirror the debug output. 
+	/// ALSO it copies the entire log history so far.
 	/// </summary>
 	/// <param name="box"></param>
-	//[Conditional("DEBUG")]
-	public static void attachTextBox(TextBox box)
+	public static void attachTextBox(TextBoxBase box,bool copyHistory = false)
 	{
 		// Just point to a new box
 		detachTextBox(); // Just in case
 		textBoxTrace = new TextBoxTraceListener(box);
-		Debug.Listeners.Add(textBoxTrace);
+		Trace.Listeners.Add(textBoxTrace);
+
+		// --
+		if(copyHistory){
+			box.AppendText(history.ToString());
+		}
 	}// -----------------------------------------
 
 	// --
@@ -48,14 +68,28 @@ public class LOG
 	{
 		if(textBoxTrace!=null)
 		{
-			LOG.log("[LOG] Detaching Text Box");
-			Debug.Listeners.Remove(textBoxTrace);
+			Trace.Listeners.Remove(textBoxTrace);
 			textBoxTrace.Dispose();
 			textBoxTrace = null;
 		}
 	}// -----------------------------------------
 
-
+	/// <summary>
+	/// Write to the history and Trace
+	/// </summary>
+	/// <param name="str"></param>
+	static void writeMain(string line)
+	{
+		try{
+			history.AppendLine(line);
+		}
+		catch(System.ArgumentOutOfRangeException)
+		{
+			history.Remove(0,history.Length/2); // Just delete half of it from the beginning
+			history.AppendLine(line);
+		}
+		Trace.WriteLine(line);
+	}// -----------------------------------------
 
 	/// <summary>
 	/// Write a horizontal line
@@ -64,26 +98,26 @@ public class LOG
 	//[Conditional("DEBUG")]
 	public static void line(int size = 40)
 	{
-		Debug.WriteLine(new string('-', size));
+		writeMain(new string('-',size));
 	}// -----------------------------------------
-
+	// --
 	public static void log(string msg)
 	{
-		Debug.WriteLine(indentSTR + msg);
+		writeMain(indentSTR + msg);
 	}// -----------------------------------------
-
+	// --
 	public static void log(object value)
 	{
-		Debug.WriteLine(indentSTR + value);
+		writeMain(indentSTR + value.ToString());
 	}// -----------------------------------------
-
+	// --
 	public static void log(string format,params object[]args)
 	{
-		Debug.WriteLine(indentSTR + format, args);
+		writeMain(string.Format(format,args));
 	}// -----------------------------------------
 
 	/// <summary>
-	/// 
+	/// Put a fake indent on the loggings
 	/// </summary>
 	/// <param name="dir">-1 for less, 0 to clear 1 for more</param>
 	public static void indent(int dir = 0)
@@ -98,31 +132,26 @@ public class LOG
 	/// </summary>
 	public static void kill()
 	{
-		if(textBoxTrace!=null)
-		{
+		if(textBoxTrace!=null) {
 			textBoxTrace.Dispose();
 		}
 
-		Debug.Listeners.Clear();
+		Trace.Listeners.Clear();
 	}// -----------------------------------------
 
 }// -- end class
 
 
-
-
-// ::  Help From
-//	; https://stackoverflow.com/questions/1389264/trace-listener-to-write-to-a-text-box-wpf-application
-//  ; https://www.codeproject.com/Articles/21009/A-Simple-TextBox-TraceListener
-//  ;
+// --
+// Listen to Traces and copy to a textbox
 class TextBoxTraceListener : TraceListener
 {
-	internal TextBox box;
+	internal TextBoxBase box;
 	System.Action<string> writeFunction;
-	public TextBoxTraceListener(TextBox b)
+	public TextBoxTraceListener(TextBoxBase b)
 	{
 		box = b;
-		Name = "BoxLog";
+		Name = "TextBoxLog";
 		writeFunction = (string s) => 
 		{
 			if(box.IsDisposed) return;
@@ -136,8 +165,7 @@ class TextBoxTraceListener : TraceListener
 	{
 		if (box.InvokeRequired) {
 			box.BeginInvoke(writeFunction, message);
-		}
-		else {
+		} else {
 			writeFunction(message);
 		}
 	}// -----------------------------------------

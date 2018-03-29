@@ -1,11 +1,10 @@
-
 # CDCRUSH dot NET
 
 **Name**: cdcrush, *Highy compress cd-image games*\
 **Author:** John Dimi, <johndimi@outlook.com> *twitter*: [@jondmt](https://twitter.com/jondmt)\
 **Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)\
 **Language:** C# .NET 4.5, **Licence:** MIT\
-**Version:** 1.2.4 **Platform:** Windows
+**Version:** 1.3 **Platform:** Windows
 
 ## Download
 
@@ -15,7 +14,7 @@ Available for **windows** only.
 
 ## What is it
 
-![](https://i.imgur.com/wGMpNAP.png)
+![CDCRUSH LOGO](images/logo.png)
 
 **cdcrush** is a tool that can highly compress **CD based games** *( playstation 1, Pc-engine, etc )* for storage / sharing purposes. **ALSO** it can encode the audio tracks of a CD and create a `.cue` file with *(mp3/ogg/flac)* tracks for use in emulators.
 
@@ -56,11 +55,11 @@ Available for **windows** only.
 - When selecting an **output folder** you will be asked to save a dummy file, that file will not ever be written and the program will select the folder of that file.
 - You can download the release without **FFmpeg** if you already have it, just be sure to set it up in the `settings` tab.
 - :star2: **NEW since 1.2.4** : You can see the detailed info of a CD along with the tracks checksum. When restoring a CD, click the `Detailed Info` button. And for when crushing a CD, the button will become active AFTER the operation is complete.
-
+- :scroll: **NEW since 1.3** : Logging. You can click the `log` button on the bottom right of the window to open the main log. It's an advanced feature, use it in case something goes wrong to get more detailed info.
 
 ## :cd: Crushing a CD (*Compressing* )
 
-![Crushing a CD screen](https://i.imgur.com/FIKj4eG.png)
+![Crushing a CD screen](images/tab_compress.png)
 - Select an input file ( **.cue** ). You can drop it in the window or click the **[...]** button to select one
 - Optionally set an output folder, the final **.arc** file will be created there, auto-named after the CD title
 - Optionally set a cover image by dropping a **.jpg** file in the window, or by clicking on the image placeholder
@@ -73,7 +72,7 @@ Available for **windows** only.
 
 ## :arrows_clockwise: Restoring a CD
 
-![Restoring a CD screen](https://i.imgur.com/tmQncxk.png)
+![Restoring a CD screen](images/tab_restore.png)
 
 - Select a previously crushed archive ( **.arc** ) to be restored. You can drop it in the window or click the **[...]** button to select one
 - Optionally set an output folder, the (**.cue/.bin**) files will be created there, auto-named after the CD title
@@ -89,14 +88,14 @@ You can **convert** a `.cue/.bin` CD, into another `.cue/.bin` combo with **enco
 
 To convert a CD, go to the **Compress a CD** screen and **tick** the`convert to .CUE/encoded Audio` checkbox, select the audio quality and click **CONVERT**. The new files are going to be generated under a subfolder to avoid overwriting the source .cue/.bin files.
 
-![](https://i.imgur.com/sP8VdMU.png)
+![Convert to encoded audio/cue Example](images/convert_example.png)
 <sup>Example of what this operation does.</sup>
 
 > **NOTE**: This can also be achieved  when restoring a CD be ticking the `restore to .cue/encoded audio`
 
 ## :wrench: Settings tab
 
-![](https://i.imgur.com/mtlI5DR.png)
+![Settings tab](images/tab_settings.png)
 
 **Temp Folder** :
  You can set a custom temporary folder for the various background processes like FFmpeg. Useful if you have a RAMDRIVE. \

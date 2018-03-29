@@ -11,6 +11,8 @@ namespace cdcrush.forms
 		// --
 		CueReader cd;
 
+		static public bool ISOPEN = false;
+
 		// --
 		public FormChecksums(CueReader _cd)
 		{
@@ -30,6 +32,7 @@ namespace cdcrush.forms
 			textbox.Text+= " - Detailed CD Info" + Environment.NewLine;
 			textbox.Text+= "---------------------------------" + Environment.NewLine;
 			textbox.Text+= cd.getDetailedInfo();
+			ISOPEN = true;
 		}// -----------------------------------------
 
 		// --
@@ -37,5 +40,10 @@ namespace cdcrush.forms
 		{
 			Close();
 		}// -----------------------------------------
+
+		private void FormChecksums_FormClosing(object sender, FormClosingEventArgs e)
+		{	
+			ISOPEN = false;
+		}
 	}// --
 }// --
