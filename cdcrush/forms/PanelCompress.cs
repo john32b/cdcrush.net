@@ -13,7 +13,7 @@ public partial class PanelCompress : UserControl
 	string preparedCover;
 	string loadedCuePath;
 	// This holds the info of the CD that was just compressed. Set AFTER crushing
-	CueReader postCdInfo;
+	cd.CDInfos postCdInfo;
 	// Hold the number of tracks of the quickloadedCD
 	int numberOfTracks;
 
@@ -27,7 +27,7 @@ public partial class PanelCompress : UserControl
 	private void PanelCompress_Load(object sender, EventArgs e)
 	{
 		// -- Some Tooltips
-         ToolTip tt = new ToolTip();		 
+         ToolTip tt = new ToolTip();
 		 tt.SetToolTip(chk_encodedCue, "Encodes audio tracks and creates a .CUE file that handles data and encoded audio tracks. Doesn't create a final archive. This format can be used in some emulators.");
 		 tt.SetToolTip(pictureBox1,"You can optionally set an image cover for this CD and it will be stored in the archive.");
          
@@ -208,7 +208,7 @@ public partial class PanelCompress : UserControl
 		else if (ext == ".jpg")
 			form_set_cover(file);
 		else {
-			FormMain.sendMessage("Unsupported file extension. Drop a .CUE file",3);
+			FormMain.sendMessage("Unsupported file extension. Drop a .CUE file, or .JPG for a cover",3);
 		}
 	}// -----------------------------------------
 
@@ -220,7 +220,7 @@ public partial class PanelCompress : UserControl
 		Tuple<int,int> audioQ = Tuple.Create(combo_audio_c.SelectedIndex,combo_audio_q.SelectedIndex);
 
 		// Since I can fire 2 jobs from here, have a common callback
-		Action<bool,int,CueReader> jobCallback = (complete, newSize, cd) => {
+		Action<bool,int,cd.CDInfos> jobCallback = (complete, newSize, cd) => {
 			FormTools.invoke(this, () =>{
 
 				form_lockSection("all", false);

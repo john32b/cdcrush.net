@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "cdcrush";
-		public const string PROGRAM_VERSION = "1.3";
+		public const string PROGRAM_VERSION = "1.4";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -79,7 +79,7 @@ namespace cdcrush.prog
 		// Hacky way of pushing number of expected tracks on the jobs.
 		// MUST BE SET RIGHT BEFORE CREATING AJOB.
 		// Until I implement progress reporting in a better way, this works fine.
-		public static int HACK_CD_TRACKS=0;
+		public static int HACK_CD_TRACKS = 0;
 		// -----------------------------------------
 
 		// :: AUDIO QUALITY ::
@@ -220,7 +220,7 @@ namespace cdcrush.prog
 		/// <param name="onComplete">Completed (completeStatus,final Size)</param>
 		/// <returns></returns>
 		public static bool startJob_ConvertCue(string _Input, string _Output, Tuple<int,int> _Audio, 
-			string _Title, Action<bool,int,CueReader> onComplete)
+			string _Title, Action<bool,int,cd.CDInfos> onComplete)
 		{
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
 			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
@@ -261,7 +261,7 @@ namespace cdcrush.prog
 		/// <param name="onComplete">Completed (completeStatus,CrushedSize)</param>
 		/// <returns></returns>
 		public static bool startJob_CrushCD(string _Input, string _Output, Tuple<int,int> _Audio, 
-			string _Cover, string _Title, int compressionLevel, Action<bool,int,CueReader> onComplete)
+			string _Cover, string _Title, int compressionLevel, Action<bool,int,cd.CDInfos> onComplete)
 		{
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
 			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
@@ -361,20 +361,20 @@ namespace cdcrush.prog
 			if (!check_file_(cueFile,".cue")) return false;
 
 			// Load the CUE file and try to parse it
-			var cd = new CueReader();
-			
-			if(!cd.load(cueFile))
-			{
-				ERROR = cd.ERROR; return null;
+			var cd = new cd.CDInfos();
+			try { 
+				cd.cueLoad(cueFile);
+			}catch(haxe.lang.HaxeException e) {
+				ERROR = e.Message; return null;
 			}
-			
-			LOG.log("= QuickLoaded `{0}' - [OK]",cueFile);
+
+			LOG.log("= QuickLoaded `{0}' - [OK]", cueFile);
 
 			var info = new
 			{
 				title = cd.CD_TITLE,
 				size1 = cd.CD_TOTAL_SIZE,
-				tracks = cd.tracks.Count
+				tracks = cd.tracks.length
 			};
 
 			return info;
@@ -419,9 +419,11 @@ namespace cdcrush.prog
 				if(success) // OK
 				{
 					// Continue
-					var cd = new CueReader();
-					if(!cd.loadJson(Path.Combine(TEMP_FOLDER,CDCRUSH_SETTINGS))) {
-						ERROR = cd.ERROR;
+					var cd = new cd.CDInfos();
+					try{
+						cd.jsonLoad(Path.Combine(TEMP_FOLDER,CDCRUSH_SETTINGS));
+					}catch(haxe.lang.HaxeException e){
+						ERROR = e.Message;
 						onComplete(null);
 						return;
 					}
@@ -505,5 +507,12 @@ namespace cdcrush.prog
 			return path;
 		}// -----------------------------------------
 
-	}// --
-}// --
+		/// Get a unique named temp folder ( inside the main temp folder )
+		public static string getSubTempDir()
+		{
+			return Path.Combine(CDCRUSH.TEMP_FOLDER,Guid.NewGuid().ToString().Substring(0, 12));
+		}// -----------------------------------------
+
+	}// -- end class
+
+}// -- end namespace

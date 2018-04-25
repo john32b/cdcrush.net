@@ -31,24 +31,24 @@ class TaskJoinTrackFiles:cdcrush.lib.task.CTask
 	{
 		base.start();
 
-		CueReader cd = jobData.cd;
+		cd.CDInfos CD = jobData.cd;
 
 		// --
-		if(cd.tracks.Count==1)
+		if(CD.tracks.length==1)
 		{
 			complete();
 			return;
 		}
 
 		// --
-		inputs = new string[cd.tracks.Count-1];
-		for(int i=1;i<cd.tracks.Count;i++)
+		inputs = new string[CD.tracks.length-1];
+		for(int i=1;i<CD.tracks.length;i++)
 		{
-			inputs[i-1] = cd.tracks[i].workingFile;
-			cd.tracks[i].workingFile = null;	// Used later when moving, null files won't be moved
+			inputs[i-1] = (CD.tracks[i] as cd.CDTrack).workingFile;
+			(CD.tracks[i] as cd.CDTrack).workingFile = null;	// Used later when moving, null files won't be moved
 		}
 
-		output = cd.tracks[0].workingFile;
+		output = (CD.tracks[0] as cd.CDTrack).workingFile;
 
 		int progressStep = (int)Math.Round((double) (100.0f / inputs.Length));
 
@@ -75,5 +75,5 @@ class TaskJoinTrackFiles:cdcrush.lib.task.CTask
 
 	}// -----------------------------------------
 		
-}// --
-}// --
+}// -- end class
+}// -- end namespace

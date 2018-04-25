@@ -16,14 +16,14 @@ class TaskRestoreTrack : lib.task.CTask
 
 	// Point to the JOB's restore parameters
 	RestoreParams p;
-	CueTrack track;
+	cd.CDTrack track;
 
 	bool isFlac = false;
 
 	string crushedTrackPath;  // Autocalculated
 
 	// --
-	public TaskRestoreTrack(CueTrack tr)
+	public TaskRestoreTrack(cd.CDTrack tr)
 	{
 		name = "Restore";
 		desc = string.Format("Restoring track {0}", tr.trackNo);

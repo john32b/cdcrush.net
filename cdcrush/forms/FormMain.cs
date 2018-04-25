@@ -33,7 +33,7 @@ public partial class FormMain : Form
 	// Send whole form LOCK status from components
 	internal static Action<bool> sendLock;
 	// Request to open CD INFO popup
-	internal static Action<CueReader> showCdInfo;
+	internal static Action<cd.CDInfos> showCdInfo;
 
 	// VARS ::
 	// ---------------
@@ -181,7 +181,7 @@ public partial class FormMain : Form
 
 	// --
 	// Show a popup with some CD infos like checksums
-	public void form_showCdInfo(CueReader cd)
+	public void form_showCdInfo(cd.CDInfos cd)
 	{
 		if(FormChecksums.ISOPEN) return;
 		var f = new FormChecksums(cd);
@@ -386,7 +386,7 @@ public partial class FormMain : Form
 			if(CDCRUSH.setTempFolder(path))
 			{
 				info_tempFolder.Text = CDCRUSH.TEMP_FOLDER;
-				Properties.Settings.Default.tempFolder = CDCRUSH.TEMP_FOLDER; // A valid folder
+				Properties.Settings.Default.tempFolder = path; // A valid folder
 			}
 		}
 	}// -----------------------------------------

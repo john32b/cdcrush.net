@@ -18,7 +18,7 @@ public partial class PanelRestore : UserControl
 
 	// CD Info of the CD prepared to be restored
 	// Primarily used to getting the checksum data
-	CueReader loadedCDInfo;
+	cd.CDInfos loadedCDInfo;
 
 	// -----------------------------------------
 
@@ -93,7 +93,7 @@ public partial class PanelRestore : UserControl
 		loadedCDInfo = cdInfo.cd;
 		btn_chksm.Enabled = true;
 
-		int numberOfTracks = loadedCDInfo.tracks.Count;
+		int numberOfTracks = loadedCDInfo.tracks.length;
 
 		info_cdtitle.Text = loadedCDInfo.CD_TITLE;
 		info_size0.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.sizeArc));
@@ -205,7 +205,7 @@ public partial class PanelRestore : UserControl
 		FormMain.sendMessage("", 1);
 
 		// Send the nuber of tracks for proper progress reporting
-		CDCRUSH.HACK_CD_TRACKS = loadedCDInfo.tracks.Count;
+		CDCRUSH.HACK_CD_TRACKS = loadedCDInfo.tracks.length;
 
 		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM

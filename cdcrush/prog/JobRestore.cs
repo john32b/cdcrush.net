@@ -25,7 +25,7 @@ public struct RestoreParams
 	// Temp dir for the current batch, it's autoset by this object,
 	// is a subfolder of the master TEMP folder
 	internal string tempDir;
-	internal CueReader cd;
+	internal cd.CDInfos cd;
 
 }// --
 
@@ -67,7 +67,7 @@ class JobRestore: CJob
 		}
 
 		// --
-		p.tempDir = Path.Combine(CDCRUSH.TEMP_FOLDER, Guid.NewGuid().ToString().Substring(0, 12));
+		p.tempDir = CDCRUSH.getSubTempDir();
 		if(!FileTools.createDirectory(p.tempDir)) {
 			fail(msg: "Can't create TEMP dir");
 			return;
@@ -103,22 +103,25 @@ class JobRestore: CJob
 		//  - Restore tracks
 		//  - JOIN if it has to
 		// -----------------------
-		add(new CTask((t) => {
-			var cd = new CueReader(); jobData.cd = cd;
+		add(new CTask((t) => 
+		{
+			var CD = new cd.CDInfos(); jobData.cd = CD;
 
-			// --
-			if(!cd.loadJson(Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS))) {
-				t.fail(msg: cd.ERROR);
-				return;
+			try{
+				CD.jsonLoad(Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS));
+			}catch(haxe.lang.HaxeException e){
+				t.fail(msg:e.Message); return;
 			}
 
-			LOG.log("== Detailed CD INFOS ==");
-			LOG.log(cd.getDetailedInfo());
 
-			// - Push TASK RESTORE tasks right after this one
-			foreach(CueTrack tr in cd.tracks) 
+			LOG.log("== Detailed CD INFOS ==");
+			LOG.log(CD.getDetailedInfo());
+
+			for(int i=0;i<CD.tracks.length;i++)
 			{
-				addNextAsync(new TaskRestoreTrack(tr)); // Note: Task will take care of encoded cue case
+				// Push TASK RESTORE tasks right after this one
+				// Note: Task will take care of encoded cue case
+				addNextAsync(new TaskRestoreTrack(CD.tracks[i] as cd.CDTrack)); 
 			}//--
 
 			t.complete();
@@ -130,8 +133,9 @@ class JobRestore: CJob
 		// - Join Tracks, but only when not creating .Cue/Enc Audio
 		// -----------------------
 		if(!p.flag_encCue) 
-		add(new CTask((t) => {
-			CueReader cd = jobData.cd;
+		add(new CTask((t) => 
+		{
+			cd.CDInfos cd = jobData.cd;
 			// -- Join tracks
 			if(p.flag_forceSingle || !cd.MULTIFILE) {
 				// The task will read data from the shared job data var
@@ -151,38 +155,41 @@ class JobRestore: CJob
 		// - Create CUE files
 		// - Delete Temp Files
 		// -----------------------
-		add(new CTask((t) => {
-			CueReader cd = jobData.cd;
+		add(new CTask((t) => 
+		{
+			cd.CDInfos CD = jobData.cd;
 
-			int progressStep = (int)Math.Round(100.0f/cd.tracks.Count);
+			int progressStep = (int)Math.Round(100.0f/CD.tracks.length);
 			// --
-			foreach(var track in cd.tracks) {
+			for(int i=0;i<CD.tracks.length;i++)
+			{
+				cd.CDTrack track = CD.tracks[i] as cd.CDTrack;
 
 				if(p.flag_encCue)
 				{
 					string ext = Path.GetExtension(track.workingFile);
-					if(cd.tracks.Count==1) {
-						track.trackFile = $"{cd.CD_TITLE}{ext}";
+					if(CD.tracks.length==1) {
+						track.trackFile = $"{CD.CD_TITLE}{ext}";
 					}else {
-						track.trackFile = $"{cd.CD_TITLE} (track {track.trackNo}){ext}";
+						track.trackFile = $"{CD.CD_TITLE} (track {track.trackNo}){ext}";
 					}
-					if(!cd.MULTIFILE) track.setNewTimesReset(); // :: CONVERTS SINGLE TO MULTI
+					if(!CD.MULTIFILE) track.rewriteIndexes_forMultiFile(); // :: CONVERTS SINGLE TO MULTI
 				}
 				else
 				{
 
-					if(p.flag_forceSingle && cd.MULTIFILE) // :: CONVERT MULTI TO SINGLE
+					if(p.flag_forceSingle && CD.MULTIFILE) // :: CONVERT MULTI TO SINGLE
 					{
-						track.setNewTimesBasedOnSector();
+						track.rewriteIndexes_forSingleFile();
 					}
 
-					if(cd.MULTIFILE && !p.flag_forceSingle) {
-						track.trackFile = cd.CD_TITLE + " " + track.getFilenameRaw();
+					if(CD.MULTIFILE && !p.flag_forceSingle) {
+						track.trackFile = CD.CD_TITLE + " " + track.getFilenameRaw();
 					}
 
-					if(!cd.MULTIFILE || p.flag_forceSingle) {
+					if(!CD.MULTIFILE || p.flag_forceSingle) {
 						if(track.trackNo == 1)
-							track.trackFile = cd.CD_TITLE + ".bin";
+							track.trackFile = CD.CD_TITLE + ".bin";
 						else
 							track.trackFile = null;
 					}
@@ -200,8 +207,15 @@ class JobRestore: CJob
 
 			// --
 			// Create CUE File
-			if(!cd.saveCUE(Path.Combine(p.outputDir, cd.CD_TITLE + ".cue"))) {
-				t.fail(cd.ERROR); return;
+			try{
+				CD.cueSave(
+					Path.Combine(p.outputDir,CD.CD_TITLE + ".cue") ,
+					new haxe.root.Array<object>( new [] {
+						"CDCRUSH (dotNet) version : " + CDCRUSH.PROGRAM_VERSION,
+						CDCRUSH.LINK_SOURCE
+				}));
+			}catch(haxe.lang.HaxeException e) {
+				t.fail(msg:e.Message); return;
 			}
 
 			t.complete();

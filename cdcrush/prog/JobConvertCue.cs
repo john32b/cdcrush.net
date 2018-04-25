@@ -10,7 +10,7 @@ namespace cdcrush.prog
 	
 
 /// <summary>
-/// A collection of tasks, that will CRUSH a cd,
+/// A collection of tasks, that will CONVERT a cd,
 /// Tasks will run in order, and some will run in parallel
 /// </summary>
 class JobConvertCue:CJob
@@ -39,7 +39,7 @@ class JobConvertCue:CJob
 			}
 
 			// -
-			p.tempDir = Path.Combine(CDCRUSH.TEMP_FOLDER,Guid.NewGuid().ToString().Substring(0, 12));
+			p.tempDir = CDCRUSH.getSubTempDir();
 			if(!FileTools.createDirectory(p.tempDir)) {
 				fail(msg: "Can't create TEMP dir");
 				return;
@@ -57,32 +57,33 @@ class JobConvertCue:CJob
 		// - Read the CUE file ::
 		add(new CTask((t) =>
 		{
-			var cd = new CueReader();
-			jobData.cd = cd;
+			var CD = new cd.CDInfos();
+			jobData.cd = CD;
 
-			if(!cd.load(p.inputFile)) {
-				t.fail(msg:cd.ERROR);
-				return;
+			try{
+				CD.cueLoad(p.inputFile);
+			}catch(haxe.lang.HaxeException e){
+				t.fail(msg:e.Message); return;
 			}
 
 			// --
-			if(cd.tracks.Count==1)
+			if(CD.tracks.length==1)
 			{
 				t.fail(msg:"No point in converting. No audio tracks on the cd.");
 				return;
 			}
 
 			// Meaning the tracks are going to be extracted in the temp folder
-			jobData.flag_sourceTracksOnTemp = (!cd.MULTIFILE && cd.tracks.Count>1);
+			jobData.flag_sourceTracksOnTemp = (!CD.MULTIFILE && CD.tracks.length > 1);
 
 			// In case user named the CD, otherwise it's going to be the same
 			if(!string.IsNullOrWhiteSpace(p.cdTitle))
 			{
-				cd.CD_TITLE = FileTools.sanitizeFilename(p.cdTitle);
+				CD.CD_TITLE = FileTools.sanitizeFilename(p.cdTitle);
 			}
 
 			// Real quality to string name
-			cd.CD_AUDIO_QUALITY = CDCRUSH.getAudioQualityString(p.audioQuality);
+			CD.CD_AUDIO_QUALITY = CDCRUSH.getAudioQualityString(p.audioQuality);
 
 			t.complete();
 
@@ -93,12 +94,15 @@ class JobConvertCue:CJob
 		// ---------------------------
 		add(new TaskCutTrackFiles());
 
-		// - Compress tracks
+		// - Encode tracks
 		// ---------------------
 		add(new CTask((t) =>
 		{
 			// Only encode the audio tracks
-			foreach(CueTrack tr in (jobData.cd as CueReader).tracks)  {	
+			cd.CDInfos CD = jobData.cd;
+			for(int i=0;i<CD.tracks.length;i++)
+			{
+				cd.CDTrack tr = CD.tracks[i] as cd.CDTrack;
 				if(!tr.isData) addNextAsync(new TaskCompressTrack(tr));
 			}
 			t.complete();
@@ -108,29 +112,31 @@ class JobConvertCue:CJob
 		// --------------------
 		add(new CTask((t) =>
 		{
-			CueReader cd = jobData.cd;
+			cd.CDInfos CD = jobData.cd;
 
 			// DEV: So far :
 			// track.trackFile is UNSET. cd.saveCue needs it to be set.
 			// track.workingFile points to a valid file, some might be in TEMP folder and some in input folder (data tracks)
 
-			int stepProgress = (int)Math.Round(100.0f/cd.tracks.Count);
+			int stepProgress = (int)Math.Round(100.0f/CD.tracks.length);
 
 			// -- Move files to output folder
-			foreach(var track in cd.tracks) 
+			for(int i=0;i<CD.tracks.length;i++)
 			{
-				if(!cd.MULTIFILE){
+				cd.CDTrack track = CD.tracks[i] as cd.CDTrack;
+
+				if(!CD.MULTIFILE) {
 					// Fix the index times to start with 00:00:00
-					track.setNewTimesReset();
+					track.rewriteIndexes_forMultiFile();
 				}
 
 				string ext = Path.GetExtension(track.workingFile);
 				
-				track.trackFile = $"{cd.CD_TITLE} (track {track.trackNo}){ext}";
+				track.trackFile = $"{CD.CD_TITLE} (track {track.trackNo}){ext}";
 
 				// Data track was not cut or encoded.
 				// It's in the input folder, don't move it
-				if(track.isData && cd.MULTIFILE)
+				if(track.isData && CD.MULTIFILE)
 				{
 					FileTools.tryCopy(track.workingFile, Path.Combine(p.outputDir, track.trackFile));
 				}
@@ -146,8 +152,16 @@ class JobConvertCue:CJob
 			}
 
 			//-- Create the new CUE file
-			if(!cd.saveCUE(Path.Combine(p.outputDir,cd.CD_TITLE + ".cue"))) {
-				t.fail(cd.ERROR); return;
+			try{
+				CD.cueSave(
+					Path.Combine(p.outputDir,CD.CD_TITLE + ".cue") ,
+					new haxe.root.Array<object>( new [] {
+						"CDCRUSH (dotNet) version : " + CDCRUSH.PROGRAM_VERSION,
+						CDCRUSH.LINK_SOURCE
+				}));
+
+			}catch(haxe.lang.HaxeException e){
+				t.fail(msg:e.Message); return;
 			}
 
 			t.complete();

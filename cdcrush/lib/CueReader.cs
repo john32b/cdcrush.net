@@ -1,4 +1,19 @@
-﻿using System;
+﻿/**
+ * CueReader.cs
+ * CD .cue file parser and saver
+ * -----------------------
+ * Author : John Dimi
+ *
+ * ATTENTION: 
+ * ----------
+ * 	This class is DEPRECATED! AND NOT USED 
+ *  In favor of the CDINFO DLL object which was generated from HAXE code.
+ *  The reason is to have a single codebase for both this C# version
+ *  and the nodejs version of CDCRUSH.
+ *
+ * ================================================= */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -9,9 +24,7 @@ using System.Web.Script.Serialization;
 namespace cdcrush.lib
 {
 
-/**
- * CueReader is the main class to read and operate CUE files
- */
+
 public class CueReader
 {
 	// :: STATICS

@@ -32,37 +32,37 @@ class TaskCutTrackFiles:cdcrush.lib.task.CTask
 		base.start();
 
 		// Get the global cd object
-		CueReader cd = jobData.cd;
-		input = cd.tracks[0].workingFile;
+		cd.CDInfos CD = jobData.cd;
+		input = (CD.tracks[0] as cd.CDTrack).workingFile;
 
 		// No need to cut an already cut CD
 		// Multifiles `workingfile` is already set to proper
-		if(cd.MULTIFILE)
+		if(CD.MULTIFILE)
 		{
 			complete();
 			return;
 		}
 
 		// No need to copy the bytes to the temp folder, just work from the source
-		if(cd.tracks.Count==1)
+		if(CD.tracks.length==1)
 		{
 			complete();
 			return;
 		}
 
 
-		int progressStep = (int)Math.Round((double) (100 / cd.tracks.Count));
+		int progressStep = (int)Math.Round((double) (100 / CD.tracks.length));
 
 		// -- Cut the tracks ::
 
 		FileStream inStr = new FileStream(input, FileMode.Open, FileAccess.Read);
 
-		for (int i = 0; i < cd.tracks.Count; i++)
+		for (int i = 0; i < CD.tracks.length; i++)
 		{
-			var track = cd.tracks[i];
+			cd.CDTrack track = (CD.tracks[i] as cd.CDTrack);
 
-			int byteStart = track.sectorStart * cd.SECTOR_SIZE;
-			int byteLen = track.sectorSize * cd.SECTOR_SIZE;
+			int byteStart = track.sectorStart * CD.SECTOR_SIZE;
+			int byteLen = track.sectorSize * CD.SECTOR_SIZE;
 
 			// New filename for the tracks
 			track.workingFile = Path.Combine(jobData.tempDir,track.getFilenameRaw());

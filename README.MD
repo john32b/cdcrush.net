@@ -1,10 +1,12 @@
+
 # CDCRUSH dot NET
 
 **Name**: cdcrush, *Highy compress cd-image games*\
 **Author:** John Dimi, <johndimi@outlook.com> *twitter*: [@jondmt](https://twitter.com/jondmt)\
 **Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)\
 **Language:** C# .NET 4.5, **Licence:** MIT\
-**Version:** 1.3 **Platform:** Windows
+**Version:** 1.3 **Platform:** Windows\
+**Sister Project** : [cdcrush nodejs](https://www.npmjs.com/package/cdcrush)
 
 ## Download
 
@@ -129,9 +131,15 @@ See [`CHANGELOG.MD`](CHANGELOG.MD)
 **A** : FFmpeg.exe is a small beast ( *around 36 megabytes*) and in some cases users already have it on their pc. So I am publishing a version with and a version without it.
 
 
-## Npm Version
+## NodeJS Version
 
-This project is a continuation of [**cdcrush npm**](https://www.npmjs.com/package/cdcrush).  You can check it out if you want, but **note** :warning: that the NPM version is old and **NOT RECOMMENDED TO USE** until I update it.
+This project is a continuation of [**cdcrush nodeJS**](https://www.npmjs.com/package/cdcrush).  
+
+**NEW APRIL 2018** :: I updated the **nodejs** version of **cdcrush** and it's compatible with the **.net** version. Meaning that archives created with **.net** can be opened with **.nodejs** and vice versa.
+
+> :stars: **nodejs** version support **batches** , so you can restore/compress multiple CD with one command.
+
+You can checkout **nodejs** version over at NPM : https://www.npmjs.com/package/cdcrush
 
 ## About
 

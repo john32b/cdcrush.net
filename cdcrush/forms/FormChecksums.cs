@@ -9,12 +9,12 @@ namespace cdcrush.forms
 	public partial class FormChecksums: Form
 	{
 		// --
-		CueReader cd;
+		cd.CDInfos cd;
 
 		static public bool ISOPEN = false;
 
 		// --
-		public FormChecksums(CueReader _cd)
+		public FormChecksums(cd.CDInfos _cd)
 		{
 			cd = _cd;
 			InitializeComponent();

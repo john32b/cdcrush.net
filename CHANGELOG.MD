@@ -1,5 +1,13 @@
 ## CHANGELOG
 
+### V1.4
+- New CD Parser class
+	- Fixed times bug when converting multifile CD images to a single .bin
+	- built with **HAXE** and is included as a DLL file
+	- is the exact same class used in the **nodejs** version of cdcrush *(same codebase)*
+- Fixed bug, when setting a custom TEMP folder, it now sets and restores it correctly.
+- When **crushing** and the output archive already exists, it doesn't overwrite it, instead it renames the new archive by adding a `_` to the end of the file. 
+
 ### V1.3
 - Added LOG window. You can now see a realtime log by pressing the "LOG" button on the bottom right of the window
 - Upgraded version to 1.3, because many new features were added since 1.2

@@ -24,7 +24,7 @@ public struct CrushParams
 	// : Internal Access : ----
 
 	// Keep the CD infos of the CD, it is going to be read later
-	public CueReader cd {get; internal set;}
+	public cd.CDInfos cd {get; internal set;}
 	// Filesize of the final archive
 	public int crushedSize {get; internal set;}
 	// Temp dir for the current batch, it's autoset, is a subfolder of the master TEMP folder.
@@ -64,7 +64,7 @@ class JobCrush:CJob
 				return;
 			}
 
-			p.tempDir = Path.Combine(CDCRUSH.TEMP_FOLDER,Guid.NewGuid().ToString().Substring(0, 12));
+			p.tempDir = CDCRUSH.getSubTempDir();
 			if(!FileTools.createDirectory(p.tempDir)) {
 				fail(msg: "Can't create TEMP dir");
 				return;
@@ -83,16 +83,18 @@ class JobCrush:CJob
 		// - Read the CUE file ::
 		add(new CTask((t) =>
 		{
-			var cd = new CueReader();
+			var cd = new cd.CDInfos();
+
 			jobData.cd = cd;
 
-			if(!cd.load(p.inputFile)) {
-				t.fail(msg:cd.ERROR);
-				return;
+			try{
+				cd.cueLoad(p.inputFile);
+			}catch(haxe.lang.HaxeException e) {
+				t.fail(msg:e.Message); return;
 			}
 
 			// Meaning the tracks are going to be extracted in the temp folder
-			jobData.flag_sourceTracksOnTemp = (!cd.MULTIFILE && cd.tracks.Count>1);
+			jobData.flag_sourceTracksOnTemp = (!cd.MULTIFILE && cd.tracks.length > 1);
 
 			// In case user named the CD, otherwise it's going to be the same
 			if(!string.IsNullOrWhiteSpace(p.cdTitle))
@@ -104,7 +106,16 @@ class JobCrush:CJob
 			cd.CD_AUDIO_QUALITY = CDCRUSH.getAudioQualityString(p.audioQuality);
 
 			// Generate the final arc name now that I have the CD TITLE
-			jobData.finalArcPath = Path.Combine(p.outputDir, cd.CD_TITLE + ".arc");
+			jobData.finalArcPath = Path.Combine(p.outputDir, cd.CD_TITLE + CDCRUSH.CDCRUSH_EXTENSION);
+
+			// Try to create a new archive in case it exists?
+			while(File.Exists(jobData.finalArcPath))
+			{
+				LOG.log("{0} already exists, adding (_) until unique", jobData.finalArcPath);
+				String S = jobData.finalArcPath;
+				jobData.finalArcPath = S.Substring(S.Length-4) + "_" + CDCRUSH.CDCRUSH_EXTENSION;
+			}
+
 			LOG.log("- Destination Archive : {0}", jobData.finalArcPath);
 
 			t.complete();
@@ -119,9 +130,10 @@ class JobCrush:CJob
 		// ---------------------
 		add(new CTask((t) =>
 		{
-			CueReader cd = jobData.cd;
-			foreach(CueTrack tr in cd.tracks) {
-				addNextAsync(new TaskCompressTrack(tr));
+			cd.CDInfos CD = jobData.cd;
+			//foreach(cd.CDInfos tr in CD.tracks) {
+			for(var i=0;i<CD.tracks.length;i++) {
+				addNextAsync(new TaskCompressTrack(CD.tracks[i] as cd.CDTrack));
 			}//--
 			t.complete();
 		}, "-Preparing","Preparing to compress tracks"));
@@ -132,12 +144,12 @@ class JobCrush:CJob
 		// ---------------------
 		add(new CTask((t) => 
 		{
-			CueReader cd = jobData.cd;
-
+			cd.CDInfos CD = jobData.cd;
+		
 			// -- Get list of files::
 			System.Collections.ArrayList files = new System.Collections.ArrayList();
-			foreach(var tr in cd.tracks) {
-				files.Add(tr.workingFile); // Working file is valid, was set earlier
+			for(var i=0;i<CD.tracks.length;i++) {
+				files.Add((CD.tracks[i] as cd.CDTrack).workingFile); // Working file is valid, was set earlier
 			}
 
 			// Compress all the track files
@@ -155,16 +167,16 @@ class JobCrush:CJob
 		// --------------------
 		add(new CTask((t) =>
 		{
-			CueReader cd = jobData.cd;
-
+			cd.CDInfos CD = jobData.cd;
+			
 			LOG.log("== Detailed CD INFOS ==");
-			LOG.log(cd.getDetailedInfo());
+			LOG.log(CD.getDetailedInfo());
 
 			string path_settings = Path.Combine(p.tempDir, CDCRUSH.CDCRUSH_SETTINGS);
-			if(!cd.saveJson(path_settings))
-			{
-				t.fail(msg: cd.ERROR);
-				return;
+			try{
+				CD.jsonSave(path_settings);
+			}catch(haxe.lang.HaxeException e){
+				t.fail(msg:e.Message); return;
 			}
 	
 			// - Cover Image Set?
