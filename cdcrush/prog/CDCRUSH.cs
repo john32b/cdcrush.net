@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "cdcrush";
-		public const string PROGRAM_VERSION = "1.4";
+		public const string PROGRAM_VERSION = "1.4.1";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -105,6 +105,8 @@ namespace cdcrush.prog
 			LOG.log("{0}, {1}" + Environment.NewLine + "{2}", PROGRAM_NAME, PROGRAM_VERSION, PROGRAM_SHORT_DESC); ;
 			LOG.log("------------------");
 			
+
+
 			// - Set Temp Folder to default
 			if (!setTempFolder()) return false;
 

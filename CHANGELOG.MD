@@ -1,5 +1,8 @@
 ## CHANGELOG
 
+### V1.4.1
+	- Fixed Crash when loading a CD with any track having a pregap
+
 ### V1.4
 - New CD Parser class
 	- Fixed times bug when converting multifile CD images to a single .bin
