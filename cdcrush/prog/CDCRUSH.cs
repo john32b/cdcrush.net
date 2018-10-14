@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "cdcrush";
-		public const string PROGRAM_VERSION = "1.4.1";
+		public const string PROGRAM_VERSION = "1.4.2";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -106,14 +106,8 @@ namespace cdcrush.prog
 			LOG.log("------------------");
 			
 
-
 			// - Set Temp Folder to default
 			if (!setTempFolder()) return false;
-
-			// - Check for FFMPEG, since it may not come with the program
-			FFMPEG_PATH = "";
-			FFMPEG_OK = false;
-			setFFMPEGPath();
 
 			// -
 			#if DEBUG
@@ -121,6 +115,19 @@ namespace cdcrush.prog
 			#else // release
 				TOOLS_PATH = "tools";
 			#endif
+
+			// - Check for FFMPEG, first in `tools` folder then in system path
+			FFMPEG_PATH = "";
+			FFMPEG_OK = false;
+			setFFMPEGPath(TOOLS_PATH);
+			if(!FFMPEG_OK)
+			{
+				setFFMPEGPath();
+				if(FFMPEG_OK) LOG.log("+ FFMPEG on path");
+			}else 
+			{
+				LOG.log("+ FFMPEG on `/tools` folder");
+			}
 
 			ERROR = null; isInited = true; LOCKED = false;
 			return true;

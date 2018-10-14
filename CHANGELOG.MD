@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### V1.4.2
+	- Program will check for `ffmpeg` in the `tools` folder. Now the full release package will run out of the box.
+    - Removed ffmpeg clear button from settings. It didn't provide any meaningful functionality
+
 ### V1.4.1
 	- Fixed Crash when loading a CD with any track having a pregap
 
@@ -9,7 +13,7 @@
 	- built with **HAXE** and is included as a DLL file
 	- is the exact same class used in the **nodejs** version of cdcrush *(same codebase)*
 - Fixed bug, when setting a custom TEMP folder, it now sets and restores it correctly.
-- When **crushing** and the output archive already exists, it doesn't overwrite it, instead it renames the new archive by adding a `_` to the end of the file. 
+- When **crushing** and the output archive already exists, it doesn't overwrite it, instead it renames the new archive by adding a `_` at the end of the file. 
 
 ### V1.3
 - Added LOG window. You can now see a realtime log by pressing the "LOG" button on the bottom right of the window

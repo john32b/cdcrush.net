@@ -44,9 +44,7 @@
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabRestore = new System.Windows.Forms.TabPage();
-			this.panelRestore1 = new cdcrush.forms.PanelRestore();
 			this.tabCrush = new System.Windows.Forms.TabPage();
-			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			this.tabSettings = new System.Windows.Forms.TabPage();
 			this.group_debug = new System.Windows.Forms.GroupBox();
 			this.btn_toolsTest = new System.Windows.Forms.Button();
@@ -54,7 +52,6 @@
 			this.info_ffmpeg_status = new System.Windows.Forms.Label();
 			this.num_threads = new System.Windows.Forms.NumericUpDown();
 			this.btn_temp_def = new System.Windows.Forms.Button();
-			this.btn_ffmpeg_clear = new System.Windows.Forms.Button();
 			this.btn_ffmpeg = new System.Windows.Forms.Button();
 			this.btn_selectTemp = new System.Windows.Forms.Button();
 			this.info_ffmpeg = new System.Windows.Forms.TextBox();
@@ -64,6 +61,8 @@
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
+			this.panelRestore1 = new cdcrush.forms.PanelRestore();
+			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -247,14 +246,6 @@
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
 			// 
-			// panelRestore1
-			// 
-			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
-			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(455, 335);
-			this.panelRestore1.TabIndex = 0;
-			// 
 			// tabCrush
 			// 
 			this.tabCrush.Controls.Add(this.panelCompress1);
@@ -267,21 +258,12 @@
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
 			// 
-			// panelCompress1
-			// 
-			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
-			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(455, 335);
-			this.panelCompress1.TabIndex = 0;
-			// 
 			// tabSettings
 			// 
 			this.tabSettings.Controls.Add(this.group_debug);
 			this.tabSettings.Controls.Add(this.info_ffmpeg_status);
 			this.tabSettings.Controls.Add(this.num_threads);
 			this.tabSettings.Controls.Add(this.btn_temp_def);
-			this.tabSettings.Controls.Add(this.btn_ffmpeg_clear);
 			this.tabSettings.Controls.Add(this.btn_ffmpeg);
 			this.tabSettings.Controls.Add(this.btn_selectTemp);
 			this.tabSettings.Controls.Add(label8);
@@ -375,23 +357,12 @@
 			this.btn_temp_def.UseVisualStyleBackColor = true;
 			this.btn_temp_def.Click += new System.EventHandler(this.btn_temp_def_Click);
 			// 
-			// btn_ffmpeg_clear
-			// 
-			this.btn_ffmpeg_clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_ffmpeg_clear.Location = new System.Drawing.Point(404, 101);
-			this.btn_ffmpeg_clear.Name = "btn_ffmpeg_clear";
-			this.btn_ffmpeg_clear.Size = new System.Drawing.Size(48, 20);
-			this.btn_ffmpeg_clear.TabIndex = 3;
-			this.btn_ffmpeg_clear.Text = "Clear";
-			this.btn_ffmpeg_clear.UseVisualStyleBackColor = true;
-			this.btn_ffmpeg_clear.Click += new System.EventHandler(this.btn_ffmpeg_clear_Click);
-			// 
 			// btn_ffmpeg
 			// 
 			this.btn_ffmpeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_ffmpeg.Location = new System.Drawing.Point(380, 101);
+			this.btn_ffmpeg.Location = new System.Drawing.Point(401, 101);
 			this.btn_ffmpeg.Name = "btn_ffmpeg";
-			this.btn_ffmpeg.Size = new System.Drawing.Size(24, 20);
+			this.btn_ffmpeg.Size = new System.Drawing.Size(49, 20);
 			this.btn_ffmpeg.TabIndex = 3;
 			this.btn_ffmpeg.Text = "...";
 			this.btn_ffmpeg.UseVisualStyleBackColor = true;
@@ -400,7 +371,7 @@
 			// btn_selectTemp
 			// 
 			this.btn_selectTemp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_selectTemp.Location = new System.Drawing.Point(377, 43);
+			this.btn_selectTemp.Location = new System.Drawing.Point(375, 43);
 			this.btn_selectTemp.Name = "btn_selectTemp";
 			this.btn_selectTemp.Size = new System.Drawing.Size(24, 20);
 			this.btn_selectTemp.TabIndex = 3;
@@ -415,7 +386,7 @@
 			this.info_ffmpeg.Location = new System.Drawing.Point(6, 101);
 			this.info_ffmpeg.Name = "info_ffmpeg";
 			this.info_ffmpeg.ReadOnly = true;
-			this.info_ffmpeg.Size = new System.Drawing.Size(372, 20);
+			this.info_ffmpeg.Size = new System.Drawing.Size(389, 20);
 			this.info_ffmpeg.TabIndex = 0;
 			// 
 			// info_tempFolder
@@ -425,7 +396,7 @@
 			this.info_tempFolder.Location = new System.Drawing.Point(7, 43);
 			this.info_tempFolder.Name = "info_tempFolder";
 			this.info_tempFolder.ReadOnly = true;
-			this.info_tempFolder.Size = new System.Drawing.Size(368, 20);
+			this.info_tempFolder.Size = new System.Drawing.Size(364, 20);
 			this.info_tempFolder.TabIndex = 0;
 			// 
 			// tabInfo
@@ -490,6 +461,22 @@
 			this.label12.Text = "log";
 			this.label12.Click += new System.EventHandler(this.label12_Click);
 			// 
+			// panelRestore1
+			// 
+			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
+			this.panelRestore1.Name = "panelRestore1";
+			this.panelRestore1.Size = new System.Drawing.Size(455, 335);
+			this.panelRestore1.TabIndex = 0;
+			// 
+			// panelCompress1
+			// 
+			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
+			this.panelCompress1.Name = "panelCompress1";
+			this.panelCompress1.Size = new System.Drawing.Size(455, 335);
+			this.panelCompress1.TabIndex = 0;
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -541,7 +528,6 @@
 		private System.Windows.Forms.Button btn_ffmpeg;
 		private System.Windows.Forms.TextBox info_ffmpeg;
 		private System.Windows.Forms.Button btn_temp_def;
-		private System.Windows.Forms.Button btn_ffmpeg_clear;
 		private System.Windows.Forms.Label info_ffmpeg_status;
 		private System.Windows.Forms.LinkLabel link_donate;
 		private System.Windows.Forms.GroupBox group_debug;

@@ -176,7 +176,7 @@ class CliApp
 
 	
 	/**
-	 * Quickly create a CLI APP in SYNC and return it's stdOut and stdErr
+	 * Quickly create a CLI APP in SYNC and return its stdOut and stdErr
 	 * Returns [ stdOut, stdErr, ExitCode ]
 	 */
 	static public string[] quickStartSync(string exePath,string args = null)

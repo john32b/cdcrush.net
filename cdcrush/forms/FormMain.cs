@@ -409,12 +409,6 @@ public partial class FormMain : Form
 	}// -----------------------------------------
 
 	// --
-	private void btn_ffmpeg_clear_Click(object sender, EventArgs e)
-	{
-		form_setFFmpegPath(); // no params will set the default temp dir
-	}// -----------------------------------------
-
-	// --
 	// Path must be the folder containing `ffmpeg.exe`
 	void form_setFFmpegPath(string path=null)
 	{
