@@ -18,7 +18,7 @@ namespace cdcrush.prog
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "cdcrush";
-		public const string PROGRAM_VERSION = "1.4.2";
+		public const string PROGRAM_VERSION = "1.4.3";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
@@ -29,13 +29,15 @@ namespace cdcrush.prog
 		// When restoring a cd to a folder, put this at the end of the folder's name
 		public const string RESTORED_FOLDER_SUFFIX = " (r)";
 
+		public const int FREEARC_DEF_COMPRESSION_INDEX = 3; // This is the index on the form. Actual level is + 1
+
 		// -- Global
 
 		// Keep temporary files, don't delete them
 		// Currently for debug builds only
 		public static bool FLAG_KEEP_TEMP = false;
 
-		// Maximum concurrent tasks in CJobs
+		// Maximum concurrent tasks in CJobs (default value)
 		public static int MAX_TASKS = 2;
 
 		// FFmpeg executable name
@@ -81,18 +83,6 @@ namespace cdcrush.prog
 		// Until I implement progress reporting in a better way, this works fine.
 		public static int HACK_CD_TRACKS = 0;
 		// -----------------------------------------
-
-		// :: AUDIO QUALITY ::
-
-		// Audio codecs as they appear on the form controls
-		public static readonly string[] AUDIO_CODECS = {
-			"FLAC",
-			"Ogg Vorbis",
-			"Ogg Opus",
-			"MP3"
-		};
-
-		// -----------------------------------
 
 		/// <summary>
 		/// Init Variables program
@@ -192,32 +182,6 @@ namespace cdcrush.prog
 			return true;
 		}// -----------------------------------------
 
-		
-		/// <summary>
-		/// Translate from an AudioSettings tuple to String Descriptor
-		/// </summary>
-		/// <param name="q">The index of the combobox. Or Quality passed to the crush job</param>
-		public static string getAudioQualityString(Tuple<int,int> A)
-		{
-			string res = AUDIO_CODECS[A.Item1];
-			
-			switch(A.Item1)
-			{
-				case 0:	// FLAC;
-					break;
-				case 1: // VORBIS
-					res += $" {FFmpeg.VORBIS_QUALITY[A.Item2]}k Vbr";
-					break;
-				case 2: // OPUS
-					res += $" {FFmpeg.OPUS_QUALITY[A.Item2]}k Vbr";
-					break;
-				case 3: // MP3
-					res += $" {FFmpeg.MP3_QUALITY[A.Item2]}k Vbr";
-					break;
-			}
-
-			return res;
-		}// -----------------------------------------
 
 		/// <summary>
 		/// Convert from bin/cue to encoded audio/cue
@@ -228,7 +192,7 @@ namespace cdcrush.prog
 		/// <param name="_Title">Title of the CD</param>
 		/// <param name="onComplete">Completed (completeStatus,final Size)</param>
 		/// <returns></returns>
-		public static bool startJob_ConvertCue(string _Input, string _Output, Tuple<int,int> _Audio, 
+		public static bool startJob_ConvertCue(string _Input, string _Output, Tuple<string,int> _Audio, 
 			string _Title, Action<bool,int,cd.CDInfos> onComplete)
 		{
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
@@ -269,7 +233,7 @@ namespace cdcrush.prog
 		/// <param name="_Title">Title of the CD</param>
 		/// <param name="onComplete">Completed (completeStatus,CrushedSize)</param>
 		/// <returns></returns>
-		public static bool startJob_CrushCD(string _Input, string _Output, Tuple<int,int> _Audio, 
+		public static bool startJob_CrushCD(string _Input, string _Output, Tuple<string,int> _Audio, 
 			string _Cover, string _Title, int compressionLevel, Action<bool,int,cd.CDInfos> onComplete)
 		{
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
@@ -350,7 +314,6 @@ namespace cdcrush.prog
 
 			return true;
 		}// -----------------------------------------
-
 
 
 		/// <summary>

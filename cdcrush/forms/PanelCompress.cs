@@ -31,34 +31,42 @@ public partial class PanelCompress : UserControl
 		 tt.SetToolTip(chk_encodedCue, "Encodes audio tracks and creates a .CUE file that handles data and encoded audio tracks. Doesn't create a final archive. This format can be used in some emulators.");
 		 tt.SetToolTip(pictureBox1,"You can optionally set an image cover for this CD and it will be stored in the archive.");
          
-		// -- Initialize Audio Settings:
-		foreach(string scodec in CDCRUSH.AUDIO_CODECS)
+		// -- Get audio codecs into Combo Box
+		foreach(var codecID in AudioMaster.codecs)
 		{
-			combo_audio_c.Items.Add(scodec);
+			combo_audio_c.Items.Add(AudioMaster.getCodecIDName(codecID));
 		}
 
 		combo_audio_c.SelectedIndex = 0;
 		combo_audio_c_SelectedIndexChanged(null,null); // force first call? why
+		combo_data_c.SelectedIndex = CDCRUSH.FREEARC_DEF_COMPRESSION_INDEX;
 
 		FormTools.fileLoadDialogPrepare("cue", "CUE files (*.cue)|*.cue");
 		FormTools.fileLoadDialogPrepare("cover", "Image files (*.jpg)|*.jpg");
 
 		// --
-		form_lockSection("action", true);
-		form_set_cover(null); // will also set preparedCover
-		form_set_info_pre(null);
-		form_set_crushed_size();
-		loadedCuePath = null;
-		postCdInfo = null;
-		
-		// --
+		form_zeroOutInfos();
 		form_set_proper_action_name();
-		combo_data_c.SelectedIndex = 3;
 	}// -----------------------------------------
 
 	// ==========================================
 	// FORM ACTIONS
 	// ==========================================
+
+
+	/// <summary>
+	/// Clear CD Infos and Locks Buttons
+	/// </summary>
+	private void form_zeroOutInfos()
+	{
+		form_lockSection("action", true);
+		form_set_cover(null);	// Empty it out
+		form_set_cd_info(null);
+		form_set_crushed_size(); // Empty it out
+		loadedCuePath = null;
+		postCdInfo = null;
+		numberOfTracks = 0;
+	}// -----------------------------------------
 
 	/// <summary>
 	/// LOCK parts of the form
@@ -95,14 +103,10 @@ public partial class PanelCompress : UserControl
 	/// <param name="file"></param>
 	void form_set_cover(string file)
 	{
-		if(FormTools.imageSetFile(pictureBox1, file))
-		{
-			// OK
+		if(FormTools.imageSetFile(pictureBox1, file)) {  
 			preparedCover = file;
 		}
-		else
-		{
-			// FAIL
+		else {
 			pictureBox1.Image = Properties.Resources.dropimage;
 			preparedCover = null;
 		}
@@ -122,8 +126,8 @@ public partial class PanelCompress : UserControl
 	/// <summary>
 	/// Set some CD infos from a CUE file
 	/// </summary>
-	/// <param name="cdInfo"></param>
-	void form_set_info_pre(dynamic cdInfo = null)
+	/// <param name="cdInfo"> {title,size1,tracks}</param>
+	void form_set_cd_info(dynamic cdInfo = null)
 	{
 		btn_chksm.Enabled = false;
 
@@ -139,6 +143,8 @@ public partial class PanelCompress : UserControl
 		info_cdtitle.Text = cdInfo.title;
 		info_size1.Text =  String.Format("{0}MB", FormTools.bytesToMB(cdInfo.size1));
 		info_tracks.Text = String.Format("{0}", cdInfo.tracks);
+
+		numberOfTracks = cdInfo.tracks;
 	}// -----------------------------------------
 
 	/// <summary>
@@ -160,19 +166,12 @@ public partial class PanelCompress : UserControl
 	/// </summary>
 	void form_quickLoadFile(string file)
 	{
-		dynamic o = CDCRUSH.loadQuickCUE(file);
-
-		// Reset Infos and Action, unlock on valid file
-		form_lockSection("action", true);
-		form_set_cover(null);	// Empty it out
-		form_set_info_pre(null);
-		form_set_crushed_size(); // Empty it out
-		loadedCuePath = null;
-		postCdInfo = null;
-		numberOfTracks = 0;
+		form_zeroOutInfos();
 
 		// Clear the status infos at next tab change
 		FormMain.FLAG_REQUEST_STATUS_CLEAR = true;
+
+		dynamic o = CDCRUSH.loadQuickCUE(file);
 
 		if (o == null) // Error
 		{
@@ -180,11 +179,11 @@ public partial class PanelCompress : UserControl
 		}
 		else
 		{
+			// CUE Loaded OK, fill in form infos and unlock buttons
 			loadedCuePath = file;
 			input_in.Text = file;
 			form_lockSection("action", false);
-			form_set_info_pre(o);
-			numberOfTracks = o.tracks;
+			form_set_cd_info(o);
 			FormMain.sendMessage("Loaded CUE OK.", 2);
 		}
 
@@ -193,7 +192,6 @@ public partial class PanelCompress : UserControl
 	// ==========================================
 	// EVENTS
 	// ==========================================
-	
 
 	/// <summary>
 	/// A file has been dropped and the ENGINE is NOT LOCKED
@@ -216,13 +214,15 @@ public partial class PanelCompress : UserControl
 	// Event Clicked Compressed Button
 	private void btn_CRUSH_Click(object sender, EventArgs e)
 	{
-		// Get a valid audio parameters tuple
-		Tuple<int,int> audioQ = Tuple.Create(combo_audio_c.SelectedIndex,combo_audio_q.SelectedIndex);
-
-		// Since I can fire 2 jobs from here, have a common callback
-		Action<bool,int,cd.CDInfos> jobCallback = (complete, newSize, cd) => {
-			FormTools.invoke(this, () =>{
-
+		// This TUPLE will hold (CODECID,QUALITY INDEX)
+		Tuple<string,int> audioQ = Tuple.Create( AudioMaster.codecs[combo_audio_c.SelectedIndex],
+												 combo_audio_q.SelectedIndex );
+										
+		// Since I can fire 2 jobs from here, have a common callback for both jobs
+		Action<bool,int,cd.CDInfos> jobCallback = (complete, newSize, cd) =>
+		{
+			FormTools.invoke(this, () => 
+			{
 				form_lockSection("all", false);
 				form_set_crushed_size(newSize);
 				postCdInfo = cd;	// Either null or full info
@@ -230,12 +230,14 @@ public partial class PanelCompress : UserControl
 				if(complete) {
 					FormMain.sendMessage("Complete", 2);
 					btn_chksm.Enabled = true;
-					
-				}else 
-				{
+				}else {
 					FormMain.sendProgress(0);
 					FormMain.sendMessage(CDCRUSH.ERROR,3);
 				}
+
+				// Make progress bar and status message clear after
+				FormMain.FLAG_REQUEST_STATUS_CLEAR = true;
+
 			});
 		};
 
@@ -286,11 +288,12 @@ public partial class PanelCompress : UserControl
 	{
 		string lastDir = null;
 		if (loadedCuePath != null) lastDir = System.IO.Path.GetDirectoryName(loadedCuePath);
-		SaveFileDialog d = new SaveFileDialog();
-		d.FileName = "HERE.arc";
-		d.CheckPathExists = true;
-		d.InitialDirectory = lastDir;
-		d.Title = "Select output folder";
+		SaveFileDialog d = new SaveFileDialog {
+			FileName = "HERE.arc",
+			CheckPathExists = true,
+			InitialDirectory = lastDir,
+			Title = "Select output folder"
+		};
 
 		if (d.ShowDialog() == DialogResult.OK)
 		{
@@ -325,35 +328,22 @@ public partial class PanelCompress : UserControl
 	{
 		combo_audio_q.Items.Clear();
 
-		// Ordering is defined in CDCRUSH.AUDIO_CODECS
-		switch(combo_audio_c.SelectedIndex)
+		// Will get available quality options for a CODEC ID
+		// Will make checkbox disabled and point it to the default quality based on Codec
+
+		var codecID = AudioMaster.codecs[combo_audio_c.SelectedIndex];
+		var qInfo = AudioMaster.getQualityInfos(codecID);
+
+		foreach(string info in qInfo.Item1)
 		{
-			case 0: // FLAC
-				// Keep empty
-				combo_audio_q.Items.Add("");
-				combo_audio_q.Enabled = false;
-				break;
-			case 1: // VORBIS
-				for(int i=0;i<FFmpeg.VORBIS_QUALITY.Length;i++) {
-					combo_audio_q.Items.Add(FFmpeg.VORBIS_QUALITY[i].ToString() + "k Vbr");
-				}
-				combo_audio_q.Enabled = true;
-				break;
-			case 2: // OPUS
-				for(int i=0;i<FFmpeg.OPUS_QUALITY.Length;i++) {
-					combo_audio_q.Items.Add(FFmpeg.OPUS_QUALITY[i].ToString() + "k Vbr");
-				}				
-				combo_audio_q.Enabled = true;
-				break;
-			case 3: // MP3
-				for(int i=0;i<FFmpeg.MP3_QUALITY.Length;i++) {
-					combo_audio_q.Items.Add(FFmpeg.MP3_QUALITY[i].ToString() + "k Vbr");
-				}
-				combo_audio_q.Enabled = true;
-				break;
+			combo_audio_q.Items.Add(info);
 		}
 
-		combo_audio_q.SelectedIndex = 0;
+		combo_audio_q.Enabled = qInfo.Item1.Length>0;
+		if(combo_audio_q.Enabled) {
+			combo_audio_q.SelectedIndex = qInfo.Item2;
+		}											
+
 	}// -----------------------------------------
 
 	// --

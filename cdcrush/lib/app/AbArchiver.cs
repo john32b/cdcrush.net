@@ -6,7 +6,7 @@ namespace cdcrush.lib.app
 	/// <summary>
 	/// Generic Archiver class
 	/// </summary>
-	abstract class AbArchiver:ICliReport
+	abstract class AbArchiver:IProcessStatus
 	{
 		protected CliApp proc;
 		protected int _progress; // 0 - 100

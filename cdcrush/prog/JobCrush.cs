@@ -16,7 +16,7 @@ public struct CrushParams
 	public string inputFile;	// The CUE file to compress
 	public string outputDir;	// Output Directory.
 	public string cdTitle;		// Custom CD TITLE
-	public Tuple<int,int> audioQuality;	// Tuple<AudioCodecID, Bitrate/Index> !!
+	public Tuple<string,int> audioQuality;	// Tuple<AudioCodecID, Quality Index>
 	public string cover;			// Cover image for the CD, square
 	public int compressionLevel;	// Describe the compression level, 0-10?
 	public int expectedTracks;		// In order for the progress report to work. set num of CD tracks here.
@@ -103,8 +103,9 @@ class JobCrush:CJob
 			}
 
 			// Real quality to string name
-			cd.CD_AUDIO_QUALITY = CDCRUSH.getAudioQualityString(p.audioQuality);
+			cd.CD_AUDIO_QUALITY = AudioMaster.getCodecSettingsInfo(p.audioQuality);
 
+	
 			// Generate the final arc name now that I have the CD TITLE
 			jobData.finalArcPath = Path.Combine(p.outputDir, cd.CD_TITLE + CDCRUSH.CDCRUSH_EXTENSION);
 
@@ -154,7 +155,7 @@ class JobCrush:CJob
 
 			// Compress all the track files
 			var arc = new FreeArc(CDCRUSH.TOOLS_PATH);
-			t.handleCliReport(arc);
+			t.handleProcessStatus(arc);
 			arc.compress((string[])files.ToArray(typeof(string)), jobData.finalArcPath, p.compressionLevel);
 			arc.onProgress = (pr) => t.PROGRESS = pr;
 			t.killExtra = () => arc.kill();
@@ -190,7 +191,7 @@ class JobCrush:CJob
 
 			// - Append the file(s)
 			var arc = new FreeArc(CDCRUSH.TOOLS_PATH);
-			t.handleCliReport(arc);
+			t.handleProcessStatus(arc);
 			arc.appendFiles(new string[]{path_settings, path_cover},jobData.finalArcPath);
 
 			t.killExtra = () => arc.kill();
@@ -220,7 +221,7 @@ class JobCrush:CJob
 		LOG.log("- Output Dir : {0}", p.outputDir);
 		LOG.log("- Temp Dir : {0}", p.tempDir);
 		LOG.log("- CD Title  : {0}", p.cdTitle);
-		LOG.log("- Audio Quality : {0}",CDCRUSH.getAudioQualityString(p.audioQuality));
+		LOG.log("- Audio Quality : {0}",AudioMaster.getCodecSettingsInfo(p.audioQuality));
 		LOG.log("- Compression Level : {0}", p.compressionLevel);
 		LOG.log("- Cover Image : {0}",p.cover);
 		base.start();

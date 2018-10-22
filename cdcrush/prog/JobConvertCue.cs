@@ -83,7 +83,7 @@ class JobConvertCue:CJob
 			}
 
 			// Real quality to string name
-			CD.CD_AUDIO_QUALITY = CDCRUSH.getAudioQualityString(p.audioQuality);
+			CD.CD_AUDIO_QUALITY = AudioMaster.getCodecSettingsInfo(p.audioQuality);
 
 			t.complete();
 
@@ -182,7 +182,7 @@ class JobConvertCue:CJob
 		LOG.log("- Output Dir : {0}", p.outputDir);
 		LOG.log("- Temp Dir : {0}", p.tempDir);
 		LOG.log("- CD Title  : {0}", p.cdTitle);
-		LOG.log("- Audio Quality : {0}",CDCRUSH.getAudioQualityString(p.audioQuality));
+		LOG.log("- Audio Quality : {0}",AudioMaster.getCodecSettingsInfo(p.audioQuality));
 		base.start();
 	}// -----------------------------------------
 

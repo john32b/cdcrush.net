@@ -8,8 +8,8 @@ namespace cdcrush.lib.app {
 /// 
 /// FreeArc Wrapper
 /// 
-///		"onComplete" will be called automatically whenever the operation ends
-///		"onProgress" is BROKEN
+///		"onComplete" will be called automatically when the operation ends
+///		"onProgress" callbacks progress percent
 /// 
 /// </summary>
 class FreeArc : AbArchiver
@@ -19,7 +19,8 @@ class FreeArc : AbArchiver
 	// --
 	public FreeArc(string exePath = "")
 	{
-		proc = new CliApp(Path.Combine(exePath,EXECUTABLE_NAME),true);
+		proc = new CliApp(Path.Combine(exePath,EXECUTABLE_NAME));
+		proc.flag_stdout_word_mode = true;
 
 		proc.onComplete = (code) =>
 		{
@@ -30,7 +31,7 @@ class FreeArc : AbArchiver
 			else
 			{
 				ERROR = proc.stdErrLog;
-				onComplete(false);
+				onComplete?.Invoke(false);
 			}
 		};
 

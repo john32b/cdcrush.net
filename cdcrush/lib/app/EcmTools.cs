@@ -12,7 +12,7 @@ namespace cdcrush.lib.app
 	/// 
 	/// 
 	/// </summary>
-	class EcmTools:ICliReport
+	class EcmTools:IProcessStatus
 	{
 		const string EXECUTABLE_ECM = "ecm.exe";
 		const string EXECUTABLE_UNECM = "unecm.exe";
@@ -55,7 +55,7 @@ namespace cdcrush.lib.app
 				else
 				{
 					ERROR = "EcmTools error.";
-					onComplete(false);
+					onComplete?.Invoke(false);
 				}
 			};
 

@@ -1,9 +1,73 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
+
 namespace cdcrush.lib.app
 {
+
+public class FFmpegCodec
+{	
+	public string name;				// Name of codec
+	public string ID;				// Identifier
+	public string ext;				// Codec Extension
+	public string codecString;		// Codec String to put in ffmpeg argument
+	public bool ignoreQuality = false;
+	public string[] qualityArg;		// Quality argument to pass onto ffmpeg
+									// If NULL, will take 0... as parameters ( up to qualityinfo0.length )
+	public int[] qualityInfo;		// 1:1 map to qualityArg[]. Information on Quality Index
+									// If qualityInfo0 NOT SET, then info = qualityARG + qualityInfoPost
+	public string qualityInfoPost;	// If set, quality Info is qualityInfo0 + qualityInfoPost
+	public int qualityDefault;		// default quality INDEX ( 0...N )
+	
+	// --
+	private int sanitizeQuality(int q)
+	{
+		if(q<0) return 0;
+		if(qualityArg!=null) {
+			if(q>=qualityArg.Length) return qualityArg.Length-1;
+		}else {
+			if(qualityInfo!=null && q>=qualityInfo.Length) return qualityInfo.Length-1;
+		}
+		return q;
+	}// ---------------
+
+	/// <summary>
+	/// Return the ffmpeg encode string with quality baked
+	/// </summary>
+	/// <param name="q"></param>
+	/// <returns></returns>
+	public string getCodecString(int q)
+	{
+		if(ignoreQuality) return codecString;
+		q = sanitizeQuality(q);
+		if(qualityArg==null) return $"{codecString}{q}"; // Quality + Q Index
+		return $"{codecString}{qualityArg[q]}";
+	}// ---------------
+
+	// --
+	public string[] getQualityInfos()
+	{
+		List<string> l = new List<string>();
+		if(!ignoreQuality)
+		{
+			if(qualityInfo!=null)
+			{
+				foreach(var i in qualityInfo) l.Add(i + qualityInfoPost);
+			}else
+			{
+				foreach(var i in qualityArg) l.Add(i + qualityInfoPost);
+			}
+		}
+
+		return l.ToArray();
+	}// ---------------
+
+}
+
+
+
 
 /// <summary>
 /// Simple wrapper for FFmpeg
@@ -13,29 +77,72 @@ namespace cdcrush.lib.app
 ///		"onComplete" => Exit code 0 for OK, other for ERROR
 ///	
 /// </summary>
-class FFmpeg:ICliReport
+class FFmpeg:IProcessStatus
 {
 	const string EXECUTABLE_NAME = "ffmpeg.exe";
 	private CliApp proc;
 
 	// # USER SET ::
-	public Action<int> onProgress  { get; set; }
-	public Action<bool> onComplete { get; set; }
-	public string ERROR {get; private set;}
+	public Action<int> onProgress  { get; set; }	// IProcessReport
+	public Action<bool> onComplete { get; set; }	// IProcessReport
+	public string ERROR {get; private set;}			// IProcessReport
 
 	// Percentage Helpers
 	int secondsConverted, targetSeconds;
 	public int progress {get; private set;} // Current progress % of the current conversion
 
-	// Ogg vorbis Quality (index), VBR kbps
-	public static readonly int[] VORBIS_QUALITY = { 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500 };
+	// Supported codecs to use
+	public static FFmpegCodec[] codecs;
 
-	// MP3 quality (index), VBR kbps
-	public static readonly int[] MP3_QUALITY = { 245, 225, 190, 175, 165, 130, 115, 100, 85, 65};
+	public static FFmpegCodec getCodecByID(string id) {
+		return Array.Find(codecs,(s)=>s.ID==id);
+	}
 
-	// OPUS quality (index), VBR kbps
-	public static readonly int[] OPUS_QUALITY = { 32, 48, 64, 80, 96, 112, 128, 160, 320};
 	// -----------------------------------------
+
+	/// <summary>
+	/// Constructor for the static things, this will only get called once
+	/// </summary>
+	static FFmpeg()
+	{
+		codecs = new[]
+		{
+			new FFmpegCodec() {
+				name = "Vorbis", ID = "VORBIS", ext = ".ogg",
+				qualityDefault = 3,
+				// qualityArg not set, meaning it accepts 0->10 (info.length)
+				qualityInfo = new [] { 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500 },
+				qualityInfoPost = "k Vbr",
+				codecString = "-c:a libvorbis -q " // string ends where it expects quality string
+			},
+
+			new FFmpegCodec() {
+				name = "Opus", ID = "OPUS", ext = ".ogg",
+				qualityDefault = 4,
+				// qualityInfo not set, meaning final info = qualityArg + qualitInfoPost // e.g. 32k Vbr"
+				qualityArg = new [] { "32k", "48k", "64k", "80k", "96k", "112k", "128k", "160k", "320k" },
+				qualityInfoPost = " Vbr",
+				codecString = "-c:a libopus -vbr on -compression_level 10 -b:a "
+			},
+
+			new FFmpegCodec() {
+				name = "Mp3", ID = "MP3", ext = ".mp3",
+				qualityDefault = 3,
+				qualityArg = new [] { "9","8","7","6","5","4","3","2","1","0" },
+				qualityInfo = new [] { 65, 85, 100, 115, 130, 165, 175, 190, 225, 245 },
+				qualityInfoPost = " Vbr",
+				codecString = "-c:a libmp3lame -q:a "
+			},
+
+			new FFmpegCodec() {
+				name = "Flac lossless", ID = "FLAC", ext = ".flac",
+				qualityDefault = 0,
+				// No quality settings, means that quality is ignored
+				codecString = "-c:a flac ",
+				ignoreQuality = true
+			}
+		};
+	}// -----------
 
 	/// <summary>
 	/// FFMPEG wrapper
@@ -47,24 +154,23 @@ class FFmpeg:ICliReport
 
 		proc.onComplete = (code) =>
 		{
-			if (code == 0)
-			{
+			if (code == 0) {
 				onComplete?.Invoke(true);
 			}
-			else
-			{
+			else {
 				ERROR = "Something went wrong with FFMPEG";
-				onComplete(false);
+				onComplete?.Invoke(false);
 			}
 		};
 
 
-		// Get and calculate progress, "targetSeconds" needs to be set for this to work
+		// -- FFMPEG writes Status to StdErr
+		// Gets current operation progress (
 		proc.onStdErr = (s) =>
 		{
 			if (targetSeconds == 0) return;
 			secondsConverted = readSecondsFromOutput(s, @"time=(\d{2}):(\d{2}):(\d{2})");
-			if (secondsConverted == -1) return;
+			if (secondsConverted == -1) return; 
 
 			progress = (int)Math.Ceiling(((double)secondsConverted / (double)targetSeconds) * 100f);
 			// LOG.log("[FFMPEG] : {0} / {1} = {2}", secondsConverted, targetSeconds, progress);
@@ -85,11 +191,10 @@ class FFmpeg:ICliReport
 	private int getSecondsFromFile(string input)
 	{
 		int i = 0;
-		var s = CliApp.quickStartSync(proc.executable, string.Format("-i \"{0}\" -f null -", input));
+		var s = CliApp.quickStartSync(proc.executable,$"-i \"{input}\" -f null -");
 		if(s[2]=="0") // ffmpeg success 
 		{
 			i = readSecondsFromOutput(s[1], @"\s*Duration:\s*(\d{2}):(\d{2}):(\d{2})");
-			LOG.log("[FFMPEG] : {0} duration in seconds = {1}", input, i);
 		}
 		return i;
 	}// -----------------------------------------
@@ -114,6 +219,115 @@ class FFmpeg:ICliReport
 		return seconds;
 	}// -----------------------------------------
 
+
+
+	/// <summary>
+	/// Encode a PCM file with an ENCODER / QUALITY combo to another File
+	/// </summary>
+	/// <param name="encoderID">OPUS, VORBIS, FLAC, MP3</param>
+	/// <param name="quality">Use -1 for default, Starts from 0 ... MAX = dependent on codec </param>
+	/// <param name="input">Input filepath to encode </param>
+	/// <param name="output">Output path, if not set will create a file at same folder as input file</param>
+	/// <returns></returns>
+	public bool encodePCM(string encoderID, int quality, string input, string output = null)
+	{
+		var cod = getCodecByID(encoderID);
+
+		if(cod == null) { 
+			ERROR = $"CodecID {encoderID} does not exist";
+			return false;
+		}
+		if(quality==-1) quality = cod.qualityDefault;
+
+		if(string.IsNullOrEmpty(output)) {
+			output = Path.ChangeExtension(input,cod.ext);
+		}else{
+			//[safeguard] Make sure it is valid extension
+			if(!output.ToLower().EndsWith(cod.ext)) {
+				output += cod.ext; // try to fix it
+			}
+		}
+		
+		// Init progress variables:
+		var fsize = (int)new FileInfo(input).Length;
+		secondsConverted = progress = 0;
+		targetSeconds = (int)Math.Floor((double)fsize / 176400); // PCM is 176400 bytes per second
+
+		// -
+		LOG.log("[FFMPEG] : Encoding [{0}] with {1} , {2}",input, cod.name, cod.getCodecString(quality));
+		proc.start($"-y -f s16le -ar 44.1k -ac 2 -i \"{input}\" {cod.getCodecString(quality)} \"{output}\"");
+		
+		return true;
+	}// ---------------
+
+
+	/// <summary>
+	/// Takes a STREAM and encodes to a file
+	/// - callback onPipeReady() will fire with the Stream
+	/// - write to that stream with PCM Data
+	/// - Don't forget to close the STREAM once you've done writing to it
+	/// </summary>
+	/// <returns></returns>
+	public bool encodePCMStream(string encoderID, int quality, string output, Action<Stream> onIOReady)
+	{
+		var cod = getCodecByID(encoderID);
+		if(cod == null) return false;
+		if(quality==-1) quality = cod.qualityDefault;
+		if(!output.ToLower().EndsWith(cod.ext)) 
+		{
+			output += cod.ext; // try to fix extension if not already set
+		}
+
+		proc.onStdIOReady = () => 
+		{
+			onIOReady(proc.stdIn);
+		};
+
+		LOG.log("[FFMPEG] : Encoding PCM STREAM [{0}] with {1} , {2}",output, cod.name, cod.getCodecString(quality));
+		proc.start($"-y -f s16le -ar 44.1k -ac 2 -i pipe:0 {cod.getCodecString(quality)} \"{output}\"");
+
+		return true;
+	}// -----------------------------------------
+
+
+	/// <summary>
+	/// Take a PCM Stream, and push it to another STREAM as WAV 
+	/// - callback onPipeReady() will fire with the Streams
+	/// - Don't forget to close the inStream once you've done writing to it
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="onIOReady">(thisGetsData, thisPushesData)</param>
+	public void convertPCMStreamToWavStream(Action<Stream,Stream> onIOReady)
+	{
+		proc.onStdIOReady = () => 
+		{
+			onIOReady(proc.stdIn,proc.stdOut);
+		};
+
+		proc.flag_disable_user_stdout = true;
+		LOG.log("[FFMPEG] : Converting PCM Stream to WAV Stream");
+		proc.start($"-f s16le -ar 44.1k -ac 2 -i pipe:0 -f wav -");
+	}// -----------------------------------------
+
+	/// <summary>
+	/// Take a WAV stream, and save it as a PCM File
+	/// </summary>
+	/// <param name="output"></param>
+	/// <param name="onReady"></param>
+	/// <returns></returns>
+	public bool convertWavStreamToPCM(string output,Action<Stream> onReady)
+	{
+		proc.onStdIOReady = ()=> {
+			onReady(proc.stdIn);
+		};
+		// note -y overwrites output file
+		LOG.log("[FFMPEG] : Converting STDIN to PCM file {0}", output);
+		proc.start($"-f wav -i pipe:0 -y -f s16le -acodec pcm_s16le {output}");
+		return true;
+	}// -----------------------------------------
+
+
+
 	/// <summary>
 	/// Convert an audio file to a PCM file for use in a CD audio
 	/// ! Does not check INPUT file !
@@ -124,8 +338,6 @@ class FFmpeg:ICliReport
 	/// <returns></returns>
 	public bool audioToPCM(string input,string output = null)
 	{
-		LOG.log("[FFMPEG] : Converting \"{0}\" to PCM",input);
-		
 		if(string.IsNullOrEmpty(output)) {
 			output = Path.ChangeExtension(input,"pcm");
 		}
@@ -134,154 +346,13 @@ class FFmpeg:ICliReport
 		secondsConverted = progress = 0;
 		targetSeconds = getSecondsFromFile(input);
 
-		proc.start(string.Format("-i \"{0}\" -y -f s16le -acodec pcm_s16le \"{1}\"", input, output));
+		LOG.log("[FFMPEG] : Converting \"{0}\" to PCM", input);
+
+		proc.start($"-i \"{input}\" -y -f s16le -acodec pcm_s16le \"{output}\"");
 
 		return true;
 	}// -----------------------------------------
 
-	/// <summary>
-	/// Convert a PCM audio file to OGG OPUS
-	/// ! Overwrites all generated files !
-	/// ! Does not check INPUT file !
-	/// </summary>
-	/// <param name="input"></param>
-	/// <param name="quality">In KBPS from 32 to 500</param>
-	/// <param name="output">If ommited, will be automatically set</param>
-	/// <returns></returns>
-	public bool audioPCMToOggOpus(string input, int quality, string output = null)
-	{
-		// [safequard]
-		if (quality < 32) quality = 32;
-		else if (quality > 500) quality = 500;
-
-		if(string.IsNullOrEmpty(output)) {
-			output = Path.ChangeExtension(input,"ogg");
-		}else{
-			//[safeguard] Make sure it's an OGG
-			if(!output.ToLower().EndsWith(".ogg")) {
-				output += ".ogg"; // try to fix it
-			}
-		}
-
-		LOG.log("[FFMPEG] : Converting \"{0}\" to OPUS OGG {1}kbps",input,quality);
-
-		_initProgressVars(input);
-
-		proc.start(string.Format(
-				// VBR is ON and Compression is 10 by FFmpeg defaults, but just to be sure.
-				"-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a libopus -b:a {1}k -vbr on -compression_level 10 \"{2}\"",
-				input ,quality, output
-			));
-
-		return true;
-	}// -----------------------------------------
-
-
-	/// <summary>
-	/// Convert a PCM audio file to OGG VORBIS
-	/// ! Overwrites all generated files !
-	/// ! Does not check INPUT file !
-	/// </summary>
-	/// <param name="input"></param>
-	/// <param name="OPUSQuality">In KBPS from 0 to 10</param>
-	/// <param name="output">If ommited, will be automatically set</param>
-	/// <returns></returns>
-	public bool audioPCMToOggVorbis(string input, int quality, string output = null)
-	{
-		// [safequard]
-		if (quality < 0) quality = 0;
-		else if (quality > 10) quality = 10;
-
-		if(string.IsNullOrEmpty(output)) {
-			output = Path.ChangeExtension(input,"ogg");
-		}else{
-			//[safeguard] Make sure it's an OGG
-			if(!output.ToLower().EndsWith(".ogg")) {
-				output += ".ogg"; // try to fix it
-			}
-		}
-
-		LOG.log("[FFMPEG] : Converting \"{0}\" to VORBIS OGG {1}kbps", input, VORBIS_QUALITY[quality]);
-
-		_initProgressVars(input);
-
-		proc.start(string.Format(
-				// VBR is ON and Compression is 10 by FFmpeg defaults, but just to be sure.
-				"-y -f s16le -ar 44.1k -ac 2 -i \"{0}\" -c:a libvorbis -q {1} \"{2}\"",
-				input, quality, output
-			));
-
-		return true;
-	}// -----------------------------------------
-
-	/// <summary>
-	/// Convert a PCM audio file to FLAC
-	/// ! Overwrites all generated files !
-	/// ! Does not check INPUT file !
-	/// </summary>
-	/// <param name="input"></param>
-	/// <param name="output">If ommited, will be automatically set</param>
-	/// <returns></returns>
-	public bool audioPCMToFlac(string input,string output = null)
-	{
-		if(string.IsNullOrEmpty(output)) {
-			output = Path.ChangeExtension(input,"flac");
-		}else{
-			//[safeguard] Make sure it's a FLAC
-			if(!output.ToLower().EndsWith(".flac")) {
-				output += ".flac"; // try to fix it
-			}
-		}
-
-		LOG.log("[FFMPEG] : Converting \"{0}\" to FLAC",input);
-
-		_initProgressVars(input);
-
-		// C#6 string interpolation
-		proc.start($"-y -f s16le -ar 44.1k -ac 2 -i \"{input}\" -c:a flac \"{output}\"");
-
-		return true;
-	}// -----------------------------------------
-
-
-	/// <summary>
-	/// Convert a PCM audio file to MP3 Variable Bitrate
-	/// ! Overwrites all generated files !
-	/// ! Does not check INPUT file !
-	/// </summary>
-	/// <param name="input"></param>
-	/// <param name="quality">9 to 0 (lowest -> highest)</param>
-	/// <param name="output"></param>
-	/// <returns></returns>
-	public bool audioPCMToMP3(string input, int quality, string output = null)
-	{
-		if(string.IsNullOrEmpty(output)) {
-			output = Path.ChangeExtension(input,"mp3");
-		}else{
-			//[safeguard] Make sure it's a FLAC
-			if(!output.ToLower().EndsWith(".mp3")) {
-				output += ".mp3"; // try to fix it
-			}
-		}
-
-		LOG.log("[FFMPEG] : Converting \"{0}\" to MP3 {1}kbps", input, MP3_QUALITY[quality]);
-
-		_initProgressVars(input);
-		proc.start($"-y -f s16le -ar 44.1k -ac 2 -i \"{input}\" -c:a libmp3lame -q:a {quality} \"{output}\"");
-		// https://trac.ffmpeg.org/wiki/Encode/MP3
-		return true;
-	}// -----------------------------------------
-
-
-
-	// Helper
-	void _initProgressVars(string input)
-	{
-		var fsize = (int)new FileInfo(input).Length;
-		secondsConverted = progress = 0;
-		targetSeconds = (int)Math.Floor((double)fsize / 176400); // PCM is 176400 bytes per second
-		// LOG.log("[FFMPEG] : FILE SIZE = {0}, TARGET SECONDS = {1}", fsize, targetSeconds);
-	}// -----------------------------------------
 
 
 }// -- end class

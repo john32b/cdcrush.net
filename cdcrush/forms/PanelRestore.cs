@@ -228,6 +228,9 @@ public partial class PanelRestore : UserControl
 						FormMain.sendProgress(0);
 						FormMain.sendMessage(CDCRUSH.ERROR,3);
 					}
+
+					// Make progress bar and status message clear after
+					FormMain.FLAG_REQUEST_STATUS_CLEAR = true;
 				});
 			});
 

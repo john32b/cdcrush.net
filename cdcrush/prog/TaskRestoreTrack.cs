@@ -18,9 +18,11 @@ class TaskRestoreTrack : lib.task.CTask
 	RestoreParams p;
 	cd.CDTrack track;
 
-	bool isFlac = false;
+	// Lossy audio codecs don't revert back to exact byte
+	bool requirePostSizeFix = false;
 
-	string crushedTrackPath;  // Autocalculated
+	string INPUT;	// The file that is going to be restored
+	string OUTPUT;  // The file that is going to be created/restored to
 
 	// --
 	public TaskRestoreTrack(cd.CDTrack tr)
@@ -37,68 +39,50 @@ class TaskRestoreTrack : lib.task.CTask
 
 		p = (RestoreParams)jobData;
 
-		// --
-		crushedTrackPath = Path.Combine(p.tempDir, track.storedFileName);
-		// Set the final track pathname now, I need this for later.
-		track.workingFile = Path.Combine(p.tempDir, track.getFilenameRaw());
+		INPUT = Path.Combine(p.tempDir, track.storedFileName);
+		OUTPUT = Path.Combine(p.tempDir, track.getFilenameRaw());
+		track.workingFile = OUTPUT; // Point to the new file
+
+		// -
+		var fileExt = Path.GetExtension(track.storedFileName);
+		requirePostSizeFix = AudioMaster.isLossyByExt( fileExt );
 
 		// --
 		if(track.isData)
 		{
 			var ecm = new EcmTools(CDCRUSH.TOOLS_PATH);
-			ecm.onComplete = (s) => {
-			ecm.onProgress = handleProgress;
-				if(s){
-					deleteOldFile();
-					if(!checkTrackMD5()) {
-						fail(msg:"MD5 checksum is wrong!");
-						return;
-					}
-					complete();
-				}else{
-					fail(msg:ecm.ERROR);
-				}
-			};
-			ecm.unecm(crushedTrackPath);
-			killExtra = () => ecm.kill();
+			setupHandlers(ecm);
+			ecm.unecm(INPUT);
 		}
 		else
 		{
-			// No need to convert back
+			// No need to convert back, end the task
 			if(p.flag_encCue) {
-				// Fix current file
-				track.workingFile = crushedTrackPath;
+				// Point to correct file
+				track.workingFile = INPUT;
 				complete();
 				return;
 			}
 
-			// --
-			isFlac = (Path.GetExtension(track.storedFileName) == ".flac");
-
 			var ffmp = new FFmpeg(CDCRUSH.FFMPEG_PATH);
-			ffmp.onProgress = handleProgress;
-			ffmp.onComplete = (s) => {
-				if(s){
-					deleteOldFile(); // Don't need it
-					if(!isFlac) {
-						// OGG and MP3 don't restore to the exact byte length
-						correctPCMSize();
-					}else
-					{
-						// FLAC restores to exact bytes
-						if(!checkTrackMD5()){
-							fail(msg:"MD5 checksum is wrong!");
-							return;
-						}
-					}
-					complete();
-				}else{
-					fail(msg:ffmp.ERROR);
-				}
-			};
 
-			ffmp.audioToPCM(crushedTrackPath);
-			killExtra = () => ffmp.kill();
+			if(fileExt.ToLower()==".tak")
+			{
+				var tak = new Tak(CDCRUSH.TOOLS_PATH);
+				setupHandlers(tak);
+
+				tak.decodeToStream(INPUT,(_out) => {
+					ffmp.convertWavStreamToPCM(OUTPUT,(_in)=>{
+						_out.CopyTo(_in);
+						_in.Close();
+					});
+				});
+
+			}else
+			{
+				setupHandlers(ffmp);
+				ffmp.audioToPCM(INPUT,track.workingFile);
+			}
 		}
 
 		log("Restoring track -" + track.storedFileName);
@@ -106,22 +90,38 @@ class TaskRestoreTrack : lib.task.CTask
 	}// -----------------------------------------
 
 	// --
-	void handleProgress(int p)
+	void setupHandlers(IProcessStatus o)
 	{
-		PROGRESS = p;
-	}// -----------------------------------------
+		killExtra = () => o.kill();
+		o.onProgress = (p) => PROGRESS = p; // Note: Uses setter
+		o.onComplete = (s) => {
+			if(s){
+				deleteOldFile(); 
+				if(requirePostSizeFix) 
+				{
+					correctPCMSize(); // Note: OGG and MP3 don't restore to the exact byte length
+				}
+				complete();
+			}else{
+				fail(msg:o.ERROR);
+			}
+		};
+	}
 
-	// --
+
+	// - 
+	// NOTE: Input files were created from the .ARC into TEMP folder, so I can delete them 
+	//       as soon as I am done with them
 	void deleteOldFile()
 	{
 		if(CDCRUSH.FLAG_KEEP_TEMP) return;
-		File.Delete(crushedTrackPath);
+		File.Delete(INPUT);
 	}// -----------------------------------------
 
 	
 	// -
 	// Fix the filesize of the restored track
-	// This is only when restoring from .OGG files, .FLAC seems to be fine by default.
+	// This is only when restoring from lossy encoders. Lossless restore to exact bytes
 	void correctPCMSize()
 	{
 		using(FileStream fileStream = new FileStream(track.workingFile,FileMode.Open, FileAccess.Write))

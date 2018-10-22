@@ -119,10 +119,12 @@
     <Compile Include="forms\PanelRestore.Designer.cs">
       <DependentUpon>PanelRestore.cs</DependentUpon>
     </Compile>
-    <Compile Include="lib\app\ICliReport.cs" />
+    <Compile Include="lib\app\Tak.cs" />
+    <Compile Include="lib\app\IProcessStatus.cs" />
     <Compile Include="lib\FileTools.cs" />
     <Compile Include="lib\FormTools.cs" />
     <Compile Include="lib\task\CTestTask.cs" />
+    <Compile Include="prog\AudioMaster.cs" />
     <Compile Include="prog\CDCRUSH.cs" />
     <Compile Include="lib\app\AbArchiver.cs" />
     <Compile Include="lib\app\CliApp.cs" />

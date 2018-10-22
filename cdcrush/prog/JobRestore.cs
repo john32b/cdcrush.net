@@ -89,7 +89,7 @@ class JobRestore: CJob
 		// -----------------------
 		add(new CTask((t) => {
 			var arc = new FreeArc(CDCRUSH.TOOLS_PATH);
-			t.handleCliReport(arc);
+			t.handleProcessStatus(arc);
 			arc.extractAll(p.inputFile, p.tempDir);
 			arc.onProgress = (pr) => t.PROGRESS=pr;
 			// In case the operation is aborted

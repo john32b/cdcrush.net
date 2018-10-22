@@ -242,8 +242,9 @@ public partial class FormMain : Form
 
 	
 	/// <summary>
-	/// Updates progress bar
-	/// Can be called from threads
+	/// Updates progress bar (Can be called from threads safely)
+	/// -1 = Use a Marquee
+	/// 0 - 100 = Set a progress percent
 	/// </summary>
 	/// <param name="per">Progress Percent</param>
 	public void form_setProgress(int per)

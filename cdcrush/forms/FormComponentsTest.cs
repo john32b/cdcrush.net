@@ -43,7 +43,7 @@ namespace cdcrush.forms
 		// Select files to apply operations
 		// -
 		string[] SELECTED_FILES;
-		private void txt_files_TextChanged(object sender, EventArgs e)
+		private void txt_files_Click(object sender, EventArgs e)
 		{
 			SELECTED_FILES = FormTools.fileLoadDialog("all","",true);
 			if(SELECTED_FILES != null)
@@ -55,7 +55,6 @@ namespace cdcrush.forms
 				SELECTED_FILES = null;
 			}
 		}// -----------------------------------------
-
 
 		// --
 		// Create ARC 
@@ -124,5 +123,84 @@ namespace cdcrush.forms
 			};
 			app.unecm(SELECTED_FILES[0]);
 		}// -----------------------------------------
+
+		private void btn_tak_Click(object sender, EventArgs e)
+		{
+			if(SELECTED_FILES==null) return;
+			var app = new Tak(prog.CDCRUSH.TOOLS_PATH);
+			app.onComplete = (s) => {
+				LOG.log("-- WAV to TAK Complete :: {0}", s);
+			};
+			app.encode(SELECTED_FILES[0],txt_files_2.Text);
+		}
+
+		private void btn_untak_Click(object sender, EventArgs e)
+		{
+			if(SELECTED_FILES==null) return;
+			var app = new Tak(prog.CDCRUSH.TOOLS_PATH);
+			app.onComplete = (s) => {
+				LOG.log("--TAK to WAV Complete :: {0}", s);
+			};
+			app.decode(SELECTED_FILES[0],txt_files_2.Text);
+		}
+
+		private void btn_tak_pcm_Click(object sender, EventArgs e)
+		{
+			if(SELECTED_FILES==null) return;
+				
+				var ffmp = new FFmpeg(prog.CDCRUSH.FFMPEG_PATH);
+				var tak = new Tak(prog.CDCRUSH.TOOLS_PATH);
+
+				tak.onComplete = (s) =>	{
+					LOG.log($"TAK Operation Complete - {s}");
+				};
+
+				ffmp.onComplete = (s) => {
+					LOG.log($"FFMPEG Operation Complete - {s}");
+				};
+
+				string INPUT = SELECTED_FILES[0];
+				string OUTPUT = Path.ChangeExtension(INPUT,".tak");
+			
+				// This will make FFMPEG read the PCM file, convert it to WAV on the fly
+				// and feed it to TAK, which will convert and save it.
+				
+				ffmp.convertPCMStreamToWavStream( (ffmpegIn,ffmpegOut) => {
+					var sourceFile = File.OpenRead(INPUT);
+					tak.encodeFromStream(OUTPUT, (takIn) => { 
+						ffmpegOut.CopyTo(takIn);
+						takIn.Close();
+					});
+					sourceFile.CopyTo(ffmpegIn);	// Feed PCM to FFMPEG
+					ffmpegIn.Close();
+				});
+		}// --
+
+		private void btn_untak_pcm_Click(object sender, EventArgs e)
+		{
+			if(SELECTED_FILES==null) return;
+
+			string INPUT = SELECTED_FILES[0];
+			string OUTPUT = Path.ChangeExtension(INPUT,".pcm");
+			var ffmp = new FFmpeg(prog.CDCRUSH.FFMPEG_PATH);
+			var tak = new Tak(prog.CDCRUSH.TOOLS_PATH);
+
+			tak.onComplete = (s) =>	{
+				LOG.log($"TAK Operation Complete - {s}");
+			};
+
+			ffmp.onComplete = (s) => {
+				LOG.log($"FFMPEG Operation Complete - {s}");
+			};
+
+			tak.decodeToStream(INPUT,(_out) => {
+				ffmp.convertWavStreamToPCM(OUTPUT,(_in)=>{
+					_out.CopyTo(_in);
+					_in.Close();
+				});
+			});
+
+		}// --
+
 	}// --
 }// --

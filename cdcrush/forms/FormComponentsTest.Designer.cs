@@ -44,6 +44,12 @@
 			this.txt_files = new System.Windows.Forms.TextBox();
 			this.textbox_log = new System.Windows.Forms.TextBox();
 			this.label5 = new System.Windows.Forms.Label();
+			this.btn_untak = new System.Windows.Forms.Button();
+			this.btn_tak = new System.Windows.Forms.Button();
+			this.txt_files_2 = new System.Windows.Forms.TextBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.btn_tak_pcm = new System.Windows.Forms.Button();
+			this.btn_untak_pcm = new System.Windows.Forms.Button();
 			tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			tableLayoutPanel1.SuspendLayout();
@@ -205,7 +211,7 @@
 			this.txt_files.Name = "txt_files";
 			this.txt_files.Size = new System.Drawing.Size(246, 20);
 			this.txt_files.TabIndex = 4;
-			this.txt_files.Click += new System.EventHandler(this.txt_files_TextChanged);
+			this.txt_files.Click += new System.EventHandler(this.txt_files_Click);
 			// 
 			// textbox_log
 			// 
@@ -225,16 +231,79 @@
 			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(247, 28);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(73, 13);
+			this.label5.Size = new System.Drawing.Size(70, 13);
 			this.label5.TabIndex = 6;
-			this.label5.Text = "Select Files";
+			this.label5.Text = "Input Files:";
+			// 
+			// btn_untak
+			// 
+			this.btn_untak.Location = new System.Drawing.Point(353, 123);
+			this.btn_untak.Name = "btn_untak";
+			this.btn_untak.Size = new System.Drawing.Size(99, 23);
+			this.btn_untak.TabIndex = 7;
+			this.btn_untak.Text = "unTAK Wav";
+			this.btn_untak.UseVisualStyleBackColor = true;
+			this.btn_untak.Click += new System.EventHandler(this.btn_untak_Click);
+			// 
+			// btn_tak
+			// 
+			this.btn_tak.Location = new System.Drawing.Point(248, 123);
+			this.btn_tak.Name = "btn_tak";
+			this.btn_tak.Size = new System.Drawing.Size(99, 23);
+			this.btn_tak.TabIndex = 7;
+			this.btn_tak.Text = "TAK Wav";
+			this.btn_tak.UseVisualStyleBackColor = true;
+			this.btn_tak.Click += new System.EventHandler(this.btn_tak_Click);
+			// 
+			// txt_files_2
+			// 
+			this.txt_files_2.Location = new System.Drawing.Point(247, 91);
+			this.txt_files_2.Name = "txt_files_2";
+			this.txt_files_2.Size = new System.Drawing.Size(246, 20);
+			this.txt_files_2.TabIndex = 4;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label6.Location = new System.Drawing.Point(247, 75);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(112, 13);
+			this.label6.TabIndex = 6;
+			this.label6.Text = "Output (Optional) :";
+			// 
+			// btn_tak_pcm
+			// 
+			this.btn_tak_pcm.Location = new System.Drawing.Point(247, 152);
+			this.btn_tak_pcm.Name = "btn_tak_pcm";
+			this.btn_tak_pcm.Size = new System.Drawing.Size(99, 23);
+			this.btn_tak_pcm.TabIndex = 8;
+			this.btn_tak_pcm.Text = "TAK PCM";
+			this.btn_tak_pcm.UseVisualStyleBackColor = true;
+			this.btn_tak_pcm.Click += new System.EventHandler(this.btn_tak_pcm_Click);
+			// 
+			// btn_untak_pcm
+			// 
+			this.btn_untak_pcm.Location = new System.Drawing.Point(353, 152);
+			this.btn_untak_pcm.Name = "btn_untak_pcm";
+			this.btn_untak_pcm.Size = new System.Drawing.Size(99, 23);
+			this.btn_untak_pcm.TabIndex = 8;
+			this.btn_untak_pcm.Text = "unTAK PCM";
+			this.btn_untak_pcm.UseVisualStyleBackColor = true;
+			this.btn_untak_pcm.Click += new System.EventHandler(this.btn_untak_pcm_Click);
 			// 
 			// FormComponentsTest
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(508, 446);
+			this.Controls.Add(this.btn_untak_pcm);
+			this.Controls.Add(this.btn_tak_pcm);
+			this.Controls.Add(this.btn_tak);
+			this.Controls.Add(this.btn_untak);
+			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label5);
+			this.Controls.Add(this.txt_files_2);
 			this.Controls.Add(this.txt_files);
 			this.Controls.Add(groupBox1);
 			this.Controls.Add(this.textbox_log);
@@ -266,5 +335,11 @@
 		private System.Windows.Forms.Button btn_join;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Button btn_untak;
+		private System.Windows.Forms.Button btn_tak;
+		private System.Windows.Forms.TextBox txt_files_2;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Button btn_tak_pcm;
+		private System.Windows.Forms.Button btn_untak_pcm;
 	}
 }

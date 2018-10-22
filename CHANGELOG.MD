@@ -1,11 +1,15 @@
+
 ## CHANGELOG
 
+### V1.4.3
+- Added support for TAK Lossless audio codec. (*https://wiki.hydrogenaud.io/index.php?title=TAK*)
+
 ### V1.4.2
-	- Program will check for `ffmpeg` in the `tools` folder. Now the full release package will run out of the box.
-    - Removed ffmpeg clear button from settings. It didn't provide any meaningful functionality
+- Program will check for `ffmpeg` in the `tools` folder. Now the full release package will run out of the box.
+- Removed ffmpeg clear button from settings. It didn't provide any meaningful functionality
 
 ### V1.4.1
-	- Fixed Crash when loading a CD with any track having a pregap
+- Fixed Crash when loading a CD with any track having a pregap
 
 ### V1.4
 - New CD Parser class

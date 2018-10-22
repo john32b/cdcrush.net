@@ -179,7 +179,7 @@ public class CTask
 	/// Quickly handle a CLI app completion
 	/// </summary>
 	/// <param name="cli"></param>
-	public void handleCliReport(app.ICliReport cli)
+	public void handleProcessStatus(app.IProcessStatus cli)
 	{
 		cli.onComplete = (s) =>
 		{

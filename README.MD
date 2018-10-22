@@ -1,11 +1,12 @@
 
+
 # CDCRUSH dot NET
 
 **Name**: cdcrush, *Highy compress cd-image games*\
 **Author:** John Dimi, <johndimi@outlook.com> *twitter*: [@jondmt](https://twitter.com/jondmt)\
 **Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)\
 **Language:** C# .NET 4.5, **Licence:** MIT\
-**Version:** 1.3 **Platform:** Windows\
+**Version:** 1.4.3 **Platform:** Windows\
 **Sister Project** : [cdcrush nodejs](https://www.npmjs.com/package/cdcrush)
 
 ## Download
@@ -25,14 +26,14 @@ Available for **windows** only.
 - The program separates the tracks of a CD image and compress them separately.
 - For **data** tracks it will use **ecm tools** to remove Error Correction/Detection Codes (ECC/EDC) data from the sectors. *( redundant data )*
 - For **audio** tracks, it will use an encoder of your choice. You can select a lossy encoder like (**opus** or **vorbis**) to produce a decent quality audio file with a much smaller filesize compared to the uncompressed PCM audio original.
-- **OR** you can choose to encode audio with **FLAC**  which is lossless.
+- **OR** you can choose to encode audio with a **lossless audio encoder** *( FLAC, TAK)*
 - Finally it compresses everything into a single `.arc` archive using the **FreeArc** archiver.
  
  **⇒ Restoring a crushed CD :**
  
 **cdcrush**  can  **restore** the crushed CD image back to it's original form, a **.bin/.cue** image that is ready to be used however you like.  
 
-**NOTE**: Archives with the audio tracks encoded with **FLAC**, will be restored to a 1:1 copy, byte for byte, of the original source CD
+**NOTE**: Archives with the audio tracks encoded with **a lossless audio encoder**, will be restored to a 1:1 copy, byte for byte, of the original source CD
  
 ### Some examples of game sizes archived with 7zip and cdcrush:
 
@@ -104,7 +105,8 @@ To convert a CD, go to the **Compress a CD** screen and **tick** the`convert to 
  :warning: **WARNING** : Make sure the temp folder can hold up to 1.2GB of data !
 
 **FFmpeg Path** :
-Point to the location of `ffmpeg.exe` , it is needed for encoding/decoding the audio tracks. If you have `FFmpeg` set on the system/user PATH, it will be checked once you **clear** the custom path.
+Point to the location of `ffmpeg.exe` , it is needed for encoding/decoding the audio tracks. If you have `FFmpeg` set on the system/user PATH, it will be checked once you **clear** the custom path. 
+ - Note: If you download the **full package** of cdcrush. FFMPEG is included, so don't worry about it.
 
 **Max Concurrent Tasks**:
 How many tracks to process at the same time. *(For when compressing or restoring with ffmpeg and ecm tools)*
@@ -124,7 +126,7 @@ See [`CHANGELOG.MD`](CHANGELOG.MD)
 **Q** : I am worried about the audio quality.\
 **A** : The OGG vorbis (also new **OPUS**) codec is decent and it can produce very good results even at 96kbps. **However** if you don't want any compressed audio you can select the **FLAC** encoder, which is lossless.
 
-**Q**: Is storing the entire CD with FLAC really lossless? I am worried about byte integrity.\
+**Q**: Is storing the entire CD with FLAC/TAK really lossless? I am worried about byte integrity.\
 **A**: YES, to the last byte. The filesize and checksums of the restored tracks are the same as the original ones. (data&audio). You can check for yourself by calculating the checksums of restored files vs original source. **ALSO Checksum reports** ~~are coming at a later version~~ implemented since v.1.2.4
 
 **Q** : Why there are two versions of the program?\
