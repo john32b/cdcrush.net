@@ -175,7 +175,7 @@ class JobCrush:CJob
 
 				// Data track was not cut or encoded.
 				// It's in the input folder, don't move it
-				if(track.isData && p.cd.MULTIFILE)
+				if( track.isData && ( p.cd.MULTIFILE || p.cd.tracks.length == 1) )
 				{
 					if(p.mode==1)
 					{
