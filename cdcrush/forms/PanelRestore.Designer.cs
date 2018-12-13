@@ -35,6 +35,7 @@
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+			System.Windows.Forms.Label label9;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PanelRestore));
 			this.label8 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
@@ -53,10 +54,9 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.btn_chksm = new System.Windows.Forms.Button();
 			this.toggle_subf = new System.Windows.Forms.CheckBox();
-			this.toggle_merged = new System.Windows.Forms.CheckBox();
 			this.btn_RESTORE = new System.Windows.Forms.Button();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.toggle_cueaudio = new System.Windows.Forms.CheckBox();
+			this.combo_method = new System.Windows.Forms.ComboBox();
 			tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			table_IO = new System.Windows.Forms.TableLayoutPanel();
@@ -64,6 +64,7 @@
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+			label9 = new System.Windows.Forms.Label();
 			tableLayoutPanel3.SuspendLayout();
 			tableLayoutPanel1.SuspendLayout();
 			table_IO.SuspendLayout();
@@ -93,16 +94,16 @@
 			tableLayoutPanel3.RowCount = 2;
 			tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			tableLayoutPanel3.Size = new System.Drawing.Size(329, 32);
+			tableLayoutPanel3.Size = new System.Drawing.Size(324, 32);
 			tableLayoutPanel3.TabIndex = 10;
 			// 
 			// label8
 			// 
 			this.label8.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label8.Location = new System.Drawing.Point(198, 0);
+			this.label8.Location = new System.Drawing.Point(195, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(128, 13);
+			this.label8.Size = new System.Drawing.Size(126, 13);
 			this.label8.TabIndex = 7;
 			this.label8.Text = "Audio Quality :";
 			// 
@@ -110,9 +111,9 @@
 			// 
 			this.label7.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(133, 0);
+			this.label7.Location = new System.Drawing.Point(131, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(59, 13);
+			this.label7.Size = new System.Drawing.Size(58, 13);
 			this.label7.TabIndex = 5;
 			this.label7.Text = "Tracks :";
 			// 
@@ -122,7 +123,7 @@
 			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(3, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(59, 13);
+			this.label5.Size = new System.Drawing.Size(58, 13);
 			this.label5.TabIndex = 0;
 			this.label5.Text = "Crushed Size :";
 			// 
@@ -130,9 +131,9 @@
 			// 
 			this.label6.Dock = System.Windows.Forms.DockStyle.Top;
 			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label6.Location = new System.Drawing.Point(68, 0);
+			this.label6.Location = new System.Drawing.Point(67, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(59, 13);
+			this.label6.Size = new System.Drawing.Size(58, 13);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "Full Size :";
 			// 
@@ -141,10 +142,10 @@
 			this.info_audio.BackColor = System.Drawing.SystemColors.Info;
 			this.info_audio.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_audio.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_audio.Location = new System.Drawing.Point(198, 16);
+			this.info_audio.Location = new System.Drawing.Point(195, 16);
 			this.info_audio.Name = "info_audio";
 			this.info_audio.ReadOnly = true;
-			this.info_audio.Size = new System.Drawing.Size(128, 13);
+			this.info_audio.Size = new System.Drawing.Size(126, 13);
 			this.info_audio.TabIndex = 8;
 			this.info_audio.Text = "96kbps";
 			this.info_audio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -154,10 +155,10 @@
 			this.info_size1.BackColor = System.Drawing.SystemColors.Info;
 			this.info_size1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_size1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_size1.Location = new System.Drawing.Point(68, 16);
+			this.info_size1.Location = new System.Drawing.Point(67, 16);
 			this.info_size1.Name = "info_size1";
 			this.info_size1.ReadOnly = true;
-			this.info_size1.Size = new System.Drawing.Size(59, 13);
+			this.info_size1.Size = new System.Drawing.Size(58, 13);
 			this.info_size1.TabIndex = 4;
 			this.info_size1.Text = "540MB";
 			this.info_size1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -170,7 +171,7 @@
 			this.info_size0.Location = new System.Drawing.Point(3, 16);
 			this.info_size0.Name = "info_size0";
 			this.info_size0.ReadOnly = true;
-			this.info_size0.Size = new System.Drawing.Size(59, 13);
+			this.info_size0.Size = new System.Drawing.Size(58, 13);
 			this.info_size0.TabIndex = 4;
 			this.info_size0.Text = "41MB";
 			this.info_size0.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -180,10 +181,10 @@
 			this.info_tracks.BackColor = System.Drawing.SystemColors.Info;
 			this.info_tracks.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_tracks.Dock = System.Windows.Forms.DockStyle.Top;
-			this.info_tracks.Location = new System.Drawing.Point(133, 16);
+			this.info_tracks.Location = new System.Drawing.Point(131, 16);
 			this.info_tracks.Name = "info_tracks";
 			this.info_tracks.ReadOnly = true;
-			this.info_tracks.Size = new System.Drawing.Size(59, 13);
+			this.info_tracks.Size = new System.Drawing.Size(58, 13);
 			this.info_tracks.TabIndex = 3;
 			this.info_tracks.Text = "20";
 			this.info_tracks.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -205,7 +206,7 @@
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			tableLayoutPanel1.Size = new System.Drawing.Size(329, 32);
+			tableLayoutPanel1.Size = new System.Drawing.Size(324, 32);
 			tableLayoutPanel1.TabIndex = 9;
 			// 
 			// label4
@@ -226,7 +227,7 @@
 			this.info_cdtitle.Location = new System.Drawing.Point(3, 16);
 			this.info_cdtitle.Name = "info_cdtitle";
 			this.info_cdtitle.ReadOnly = true;
-			this.info_cdtitle.Size = new System.Drawing.Size(323, 13);
+			this.info_cdtitle.Size = new System.Drawing.Size(318, 13);
 			this.info_cdtitle.TabIndex = 1;
 			this.info_cdtitle.Text = "Dummy Info, CD title with a really long name etc";
 			this.info_cdtitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -251,13 +252,13 @@
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			table_IO.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			table_IO.Size = new System.Drawing.Size(466, 82);
+			table_IO.Size = new System.Drawing.Size(461, 82);
 			table_IO.TabIndex = 16;
 			// 
 			// btn_input_in
 			// 
 			this.btn_input_in.Dock = System.Windows.Forms.DockStyle.Top;
-			this.btn_input_in.Location = new System.Drawing.Point(424, 16);
+			this.btn_input_in.Location = new System.Drawing.Point(419, 16);
 			this.btn_input_in.Name = "btn_input_in";
 			this.btn_input_in.Size = new System.Drawing.Size(39, 23);
 			this.btn_input_in.TabIndex = 2;
@@ -279,7 +280,7 @@
 			this.input_in.Dock = System.Windows.Forms.DockStyle.Top;
 			this.input_in.Location = new System.Drawing.Point(3, 16);
 			this.input_in.Name = "input_in";
-			this.input_in.Size = new System.Drawing.Size(415, 20);
+			this.input_in.Size = new System.Drawing.Size(410, 20);
 			this.input_in.TabIndex = 1;
 			// 
 			// input_out
@@ -287,13 +288,13 @@
 			this.input_out.Dock = System.Windows.Forms.DockStyle.Top;
 			this.input_out.Location = new System.Drawing.Point(3, 58);
 			this.input_out.Name = "input_out";
-			this.input_out.Size = new System.Drawing.Size(415, 20);
+			this.input_out.Size = new System.Drawing.Size(410, 20);
 			this.input_out.TabIndex = 1;
 			// 
 			// btn_input_out
 			// 
 			this.btn_input_out.Dock = System.Windows.Forms.DockStyle.Top;
-			this.btn_input_out.Location = new System.Drawing.Point(424, 58);
+			this.btn_input_out.Location = new System.Drawing.Point(419, 58);
 			this.btn_input_out.Name = "btn_input_out";
 			this.btn_input_out.Size = new System.Drawing.Size(39, 23);
 			this.btn_input_out.TabIndex = 2;
@@ -314,7 +315,7 @@
 			// 
 			label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			label3.ForeColor = System.Drawing.SystemColors.ControlDark;
-			label3.Location = new System.Drawing.Point(291, 222);
+			label3.Location = new System.Drawing.Point(286, 222);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(178, 13);
 			label3.TabIndex = 5;
@@ -336,8 +337,19 @@
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			tableLayoutPanel2.Size = new System.Drawing.Size(329, 0);
+			tableLayoutPanel2.Size = new System.Drawing.Size(324, 0);
 			tableLayoutPanel2.TabIndex = 11;
+			// 
+			// label9
+			// 
+			label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			label9.AutoSize = true;
+			label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label9.Location = new System.Drawing.Point(3, 265);
+			label9.Name = "label9";
+			label9.Size = new System.Drawing.Size(93, 13);
+			label9.TabIndex = 29;
+			label9.Text = "Select Method:";
 			// 
 			// groupBox1
 			// 
@@ -350,7 +362,7 @@
 			this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.groupBox1.Location = new System.Drawing.Point(137, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(335, 128);
+			this.groupBox1.Size = new System.Drawing.Size(330, 128);
 			this.groupBox1.TabIndex = 14;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Info";
@@ -361,7 +373,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn_chksm.Location = new System.Drawing.Point(3, 95);
 			this.btn_chksm.Name = "btn_chksm";
-			this.btn_chksm.Size = new System.Drawing.Size(329, 23);
+			this.btn_chksm.Size = new System.Drawing.Size(324, 23);
 			this.btn_chksm.TabIndex = 12;
 			this.btn_chksm.Text = "Detailed info and Checksums";
 			this.btn_chksm.UseVisualStyleBackColor = true;
@@ -369,29 +381,15 @@
 			// 
 			// toggle_subf
 			// 
-			this.toggle_subf.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.toggle_subf.AutoSize = true;
 			this.toggle_subf.Checked = true;
 			this.toggle_subf.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.toggle_subf.Location = new System.Drawing.Point(6, 253);
+			this.toggle_subf.Location = new System.Drawing.Point(6, 225);
 			this.toggle_subf.Name = "toggle_subf";
 			this.toggle_subf.Size = new System.Drawing.Size(105, 17);
 			this.toggle_subf.TabIndex = 12;
 			this.toggle_subf.Text = "Create Subfolder";
 			this.toggle_subf.UseVisualStyleBackColor = true;
-			// 
-			// toggle_merged
-			// 
-			this.toggle_merged.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.toggle_merged.AutoSize = true;
-			this.toggle_merged.Location = new System.Drawing.Point(6, 273);
-			this.toggle_merged.Name = "toggle_merged";
-			this.toggle_merged.Size = new System.Drawing.Size(180, 17);
-			this.toggle_merged.TabIndex = 13;
-			this.toggle_merged.Text = "Restore to one merged .bin/.cue";
-			this.toggle_merged.UseVisualStyleBackColor = true;
 			// 
 			// btn_RESTORE
 			// 
@@ -399,9 +397,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn_RESTORE.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btn_RESTORE.ForeColor = System.Drawing.Color.Green;
-			this.btn_RESTORE.Location = new System.Drawing.Point(3, 296);
+			this.btn_RESTORE.Location = new System.Drawing.Point(3, 308);
 			this.btn_RESTORE.Name = "btn_RESTORE";
-			this.btn_RESTORE.Size = new System.Drawing.Size(469, 39);
+			this.btn_RESTORE.Size = new System.Drawing.Size(464, 39);
 			this.btn_RESTORE.TabIndex = 17;
 			this.btn_RESTORE.Text = "RESTORE";
 			this.btn_RESTORE.UseVisualStyleBackColor = true;
@@ -416,32 +414,35 @@
 			this.pictureBox1.TabIndex = 15;
 			this.pictureBox1.TabStop = false;
 			// 
-			// toggle_cueaudio
+			// combo_method
 			// 
-			this.toggle_cueaudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.toggle_cueaudio.AutoSize = true;
-			this.toggle_cueaudio.Location = new System.Drawing.Point(291, 273);
-			this.toggle_cueaudio.Name = "toggle_cueaudio";
-			this.toggle_cueaudio.Size = new System.Drawing.Size(178, 17);
-			this.toggle_cueaudio.TabIndex = 13;
-			this.toggle_cueaudio.Text = "Restore to .Cue/Encoded Audio";
-			this.toggle_cueaudio.UseVisualStyleBackColor = true;
-			this.toggle_cueaudio.CheckedChanged += new System.EventHandler(this.toggle_cueaudio_CheckedChanged);
+			this.combo_method.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.combo_method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.combo_method.FormattingEnabled = true;
+			this.combo_method.Items.AddRange(new object[] {
+            "Restore",
+            "Restore and merge all track files into a single .bin/.cue",
+            "Restore to .cue/.bin/encoded audio files"});
+			this.combo_method.Location = new System.Drawing.Point(3, 281);
+			this.combo_method.Name = "combo_method";
+			this.combo_method.Size = new System.Drawing.Size(464, 21);
+			this.combo_method.TabIndex = 30;
 			// 
 			// PanelRestore
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.combo_method);
+			this.Controls.Add(label9);
 			this.Controls.Add(this.btn_RESTORE);
 			this.Controls.Add(table_IO);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.toggle_subf);
-			this.Controls.Add(this.toggle_cueaudio);
-			this.Controls.Add(this.toggle_merged);
 			this.Controls.Add(label3);
 			this.Name = "PanelRestore";
-			this.Size = new System.Drawing.Size(475, 338);
+			this.Size = new System.Drawing.Size(470, 350);
 			this.Load += new System.EventHandler(this.PanelRestore_Load);
 			tableLayoutPanel3.ResumeLayout(false);
 			tableLayoutPanel3.PerformLayout();
@@ -472,13 +473,12 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox info_cdtitle;
 		private System.Windows.Forms.CheckBox toggle_subf;
-		private System.Windows.Forms.CheckBox toggle_merged;
 		private System.Windows.Forms.Button btn_input_in;
 		private System.Windows.Forms.TextBox input_in;
 		private System.Windows.Forms.TextBox input_out;
 		private System.Windows.Forms.Button btn_input_out;
 		private System.Windows.Forms.Button btn_RESTORE;
-		private System.Windows.Forms.CheckBox toggle_cueaudio;
 		private System.Windows.Forms.Button btn_chksm;
+		private System.Windows.Forms.ComboBox combo_method;
 	}
 }

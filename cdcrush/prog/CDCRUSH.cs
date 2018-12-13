@@ -13,23 +13,21 @@ namespace cdcrush.prog
 	 * ----------------------------------------------------
 	 */
 	 
-	public static class CDCRUSH
+	static class CDCRUSH
 	{
 		// -- Program Infos
 		public const string AUTHORNAME = "John Dimi";
 		public const string PROGRAM_NAME = "cdcrush";
-		public const string PROGRAM_VERSION = "1.4.3";
+		public const string PROGRAM_VERSION = "1.5";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
 		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
 		public const string CDCRUSH_SETTINGS = "crushdata.json";
 		public const string CDCRUSH_COVER = "cover.jpg";
-		public const string CDCRUSH_EXTENSION = ".arc";
+		public static readonly string[] CDCRUSH_EXTENSIONS = new [] {".zip",".7z",".arc"};
 
 		// When restoring a cd to a folder, put this at the end of the folder's name
 		public const string RESTORED_FOLDER_SUFFIX = " (r)";
-
-		public const int FREEARC_DEF_COMPRESSION_INDEX = 3; // This is the index on the form. Actual level is + 1
 
 		// -- Global
 
@@ -183,107 +181,82 @@ namespace cdcrush.prog
 		}// -----------------------------------------
 
 
+
+
 		/// <summary>
-		/// Convert from bin/cue to encoded audio/cue
+		/// Starts either a CRUSH or CONVERT Job
+		/// - Crush will encode all tracks and then create a .CRUSHED archive that can be restored lates
+		/// - Convert will just encode all audio tracks and create new .CUE/.BIN/.ENCODED AUDIO FILES
+		/// - [CONVERT] can create files in a folder or inside an Archive
+		/// 
 		/// </summary>
-		/// <param name="_Input">Input file, must be `.cue`</param>
-		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
-		/// <param name="_Audio">Audio Quality to encode the audio tracks with.</param>
-		/// <param name="_Title">Title of the CD</param>
-		/// <param name="onComplete">Completed (completeStatus,final Size)</param>
-		/// <returns></returns>
-		public static bool startJob_ConvertCue(string _Input, string _Output, Tuple<string,int> _Audio, 
-			string _Title, Action<bool,int,cd.CDInfos> onComplete)
+		/// <param name="_Mode">0:Crush, 1:Convert, 2:Convert + ARCHIVE</param>
+		/// <param name="_Input">Must be a valid CUE file </param>
+		/// <param name="_Output">Output Directory - IF EMPTY will be same dir as INPUT</param>
+		/// <param name="_Audio">Audio Settings TUPLE. Check `AudioMaster`</param>
+		/// <param name="_ArchSet">Archive Settings Index. Check `ArchiveMaster` -1 for no archive</param>
+		/// <param name="_Title">Name of the CD</param>
+		/// <param name="_Cover">Path of Cover Image to store in the archive - CAN BE EMPTY</param>
+		/// <param name="onComplete">Complete Calback (completeStatus,jobData object)</param>
+		/// <returns>Preliminary Success</returns>
+		public static bool startJob_Convert_Crush(
+			int _Mode,
+			string _Input, 
+			string _Output,
+			Tuple<string,int> _Audio,
+			int _ArchSet,
+			string _Title,
+			string _Cover,
+			Action<bool,CrushParams> onComplete)
 		{
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
 			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
-
 			LOCKED = true;
 
-			var par = new CrushParams {
-				inputFile = _Input,
-				outputDir = _Output,
-				audioQuality = _Audio,
-				cdTitle = _Title,
-				expectedTracks = HACK_CD_TRACKS
-			};  // CovertCue shares params with Crush job
-
-			var j = new JobConvertCue(par);
-				j.MAX_CONCURRENT = MAX_TASKS;
-				j.onComplete = (s) =>{
-					LOCKED = false;
-					ERROR = j.ERROR[1];
-					onComplete(s, 0, j.jobData.cd); // Disregard final filesize, because it's not an archive
-				};
-
-				j.onJobStatus = jobStatusHandler;	// For status and progress updates
-				j.start();
-
-			return true;
-		}// -----------------------------------------
-		
-		
-		/// <summary>
-		/// Compress a CD to output folder
-		/// </summary>
-		/// <param name="_Input">Input file, must be `.cue`</param>
-		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
-		/// <param name="_Audio">Audio Quality to encode the audio tracks with.</param>
-		/// <param name="_Cover">Cover Image to store in the archive</param>
-		/// <param name="_Title">Title of the CD</param>
-		/// <param name="onComplete">Completed (completeStatus,CrushedSize)</param>
-		/// <returns></returns>
-		public static bool startJob_CrushCD(string _Input, string _Output, Tuple<string,int> _Audio, 
-			string _Cover, string _Title, int compressionLevel, Action<bool,int,cd.CDInfos> onComplete)
-		{
-			if (LOCKED) { ERROR="Engine is working"; return false; } 
-			if (!FFMPEG_OK) { ERROR="FFmpeg is not set"; return false; }
-
-			LOCKED = true;
-
-			// Set the running parameters for the Crush (compress) job
+			// Set the running parameters for the job
 			var par = new CrushParams {
 				inputFile = _Input,
 				outputDir = _Output,
 				audioQuality = _Audio,
 				cover = _Cover,
 				cdTitle = _Title,
-				compressionLevel = compressionLevel,
-				expectedTracks = HACK_CD_TRACKS
+				archiveSettingsInd = _ArchSet,
+				expectedTracks = HACK_CD_TRACKS,
+				mode = _Mode
 			};
 
-			// Create the job and set it up
-			var j = new JobCrush(par);
-				j.MAX_CONCURRENT = MAX_TASKS;
-				j.onComplete = (s) => {
+			var job = new JobCrush(par);
+			
+			job.MAX_CONCURRENT = MAX_TASKS;
+			job.onJobStatus = jobStatusHandler;		// For status and progress updates, FORM sets this.
+			job.onComplete = (s) => {
 					LOCKED = false;
-					ERROR = j.ERROR[1];
-					// Note: job.jobData is a general use object that was set up in the job
-					//		 I can read it and get things that I want from it
-					if (s) {
-						onComplete(s,j.jobData.crushedSize, j.jobData.cd); // Hack, send CDINFO and SIZE as well
-					}
-					else {
-						onComplete(s, 0, null);
-					}
+					ERROR = job.ERROR[1];
+					onComplete(s, job.jobData);
 				};
 
-				j.onJobStatus = jobStatusHandler;	// For status and progress updates
-				j.start();
+			job.start();
 
 			return true;
-		}// -----------------------------------------
+		}
 
+		
 
 		/// <summary>
-		/// RESTORE an arc file to target output folder
+		/// RESTORE An Archive file to target output folder
 		/// </summary>
 		/// <param name="_Input">Input file, Must be `.arc`</param>
 		/// <param name="_Output">Output folder, If null, it will be same as input file folder</param>
+		/// <param name="_Flag_Folder">Extract files to a subfolder of `_output`</param>
+		/// <param name="_Mode">0: Normal, 1:Merge, 2:Restore To EncAudio</param>
 		/// <param name="onComplete">(completeStatus)</param>
-		/// <returns></returns>
-		public static bool startJob_RestoreCD(string _Input, string _Output,
-			bool flag_folder, bool flag_forceSingle, bool flag_encCue, Action<bool> onComplete)
+		/// <returns>Preliminary  Success</returns>
+		public static bool startJob_RestoreCD(
+			string _Input, 
+			string _Output,
+			bool _Flag_Folder, 
+			int _Mode,
+			Action<bool> onComplete)
 		{
 			// NOTE : JOB checks for input file
 			if (LOCKED) { ERROR="Engine is working"; return false; } 
@@ -294,14 +267,14 @@ namespace cdcrush.prog
 			var par = new RestoreParams {
 				inputFile = _Input,     // Checked in the JOB
 				outputDir = _Output,    // Checked in the JOB
-				flag_folder = flag_folder,
-				flag_forceSingle = flag_forceSingle,
-				flag_encCue = flag_encCue,
+				flag_folder = _Flag_Folder,
+				mode = _Mode,
 				expectedTracks = HACK_CD_TRACKS
 			};
 
 			var j = new JobRestore(par);
 				j.MAX_CONCURRENT = MAX_TASKS;
+				j.onJobStatus = jobStatusHandler;	// For status and progress updates
 				j.onComplete = (s) =>
 				{
 					LOCKED = false;
@@ -309,7 +282,6 @@ namespace cdcrush.prog
 					onComplete(s);
 				};
 
-				j.onJobStatus = jobStatusHandler;	// For status and progress updates
 				j.start();
 
 			return true;
@@ -373,15 +345,20 @@ namespace cdcrush.prog
 				return false;
 			}
 
-			if (!check_file_(arcFile,CDCRUSH_EXTENSION)) return false;
+			if (!check_file_(arcFile,CDCRUSH_EXTENSIONS)) 
+			{
+				ERROR = "Invalid file extension. Supported  = (" + string.Join(" ",CDCRUSH.CDCRUSH_EXTENSIONS) + ")";
+				return false;
+			}
+
 
 			LOCKED = true;
 
 			// Delete old files from previous quickInfos, IF ANY
 			FileTools.tryDelete(Path.Combine(TEMP_FOLDER, CDCRUSH_SETTINGS));
 			FileTools.tryDelete(Path.Combine(TEMP_FOLDER, CDCRUSH_COVER));
-
-			var arc = new FreeArc(TOOLS_PATH);
+			
+			var arc = ArchiveMaster.getArchiver(arcFile);
 
 			// --
 			arc.onComplete = (success) =>
@@ -395,7 +372,7 @@ namespace cdcrush.prog
 					try{
 						cd.jsonLoad(Path.Combine(TEMP_FOLDER,CDCRUSH_SETTINGS));
 					}catch(haxe.lang.HaxeException e){
-						ERROR = e.Message;
+						ERROR = "Not a valid CDCRUSH Archive.";
 						onComplete(null);
 						return;
 					}
@@ -419,8 +396,10 @@ namespace cdcrush.prog
 
 			};
 
+
+			// TODO: Make sure ARCHIVE contains proper files
 			// : Actually extract
-			arc.extractFiles(arcFile, new[] { CDCRUSH_SETTINGS, CDCRUSH_COVER },TEMP_FOLDER);
+			arc.extract(arcFile,TEMP_FOLDER,new [] {CDCRUSH_SETTINGS, CDCRUSH_COVER});
 
 			return true;
 		}// -----------------------------------------
@@ -431,7 +410,7 @@ namespace cdcrush.prog
 		/// </summary>
 		/// <param name="arcFile"></param>
 		/// <returns></returns>
-		public static bool check_file_(string file,string ext)
+		public static bool check_file_(string file,params string[] exts)
 		{
 			// --
 			if(!File.Exists(file))
@@ -441,13 +420,17 @@ namespace cdcrush.prog
 			}
 
 			// --
-			if(Path.GetExtension(file).ToLower() != ext)
+			
+			foreach(var ext in exts)
 			{
-				ERROR = "File, not valid extension , " + file;
-				return false;
+				if(Path.GetExtension(file).ToLower() == ext)
+				{
+					return true;
+				}
 			}
 
-			return true;
+			ERROR = "File, not valid extension , " + file;
+			return false;
 		}// -----------------------------------------
 
 		/// <summary>
@@ -484,6 +467,7 @@ namespace cdcrush.prog
 		{
 			return Path.Combine(CDCRUSH.TEMP_FOLDER,Guid.NewGuid().ToString().Substring(0, 12));
 		}// -----------------------------------------
+
 
 	}// -- end class
 

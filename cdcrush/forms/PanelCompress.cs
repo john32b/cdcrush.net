@@ -28,10 +28,10 @@ public partial class PanelCompress : UserControl
 	{
 		// -- Some Tooltips
          ToolTip tt = new ToolTip();
-		 tt.SetToolTip(chk_encodedCue, "Encodes audio tracks and creates a .CUE file that handles data and encoded audio tracks. Doesn't create a final archive. This format can be used in some emulators.");
+		 //tt.SetToolTip(chk_encodedCue, "Encodes audio tracks and creates a .CUE file that handles data and encoded audio tracks. Doesn't create a final archive. This format can be used in some emulators.");
 		 tt.SetToolTip(pictureBox1,"You can optionally set an image cover for this CD and it will be stored in the archive.");
          
-		// -- Get audio codecs into Combo Box
+		// -- Initialize combobox Audio Compression
 		foreach(var codecID in AudioMaster.codecs)
 		{
 			combo_audio_c.Items.Add(AudioMaster.getCodecIDName(codecID));
@@ -39,14 +39,24 @@ public partial class PanelCompress : UserControl
 
 		combo_audio_c.SelectedIndex = 0;
 		combo_audio_c_SelectedIndexChanged(null,null); // force first call? why
-		combo_data_c.SelectedIndex = CDCRUSH.FREEARC_DEF_COMPRESSION_INDEX;
+
+		// -- Initialize combobox Archive Compression
+		foreach(var cs in ArchiveMaster.compressionStrings)
+		{
+			combo_data_c.Items.Add(cs);
+		}
+
+		combo_data_c.SelectedIndex = ArchiveMaster.DEFAULT_INDEX;
+
+		// -- 
+		combo_method.SelectedIndex = 0;
 
 		FormTools.fileLoadDialogPrepare("cue", "CUE files (*.cue)|*.cue");
 		FormTools.fileLoadDialogPrepare("cover", "Image files (*.jpg)|*.jpg");
 
 		// --
-		form_zeroOutInfos();
-		form_set_proper_action_name();
+		form_prepare_init();
+
 	}// -----------------------------------------
 
 	// ==========================================
@@ -55,9 +65,9 @@ public partial class PanelCompress : UserControl
 
 
 	/// <summary>
-	/// Clear CD Infos and Locks Buttons
+	/// Clear CD Infos and Locks 
 	/// </summary>
-	private void form_zeroOutInfos()
+	private void form_prepare_init()
 	{
 		form_lockSection("action", true);
 		form_set_cover(null);	// Empty it out
@@ -81,7 +91,7 @@ public partial class PanelCompress : UserControl
 				btn_CRUSH.Enabled = !_lock;
 				break;
 			case "all":
-				chk_encodedCue.Enabled = !_lock;
+				combo_method.Enabled = !_lock;
 				input_in.Enabled = !_lock;
 				btn_input_in.Enabled = !_lock;
 				btn_input_out.Enabled = !_lock;
@@ -110,16 +120,6 @@ public partial class PanelCompress : UserControl
 			pictureBox1.Image = Properties.Resources.dropimage;
 			preparedCover = null;
 		}
-	}// -----------------------------------------
-
-
-
-	/// <summary>
-	/// Call this to change the main button's name depending on the `convert` checkbox
-	/// </summary>
-	void form_set_proper_action_name()
-	{
-		btn_CRUSH.Text = chk_encodedCue.Checked?"CONVERT":"CRUSH";
 	}// -----------------------------------------
 
 
@@ -166,7 +166,7 @@ public partial class PanelCompress : UserControl
 	/// </summary>
 	void form_quickLoadFile(string file)
 	{
-		form_zeroOutInfos();
+		form_prepare_init();
 
 		// Clear the status infos at next tab change
 		FormMain.FLAG_REQUEST_STATUS_CLEAR = true;
@@ -180,6 +180,7 @@ public partial class PanelCompress : UserControl
 		else
 		{
 			// CUE Loaded OK, fill in form infos and unlock buttons
+
 			loadedCuePath = file;
 			input_in.Text = file;
 			form_lockSection("action", false);
@@ -213,19 +214,15 @@ public partial class PanelCompress : UserControl
 	// --
 	// Event Clicked Compressed Button
 	private void btn_CRUSH_Click(object sender, EventArgs e)
-	{
-		// This TUPLE will hold (CODECID,QUALITY INDEX)
-		Tuple<string,int> audioQ = Tuple.Create( AudioMaster.codecs[combo_audio_c.SelectedIndex],
-												 combo_audio_q.SelectedIndex );
-										
-		// Since I can fire 2 jobs from here, have a common callback for both jobs
-		Action<bool,int,cd.CDInfos> jobCallback = (complete, newSize, cd) =>
+	{									
+		// Common callback for all job types
+		Action<bool,CrushParams> jobCallback = (complete, jobdata) =>
 		{
 			FormTools.invoke(this, () => 
 			{
 				form_lockSection("all", false);
-				form_set_crushed_size(newSize);
-				postCdInfo = cd;	// Either null or full info
+				form_set_crushed_size(jobdata.crushedSize);
+				postCdInfo = jobdata.cd;	// Either null or full info
 
 				if(complete) {
 					FormMain.sendMessage("Complete", 2);
@@ -241,26 +238,32 @@ public partial class PanelCompress : UserControl
 			});
 		};
 
+
 		// Reset the message color, incase it was red
 		FormMain.sendMessage("", 1);
-
-		// Engine request job result
-		bool res = false;
 
 		// Fix progress reporting. HACKY WAY :-/
 		CDCRUSH.HACK_CD_TRACKS = numberOfTracks;
 
 		// Either compress to an archive, or just convert
 		// Note : Progress updates are automatically being handled by the main FORM
-		if(chk_encodedCue.Checked) {
-			res = CDCRUSH.startJob_ConvertCue(loadedCuePath, input_out.Text, audioQ, 
-				info_cdtitle.Text, jobCallback);
-		}else {
-			res = CDCRUSH.startJob_CrushCD(loadedCuePath, input_out.Text, audioQ, 
-				preparedCover, info_cdtitle.Text, combo_data_c.SelectedIndex+1, jobCallback);
-		}
-		
-		// -- Is everything ok?
+
+		// This TUPLE will hold (CODECID, QUALITY INDEX)
+		Tuple<string,int> audioQ = Tuple.Create( AudioMaster.codecs[combo_audio_c.SelectedIndex],
+												 combo_audio_q.SelectedIndex );
+
+		bool res = CDCRUSH.startJob_Convert_Crush (
+			combo_method.SelectedIndex,
+			loadedCuePath,
+			input_out.Text,
+			audioQ,
+			combo_data_c.SelectedIndex,
+			info_cdtitle.Text,
+			preparedCover,
+			jobCallback
+		);
+
+		// -- Check preliminary Job Status
 		if(res) {
 			form_lockSection("all", true);
 		}else{
@@ -347,17 +350,24 @@ public partial class PanelCompress : UserControl
 	}// -----------------------------------------
 
 	// --
-	// Encode Instead Checkbox
-	private void chk_encodedCue_CheckedChanged(object sender, EventArgs e)
-	{
-		form_set_proper_action_name();
-	}// -----------------------------------------
-
-	// --
 	private void btn_chksm_Click(object sender, EventArgs e)
 	{
 		FormMain.showCdInfo(postCdInfo);
 	}// -----------------------------------------
 
-	}// --
+	// --
+	private void combo_method_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		switch(combo_method.SelectedIndex)
+		{
+			case 0: btn_CRUSH.Text = "CRUSH"; break;
+			case 1: btn_CRUSH.Text = "CONVERT"; break;
+			case 2: btn_CRUSH.Text = "CONVERT INTO ARCHIVE"; break;
+		}
+
+		combo_data_c.Enabled = combo_method.SelectedIndex !=1;
+
+	}// -----------------------------------------
+
+}// --
 }// --

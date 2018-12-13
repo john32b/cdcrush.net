@@ -30,6 +30,7 @@
 		{
 			System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 			System.Windows.Forms.GroupBox groupBox1;
+			this.label7 = new System.Windows.Forms.Label();
 			this.btn_join = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -41,6 +42,8 @@
 			this.btn_unarc = new System.Windows.Forms.Button();
 			this.btn_arc = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
+			this.btn_7z = new System.Windows.Forms.Button();
+			this.btn_7unz = new System.Windows.Forms.Button();
 			this.txt_files = new System.Windows.Forms.TextBox();
 			this.textbox_log = new System.Windows.Forms.TextBox();
 			this.label5 = new System.Windows.Forms.Label();
@@ -62,6 +65,7 @@
 			tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78F));
 			tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 44.44444F));
 			tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55.55556F));
+			tableLayoutPanel1.Controls.Add(this.label7, 0, 4);
 			tableLayoutPanel1.Controls.Add(this.btn_join, 1, 3);
 			tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
 			tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
@@ -73,16 +77,30 @@
 			tableLayoutPanel1.Controls.Add(this.btn_unarc, 2, 2);
 			tableLayoutPanel1.Controls.Add(this.btn_arc, 1, 2);
 			tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+			tableLayoutPanel1.Controls.Add(this.btn_7z, 1, 4);
+			tableLayoutPanel1.Controls.Add(this.btn_7unz, 2, 4);
 			tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
 			tableLayoutPanel1.Name = "tableLayoutPanel1";
-			tableLayoutPanel1.RowCount = 4;
+			tableLayoutPanel1.RowCount = 5;
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			tableLayoutPanel1.Size = new System.Drawing.Size(223, 147);
+			tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+			tableLayoutPanel1.Size = new System.Drawing.Size(223, 180);
 			tableLayoutPanel1.TabIndex = 2;
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label7.Location = new System.Drawing.Point(3, 144);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(34, 13);
+			this.label7.TabIndex = 10;
+			this.label7.Text = "7ZIP";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// btn_join
 			// 
@@ -195,12 +213,32 @@
 			this.label3.Text = "ARC";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// btn_7z
+			// 
+			this.btn_7z.Location = new System.Drawing.Point(81, 147);
+			this.btn_7z.Name = "btn_7z";
+			this.btn_7z.Size = new System.Drawing.Size(58, 23);
+			this.btn_7z.TabIndex = 11;
+			this.btn_7z.Text = "Zip";
+			this.btn_7z.UseVisualStyleBackColor = true;
+			this.btn_7z.Click += new System.EventHandler(this.btn_7z_Click);
+			// 
+			// btn_7unz
+			// 
+			this.btn_7unz.Location = new System.Drawing.Point(145, 147);
+			this.btn_7unz.Name = "btn_7unz";
+			this.btn_7unz.Size = new System.Drawing.Size(58, 23);
+			this.btn_7unz.TabIndex = 12;
+			this.btn_7unz.Text = "UNzip";
+			this.btn_7unz.UseVisualStyleBackColor = true;
+			this.btn_7unz.Click += new System.EventHandler(this.btn_7unz_Click);
+			// 
 			// groupBox1
 			// 
 			groupBox1.Controls.Add(tableLayoutPanel1);
 			groupBox1.Location = new System.Drawing.Point(12, 12);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(229, 166);
+			groupBox1.Size = new System.Drawing.Size(229, 199);
 			groupBox1.TabIndex = 5;
 			groupBox1.TabStop = false;
 			groupBox1.Text = "Tools";
@@ -218,11 +256,11 @@
 			this.textbox_log.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textbox_log.Location = new System.Drawing.Point(12, 184);
+			this.textbox_log.Location = new System.Drawing.Point(12, 217);
 			this.textbox_log.Multiline = true;
 			this.textbox_log.Name = "textbox_log";
 			this.textbox_log.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.textbox_log.Size = new System.Drawing.Size(480, 250);
+			this.textbox_log.Size = new System.Drawing.Size(480, 217);
 			this.textbox_log.TabIndex = 3;
 			// 
 			// label5
@@ -341,5 +379,8 @@
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Button btn_tak_pcm;
 		private System.Windows.Forms.Button btn_untak_pcm;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Button btn_7z;
+		private System.Windows.Forms.Button btn_7unz;
 	}
 }

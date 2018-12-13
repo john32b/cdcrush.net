@@ -44,7 +44,9 @@
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabRestore = new System.Windows.Forms.TabPage();
+			this.panelRestore1 = new cdcrush.forms.PanelRestore();
 			this.tabCrush = new System.Windows.Forms.TabPage();
+			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			this.tabSettings = new System.Windows.Forms.TabPage();
 			this.group_debug = new System.Windows.Forms.GroupBox();
 			this.btn_toolsTest = new System.Windows.Forms.Button();
@@ -61,8 +63,6 @@
 			this.link_web = new System.Windows.Forms.LinkLabel();
 			this.info_ver = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
-			this.panelRestore1 = new cdcrush.forms.PanelRestore();
-			this.panelCompress1 = new cdcrush.forms.PanelCompress();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -197,11 +197,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.info_status.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.info_status.Enabled = false;
-			this.info_status.Location = new System.Drawing.Point(12, 412);
+			this.info_status.Location = new System.Drawing.Point(12, 423);
 			this.info_status.Name = "info_status";
 			this.info_status.ReadOnly = true;
 			this.info_status.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.info_status.Size = new System.Drawing.Size(450, 16);
+			this.info_status.Size = new System.Drawing.Size(451, 16);
 			this.info_status.TabIndex = 19;
 			this.info_status.Text = "Ready.";
 			this.info_status.WordWrap = false;
@@ -210,9 +210,9 @@
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.progressBar1.Location = new System.Drawing.Point(12, 388);
+			this.progressBar1.Location = new System.Drawing.Point(12, 399);
 			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(465, 24);
+			this.progressBar1.Size = new System.Drawing.Size(466, 24);
 			this.progressBar1.TabIndex = 12;
 			this.progressBar1.Value = 50;
 			// 
@@ -229,7 +229,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(469, 370);
+			this.tabControl1.Size = new System.Drawing.Size(470, 381);
 			this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabControl1.TabIndex = 20;
 			this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
@@ -241,10 +241,18 @@
 			this.tabRestore.Location = new System.Drawing.Point(4, 25);
 			this.tabRestore.Name = "tabRestore";
 			this.tabRestore.Padding = new System.Windows.Forms.Padding(3);
-			this.tabRestore.Size = new System.Drawing.Size(461, 341);
+			this.tabRestore.Size = new System.Drawing.Size(462, 352);
 			this.tabRestore.TabIndex = 0;
 			this.tabRestore.Text = "Restore a CD";
 			this.tabRestore.UseVisualStyleBackColor = true;
+			// 
+			// panelRestore1
+			// 
+			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
+			this.panelRestore1.Name = "panelRestore1";
+			this.panelRestore1.Size = new System.Drawing.Size(456, 346);
+			this.panelRestore1.TabIndex = 0;
 			// 
 			// tabCrush
 			// 
@@ -253,10 +261,18 @@
 			this.tabCrush.Location = new System.Drawing.Point(4, 25);
 			this.tabCrush.Name = "tabCrush";
 			this.tabCrush.Padding = new System.Windows.Forms.Padding(3);
-			this.tabCrush.Size = new System.Drawing.Size(461, 341);
+			this.tabCrush.Size = new System.Drawing.Size(462, 352);
 			this.tabCrush.TabIndex = 1;
 			this.tabCrush.Text = "Compress a CD";
 			this.tabCrush.UseVisualStyleBackColor = true;
+			// 
+			// panelCompress1
+			// 
+			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
+			this.panelCompress1.Name = "panelCompress1";
+			this.panelCompress1.Size = new System.Drawing.Size(456, 346);
+			this.panelCompress1.TabIndex = 0;
 			// 
 			// tabSettings
 			// 
@@ -273,7 +289,7 @@
 			this.tabSettings.Controls.Add(this.info_tempFolder);
 			this.tabSettings.Location = new System.Drawing.Point(4, 25);
 			this.tabSettings.Name = "tabSettings";
-			this.tabSettings.Size = new System.Drawing.Size(461, 341);
+			this.tabSettings.Size = new System.Drawing.Size(462, 352);
 			this.tabSettings.TabIndex = 2;
 			this.tabSettings.Text = "Settings";
 			this.tabSettings.UseVisualStyleBackColor = true;
@@ -414,7 +430,7 @@
 			this.tabInfo.Controls.Add(label1);
 			this.tabInfo.Location = new System.Drawing.Point(4, 25);
 			this.tabInfo.Name = "tabInfo";
-			this.tabInfo.Size = new System.Drawing.Size(461, 341);
+			this.tabInfo.Size = new System.Drawing.Size(462, 352);
 			this.tabInfo.TabIndex = 3;
 			this.tabInfo.Text = "Info";
 			this.tabInfo.UseVisualStyleBackColor = true;
@@ -451,37 +467,22 @@
 			// 
 			// label12
 			// 
+			this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label12.AutoSize = true;
 			this.label12.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.label12.ForeColor = System.Drawing.SystemColors.GrayText;
-			this.label12.Location = new System.Drawing.Point(460, 412);
+			this.label12.Location = new System.Drawing.Point(460, 423);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(21, 13);
 			this.label12.TabIndex = 21;
 			this.label12.Text = "log";
 			this.label12.Click += new System.EventHandler(this.label12_Click);
 			// 
-			// panelRestore1
-			// 
-			this.panelRestore1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelRestore1.Location = new System.Drawing.Point(3, 3);
-			this.panelRestore1.Name = "panelRestore1";
-			this.panelRestore1.Size = new System.Drawing.Size(455, 335);
-			this.panelRestore1.TabIndex = 0;
-			// 
-			// panelCompress1
-			// 
-			this.panelCompress1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelCompress1.Location = new System.Drawing.Point(3, 3);
-			this.panelCompress1.Name = "panelCompress1";
-			this.panelCompress1.Size = new System.Drawing.Size(455, 335);
-			this.panelCompress1.TabIndex = 0;
-			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(493, 430);
+			this.ClientSize = new System.Drawing.Size(494, 441);
 			this.Controls.Add(this.label12);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.progressBar1);
@@ -489,7 +490,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(502, 420);
+			this.MinimumSize = new System.Drawing.Size(510, 480);
 			this.Name = "FormMain";
 			this.Text = "CDCRUSH";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);

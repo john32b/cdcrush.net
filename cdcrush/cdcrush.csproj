@@ -25,7 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.4.2.%2a</ApplicationVersion>
+    <ApplicationVersion>1.5.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -119,11 +119,13 @@
     <Compile Include="forms\PanelRestore.Designer.cs">
       <DependentUpon>PanelRestore.cs</DependentUpon>
     </Compile>
+    <Compile Include="lib\app\SevenZip.cs" />
     <Compile Include="lib\app\Tak.cs" />
     <Compile Include="lib\app\IProcessStatus.cs" />
     <Compile Include="lib\FileTools.cs" />
     <Compile Include="lib\FormTools.cs" />
     <Compile Include="lib\task\CTestTask.cs" />
+    <Compile Include="prog\ArchiveMaster.cs" />
     <Compile Include="prog\AudioMaster.cs" />
     <Compile Include="prog\CDCRUSH.cs" />
     <Compile Include="lib\app\AbArchiver.cs" />
@@ -135,7 +137,6 @@
     <Compile Include="lib\LOG.cs" />
     <Compile Include="lib\task\CTask.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="prog\JobConvertCue.cs" />
     <Compile Include="prog\TaskCompressTrack.cs" />
     <Compile Include="prog\JobCrush.cs" />
     <Compile Include="prog\JobRestore.cs" />

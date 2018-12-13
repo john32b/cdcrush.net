@@ -13,17 +13,17 @@ namespace cdcrush.prog
 /// Provides generalized functionality for encoding/decoding audio
 /// - Also provides universal Audio Codec IDs for use in forms
 /// </summary>
-public class AudioMaster
+class AudioMaster
 {
 	// List of all codecIDs. Every codecID is understood by this class
-	public static string[] codecs = new [] { "VORBIS" , "OPUS", "MP3" , "FLAC", "TAK"};
+	public static readonly string[] codecs = new [] { "VORBIS" , "OPUS", "MP3" , "FLAC", "TAK"};
 	
-	static string[] lossyAudioExt = new [] { ".ogg", ".mp3" };
+	static readonly string[] lossyAudioExt = new [] { ".ogg", ".mp3" };
 
 	/// <summary>
 	/// Returns Array with String Info of Each Index, Default Index
 	/// </summary>
-	/// <param name="codecID"></param>
+	/// <param name="codecID">CodecID as it is on the `codecs` static array</param>
 	/// <returns>Array with Quality Information, Default Quality Index</returns>
 	public static Tuple<string[],int> getQualityInfos(string codecID)
 	{
@@ -71,7 +71,6 @@ public class AudioMaster
 		if(codecID=="TAK") return ".tak";
 		else return FFmpeg.getCodecByID(codecID).ext;
 	}// --
-
 
 
 	/// <summary>

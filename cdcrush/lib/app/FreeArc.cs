@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 
 namespace cdcrush.lib.app {
 
@@ -19,72 +20,118 @@ class FreeArc : AbArchiver
 	// --
 	public FreeArc(string exePath = "")
 	{
+		SOLID = false;
 		proc = new CliApp(Path.Combine(exePath,EXECUTABLE_NAME));
+
 		proc.flag_stdout_word_mode = true;
+		proc.onStdOutWord = onStdOutWordGetProgress;
 
 		proc.onComplete = (code) =>
 		{
-			if (code == 0)
-			{
-				onComplete?.Invoke(true);
-			}
-			else
+			COMPRESSED_SIZE = 0;
+
+			if(code>0)
 			{
 				ERROR = proc.stdErrLog;
 				onComplete?.Invoke(false);
+				return;
 			}
+			
+			if(operation=="compress")
+			{
+				// Try to read the stdout string and get final size
+				// 'Compressed 2 files, 127,707 => 120,363 bytes. Ratio 94.2%'
+				var m = Regex.Match(proc.stdOutLog,@"=> (.*) bytes");
+				if(m.Success)
+				{
+					var ss = m.Groups[1].Value.Replace(",",string.Empty);
+					COMPRESSED_SIZE = long.Parse(ss);
+				}		
+			}
+
+			onComplete?.Invoke(true);
 		};
 
-		proc.onStdOutWord = onStdOutWordGetProgress;
+		
 	}// -----------------------------------------
 
+	
+	/// <summary>
+	/// FreeArc compression strings are kind of complicated since every 
+	/// compression level includes a "fast decompression" option
+	/// </summary>
+	/// <param name="level">1-9</param>
+	/// <returns></returns>
+	public string getCompressionString(int level)
+	{
+		if(level<1) level=1; else if(level>9) level=9;
+		return $"-m{level}";
+	}// -----------------------------------------
 
 	/// <summary>
 	/// Compress a bunch of files into an archive
+	/// NOTE: FREEARC has a thing and all the input files need to be on the same folder.
 	/// </summary>
 	/// <param name="listOfFiles">ALL files must be in the same directory!!!</param>
 	/// <param name="destinationFile">Final archive filename</param>
+	/// /// <param name="compressionLevel">0-10 Set this or set compressionString Directly</param>
+	/// <param name="compressionString">a Valid Compression String for FreeArc. E.g. "-m4x -md32m"</param>
 	/// <returns>Return Preliminary Success</returns>
-	public override bool compress(string[] listOfFiles,string destinationFile, int compressionLevel = 4)
+	public override bool compress(string[] listOfFiles,string destinationFile, int compressionLevel = -1, string compressionString=null)
 	{
+		operation = "compress";
 		progress = 0;
 		flag_is_capturing = false;
 		capt_off_switch = "Compressed";
 
 		foreach(string f in listOfFiles) {
-				if (!System.IO.File.Exists(f)) {
+				if (!File.Exists(f)) {
 					ERROR = string.Format("File '{0}' does not exist",f); return false;
 				}
 			}
 
 		var sourceFolder = Path.GetDirectoryName(listOfFiles[0]);
 
-		var filesStr = "";
-		foreach(var s in listOfFiles) filesStr += "\"" + Path.GetFileName(s) + "\" ";
-		
-		LOG.log("[ARC] : Compressing {0} into '{1}'", filesStr, destinationFile);
+		var fstrFiles = "";
+		foreach(var s in listOfFiles) fstrFiles += "\"" + Path.GetFileName(s) + "\" ";
 
-		if(compressionLevel<0) compressionLevel = 0;
-		if(compressionLevel>9) compressionLevel = 9;
+		var fstrFull = "";
+		foreach(var s in listOfFiles) fstrFull += "\"" + s + "\" ";
+		
+		if(compressionLevel<0)
+		{
+			compressionString = getCompressionString(compressionLevel);
+		}
+
+		LOG.log("[ARC] : Compressing {0} into '{1}' with compression '{2}'", fstrFiles, destinationFile, compressionString);
 
 		// -md32m is dictionary size -- removed since 1.2.3
 		// -m4 is the default compression
 		// -s	= Solid Compression, To merge all files in one solid block
+		// -s-  = NON solid
 		// -i1	= Display progress info only
-		proc.start(string.Format("a -m{3} -s -i1 -o+ --diskpath=\"{1}\" \"{0}\" {2}", destinationFile, sourceFolder, filesStr, compressionLevel));
+		// -mt0 = Automatic use of threads
+		// -ep	= Don't store paths in files
 
-		// NOTE: -m4 requires 128Mb for packing and unpacking
+		string solidSTR = SOLID?"-s":"-s-";
+
+		//proc.start($"a {compressionString} {solidSTR} -mt0 -i1 --diskpath=\"{sourceFolder}\" \"{destinationFile}\" {filesStr}");
+		proc.start($"a {compressionString} {solidSTR} -mt0 -i1 -ep \"{destinationFile}\" {fstrFull}");
+
 		return true;
 	}// -----------------------------------------
 
 	/// <summary>
-	/// Extracts all files,ingores pathnames
+	/// Extract `Input file` to `Destination Folder`
+	/// If `filesToExtract` is set, then will try to extract these files only from withing the archive
 	/// </summary>
-	/// <param name="inputFile">File to extract</param>
-	/// <param name="destinationFolder">Defaults to same folder as archive</param>
-	/// <returns>Return Preliminary Success</returns>
-	public override bool extractAll(string inputFile, string destinationFolder = null)
+	/// <param name="inputFile"></param>
+	/// <param name="destinationFolder"></param>
+	/// <param name="filesToExtract"></param>
+	/// <returns></returns>
+	public override bool extract(string inputFile, string destinationFolder=null, string[] filesToExtract = null)
 	{
+		operation = "extract";
 		progress = 0;
 		flag_is_capturing = false;
 		capt_off_switch = "Extracted";
@@ -93,25 +140,41 @@ class FreeArc : AbArchiver
 			destinationFolder = Path.GetDirectoryName(inputFile);
 		}
 
-		LOG.log("[ARC] : Extracting '{0}' into '{1}'", inputFile, destinationFolder);
+		if(filesToExtract!=null)
+		{
+			// -- EXTRACT SELECTED FILES
+			string fstr = "";
+			foreach(string s in filesToExtract) {
+				fstr +="\"" + s + "\" ";	// Include in double quotes and a space at the end
+			}
 
-		// Actual extract ::
-		// -o+ = Overwrite
-		// -i1 = Display progress info only
-		proc.start(string.Format("e -o+ -i1 \"{0}\" -dp\"{1}\"", inputFile, destinationFolder));
-		
+			LOG.log("[ARC] : Extracting from '{0}' files:[{2}] into '{1}'", inputFile, destinationFolder, fstr);
+			proc.start($"e -o+ -i1 -mt0 -dp\"{destinationFolder}\" \"{inputFile}\" {fstr}");
+
+		}else
+		{
+			// -- EXTRACT ALL
+			LOG.log("[ARC] : Extracting '{0}' into '{1}'", inputFile, destinationFolder);
+			// Actual extract ::
+			// -o+ = Overwrite
+			// -i1 = Display progress info only
+			proc.start($"e -o+ -i1 -mt0 -dp\"{destinationFolder}\" \"{inputFile}\"");
+		}
+
 		return true;
-	}// -----------------------------------------
+
+	}// ------
+
 
 	/// <summary>
-	/// Append a bunch of files in an archive
+	/// Append a bunch of files in an archive. These new files can then be extracted faster.
 	/// </summary>
 	/// <param name="files"></param>
 	/// <param name="archive"></param>
-	public bool appendFiles(string[] files, string archive)
+	public override bool append(string archive,string[] files)
 	{
-		if(!File.Exists(archive))
-		{
+		operation = "append";
+		if(!File.Exists(archive)) {
 			ERROR = "Archive doesn't exist " + archive;
 			return false;
 		}
@@ -123,38 +186,12 @@ class FreeArc : AbArchiver
 		}
 
 		LOG.log("[ARC] : Appending {0} into '{1}'", filesStr, archive);
+
 		proc.start(string.Format("a --diskpath=\"{2}\" \"{0}\" {1} --append", archive, filesStr,Path.GetDirectoryName(files[0])));
 		return true;
 
 	}// -----------------------------------------
 
-	/// <summary>
-	/// Extract selected files from an archive
-	/// </summary>
-	/// <param name="inputFile">The Archive to extract files from</param>
-	/// <param name="listOfFiles">A list of files, FILES MUST EXIST in the archive</param>
-	/// <param name="destinationFolder">Where to extract the files</param>
-	/// <returns>Return Preliminary Success</returns>
-	public override bool extractFiles(string inputFile, string[] listOfFiles, string destinationFolder = null)
-	{		
-		progress = 0;
-		flag_is_capturing = false;
-		capt_off_switch = "Extracted";
-
-		if(destinationFolder==null) {
-			destinationFolder = Path.GetDirectoryName(inputFile);
-		}
-
-		string filesStr = "";
-		foreach(string s in listOfFiles){
-			filesStr +="\"" + s + "\" ";	// Include in double quotes and a space at the end
-		}
-
-		LOG.log("[ARC] : Extracting '{0}' files:[{2}] into '{1}'", inputFile, destinationFolder,filesStr);
-
-		proc.start(string.Format("e -o+ -i1 \"{0}\" {2} -dp\"{1}\"", inputFile, destinationFolder, filesStr));
-		return true;
-	}// -----------------------------------------
 
 	// CAPTURING STDOUT WORD BY WORD
 	// -------------------------------
@@ -183,8 +220,11 @@ class FreeArc : AbArchiver
 		}
 
 		// Is capturing ::
+		// STDOUT example:
+		//		`Compressing 1 file, 143,556,608 bytes. Processed  35.1%`
+		// word can be like "23.4%" OR  "25%". so..
 		float fp;
-		if(float.TryParse(word.Split('%')[0],out fp)) 
+		if(float.TryParse(word.Replace(".","%").Split('%')[0],out fp)) // Keep the first digits up until . or %
 		{
 			int p = (int)System.Math.Round(fp);
 			if(p>progress) progress = p;

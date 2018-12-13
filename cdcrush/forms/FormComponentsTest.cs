@@ -74,7 +74,12 @@ namespace cdcrush.forms
 			string destFolder = Path.GetDirectoryName(SELECTED_FILES[0]);
 			string destFilename = Path.GetFileNameWithoutExtension(SELECTED_FILES[0]);
 			string finalpath = Path.Combine(destFolder,destFilename + "_test_.arc");
-			app.compress(SELECTED_FILES,finalpath);
+
+			if(!string.IsNullOrEmpty(txt_files_2.Text)){
+				finalpath = txt_files_2.Text;
+			}
+
+			app.compress(SELECTED_FILES,finalpath,7);
 		}// -----------------------------------------
 
 		// --
@@ -93,7 +98,10 @@ namespace cdcrush.forms
 			string destFolder = Path.GetDirectoryName(SELECTED_FILES[0]);
 			string destFilename = Path.GetFileNameWithoutExtension(SELECTED_FILES[0]);
 			string finalpath = Path.Combine(destFolder,destFilename + "_test_");
-			app.extractAll(SELECTED_FILES[0],finalpath);
+			if(!string.IsNullOrEmpty(txt_files_2.Text)){
+				finalpath = txt_files_2.Text;
+			}
+			app.extract(SELECTED_FILES[0],finalpath);
 		}// -----------------------------------------
 
 
@@ -201,6 +209,57 @@ namespace cdcrush.forms
 			});
 
 		}// --
+
+		private void btn_7z_Click(object sender, EventArgs e)
+		{
+			if(SELECTED_FILES==null) return;
+			
+			var app = new SevenZip(prog.CDCRUSH.TOOLS_PATH);
+			app.onComplete = (s) => {
+				LOG.log("--7ZIP Complete :: {0}, SIZE:", s);
+				LOG.log(app.COMPRESSED_SIZE);
+			};
+
+			app.onProgress = (p) => {
+				LOG.log("--7ZIP Got Progress :: {0}", p);
+			};
+
+			string destFolder = Path.GetDirectoryName(SELECTED_FILES[0]);
+			string destFilename = Path.GetFileNameWithoutExtension(SELECTED_FILES[0]);
+			string finalpath = Path.Combine(destFolder,destFilename + "_test_.7z");
+
+			if(!string.IsNullOrEmpty(txt_files_2.Text)){
+				finalpath = txt_files_2.Text;
+			}
+
+			app.compress(SELECTED_FILES,finalpath,1);
+		}
+
+
+
+		private void btn_7unz_Click(object sender, EventArgs e)
+		{
+			if(SELECTED_FILES==null) return;
+
+			var app = new SevenZip(prog.CDCRUSH.TOOLS_PATH);
+			app.onComplete = (s) => {
+				LOG.log("--7zip Complete :: {0}", s);
+			};
+			app.onProgress = (p) => {
+				LOG.log("--7zip Got Progress :: {0}", p);
+			};
+			string destFolder = Path.GetDirectoryName(SELECTED_FILES[0]);
+			string destFilename = Path.GetFileNameWithoutExtension(SELECTED_FILES[0]);
+			string finalpath = Path.Combine(destFolder,destFilename + "_test_");
+			
+			if(!string.IsNullOrEmpty(txt_files_2.Text)){
+				finalpath = txt_files_2.Text;
+			}
+
+			app.extract(SELECTED_FILES[0],finalpath);
+		}
+
+
 
 	}// --
 }// --

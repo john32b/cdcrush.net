@@ -37,6 +37,7 @@ public partial class PanelRestore : UserControl
 		form_setCoverImage(null);
 		loadedArcPath = null;
 		loadedCDInfo = null;
+		combo_method.SelectedIndex = 0;
 	}// -----------------------------------------
 
 
@@ -58,7 +59,7 @@ public partial class PanelRestore : UserControl
 				btn_input_in.Enabled = !_lock;
 				btn_input_out.Enabled = !_lock;
 				input_out.Enabled = !_lock;
-				toggle_merged.Enabled = !_lock;
+				combo_method.Enabled = !_lock;
 				toggle_subf.Enabled = !_lock;
 
 				form_lockSection("action", _lock);
@@ -101,15 +102,17 @@ public partial class PanelRestore : UserControl
 		info_audio.Text = loadedCDInfo.CD_AUDIO_QUALITY;
 		info_tracks.Text = numberOfTracks.ToString();
 
-		// Init some controls dependant on track count
-		toggle_merged.Enabled = (numberOfTracks>1);
-		toggle_cueaudio.Enabled = (numberOfTracks>1);
+		/// TODO: Alter the combobox -->
+	
+		//// Init some controls dependant on track count
+		//toggle_merged.Enabled = (numberOfTracks>1);
+		//toggle_cueaudio.Enabled = (numberOfTracks>1);
 
-		if(numberOfTracks==1)
-		{
-			toggle_merged.Checked = false;
-			toggle_cueaudio.Checked = false;
-		}
+		//if(numberOfTracks==1)
+		//{
+		//	toggle_merged.Checked = false;
+		//	toggle_cueaudio.Checked = false;
+		//}
 
 	}// -----------------------------------------
 
@@ -131,6 +134,7 @@ public partial class PanelRestore : UserControl
 
 	/// <summary>
 	/// Quick load an .arc file and display info about the CD loaded
+	/// If FILE is unsupported it will notify user about error
 	/// </summary>
 	void form_quickLoadFile(string file)
 	{
@@ -173,7 +177,8 @@ public partial class PanelRestore : UserControl
 			FormMain.sendMessage("Reading Information ..", 1);
 			FormMain.sendProgress(-1);
 		}else{
-			
+
+			FormMain.sendMessage(CDCRUSH.ERROR, 3);
 			onLoad(null);	// hacky way to have one codebase for errors
 		}
 
@@ -189,12 +194,8 @@ public partial class PanelRestore : UserControl
 	/// <param name="file"></param>
 	public void handle_dropped_file(string file)
 	{
-		// handle the file
-		if (System.IO.Path.GetExtension(file).ToLower() == ".arc")
-			form_quickLoadFile(file);
-		else{
-			FormMain.sendMessage("Unsupported file type. Drop an .ARC file", 3);
-		}
+		// Send whatever file it was to there.
+		form_quickLoadFile(file);
 	}// -----------------------------------------
 
 
@@ -209,8 +210,11 @@ public partial class PanelRestore : UserControl
 
 		// Start the job
 		// Note, Progress updates are automatically being handled by the main FORM
-		bool res = CDCRUSH.startJob_RestoreCD(loadedArcPath, input_out.Text, 
-			toggle_subf.Checked, toggle_merged.Checked, toggle_cueaudio.Checked,
+		bool res = CDCRUSH.startJob_RestoreCD(
+			loadedArcPath, 
+			input_out.Text, 
+			toggle_subf.Checked,
+			combo_method.SelectedIndex,
 			(complete)=>{
 				FormTools.invoke(this, () =>
 				{
@@ -278,26 +282,10 @@ public partial class PanelRestore : UserControl
 	}// -----------------------------------------
 
 	// --
-	// Control the state of the `merged` toggle
-	private void toggle_cueaudio_CheckedChanged(object sender, EventArgs e)
-	{
-		// Avoid non-user sets
-		if(!toggle_cueaudio.Enabled) return; 
-
-		if(toggle_cueaudio.Checked)
-		{
-			toggle_merged.Checked = false;
-			toggle_merged.Enabled = false;
-		}else{
-			toggle_merged.Enabled = true;
-		}
-	}// -----------------------------------------
-
-	// --
 	private void btn_chksm_Click(object sender, EventArgs e)
 	{
 		FormMain.showCdInfo(loadedCDInfo);
 	}// -----------------------------------------
 
-	}// --
-}// --
+	}// -- end class
+}// -- end namespace

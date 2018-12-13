@@ -1,6 +1,11 @@
 
 ## CHANGELOG
 
+### V1.5
+- Added support for 7-zip. Can now create `.7z` and `.zip` archives.
+- Can now convert a CD to `cue/bin/encoded audio tracks` into an archive
+- Small GUI Updates. User can select compress/restore specifics from a combobox `method`
+
 ### V1.4.3
 - Added support for TAK Lossless audio codec. (*https://wiki.hydrogenaud.io/index.php?title=TAK*)
 

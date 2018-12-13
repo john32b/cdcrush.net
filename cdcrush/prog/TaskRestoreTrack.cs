@@ -57,7 +57,7 @@ class TaskRestoreTrack : lib.task.CTask
 		else
 		{
 			// No need to convert back, end the task
-			if(p.flag_encCue) {
+			if(p.mode==2) {
 				// Point to correct file
 				track.workingFile = INPUT;
 				complete();

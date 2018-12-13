@@ -29,7 +29,7 @@ namespace cdcrush.lib.app
  *	
  *	 
  */
-class CliApp
+public class CliApp
 {
 	public static List<Thread> threads = null;
 
@@ -68,6 +68,7 @@ class CliApp
 
 	/// <summary>
 	/// Logs the entire App STDOUT here
+	/// DOES NOT WORK when `flag_stdout_word_mode` is set
 	/// </summary>
 	public string stdOutLog { get{ return builderStdOut.ToString(); } }
 
@@ -163,6 +164,8 @@ class CliApp
 			};
 		}
 
+		// -- 
+		LOG.log("[CLI] > {0} {1}",executable,args);
 
 		// Note: I really need a Thread here, If I don't, it will lock the main thread and forms
 		Thread th = new Thread(new ThreadStart(
@@ -216,6 +219,8 @@ class CliApp
 
 		while((byte_r = proc.StandardOutput.BaseStream.ReadByte()) > -1) 
 		{
+			builderStdOut.Append(Char.ConvertFromUtf32(byte_r));
+
 			if(byte_r == 32 || byte_r == 13) // SPACE or ENTER
 			{
 				if(word.Length > 0) {

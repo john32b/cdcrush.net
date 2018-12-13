@@ -68,7 +68,7 @@ class TaskCompressTrack : lib.task.CTask
 		else // AUDIO TRACK :
 		{
 			// Get Audio Data. (codecID, codecQuality)
-			Tuple<string,int> audioQ = jobData.audioQuality;
+			Tuple<string,int> audioQ = p.audioQuality;
 
 			// New filename that is going to be generated:
 			setupFiles(AudioMaster.getCodecExt(audioQ.Item1));
@@ -129,12 +129,13 @@ class TaskCompressTrack : lib.task.CTask
 	{
 		track.storedFileName = track.getTrackName() + ext;
 
-		if(p.flag_convert_only) {
+		if(p.mode==1) 
+		{
 			// Convert files to output folder directly
-			track.workingFile = Path.Combine(jobData.outputDir, track.storedFileName);
+			track.workingFile = Path.Combine(p.outputDir, track.storedFileName);
 		}else{
 			// Convert files to temp folder, since they are going to be archived later
-			track.workingFile = Path.Combine(jobData.tempDir, track.storedFileName);
+			track.workingFile = Path.Combine(p.tempDir, track.storedFileName);
 		}
 
 		OUTPUT = track.workingFile;
@@ -147,7 +148,7 @@ class TaskCompressTrack : lib.task.CTask
 		if(CDCRUSH.FLAG_KEEP_TEMP) return;
 
 		// Make sure the file is in the TEMP folder ::
-		if(jobData.flag_sourceTracksOnTemp)
+		if(p.flag_sourceTracksOnTemp)
 		{
 			File.Delete(INPUT); 
 		}

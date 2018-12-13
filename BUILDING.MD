@@ -18,7 +18,8 @@ Project Site : https://sourceforge.net/projects/freearc
 Project Site :  https://github.com/kidoz/ecm
 - **FFmpeg**, open source video/audio codecs. :warning: **NOT INCLUDED** \
 Project Site : https://www.ffmpeg.org
-
+- **7-zip**, open source archiver. **Included** in the project files.\
+Project Site : https://www.7-zip.org/
 
 ### Building `release`
 
