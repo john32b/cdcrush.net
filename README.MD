@@ -22,9 +22,6 @@ To get the latest version check [the releases page here on github](https://githu
 Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.bin`. Also you can use a **loseless audio codec** to be able to store/restore a `1:1` byte to byte copy of a CD Image.
 
 
-![Convert to encoded audio/cue Example](images/convert_example.png)
-<sup>**Converting** to encoded audio tracks example</sup>
-
 ### Use cases
 
 - **BACKUP** a 1:1 copy of CD images for **cold storage**. If you choose to encode audio tracks with `FLAC` or `TAK`, then the restoration will be the same as the source down to the last byte. This method is **more efficient** than directly compressing a cd image with a data archiver (*like 7zip*)
@@ -40,12 +37,16 @@ Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.
 | PO'ed | 139MB | 50MB | **39MB** | **18MB**
 
 
-<sup>**0**: Direct compression of the CD Image with 7zip. Profile : Maximum Compression</sup>
-<sup>**1**: Audio : TAK , Archive : Freearch High </sup>
+<sup>**0**: Direct compression of the CD Image with 7zip. Profile : Maximum Compression</sup>\
+<sup>**1**: Audio : TAK , Archive : Freearch High </sup>\
 <sup>**2**: Audio : Ogg Vorbis 64k , Archive : Freearch High </sup>
 
-## USAGE
 
+![Convert to encoded audio/cue Example](images/convert_example.png)
+<sup>**Converting** to encoded audio tracks example</sup>
+
+
+## USAGE
 
 ### General Info and FEATURES
 
