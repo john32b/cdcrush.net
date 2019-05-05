@@ -1,25 +1,31 @@
 # CDCRUSH dot NET
 
-**Name**: cdcrush, *Highy compress cd-image games*\
-**Author:** John Dimi, <johndimi@outlook.com> *twitter*: [@jondmt](https://twitter.com/jondmt)\
-**Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)\
-**Language:** C# .NET 4.5, **Licence:** MIT\
-**Version:** 1.5 **Platform:** Windows\
+**Name**: CDCRUSH, *Highly compress cd-image games*  
+**Author:** John Dimi :computer:, <johndimi@outlook (.) com> *twitter*: [@jondmt](https://twitter.com/jondmt)  
+**Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)  
+**Language:** C# .NET 4.5, **Licence:** MIT  
+**Version:** 1.5 **Platform:** Windows  
 **Sister Project** : [cdcrush nodejs](https://www.npmjs.com/package/cdcrush)
 
 ## Download
 
-To get the latest version check [the releases page here on github](https://github.com/johndimi/cdcrush.net/releases). \
+To get the latest version check [the releases page here on github](https://github.com/johndimi/cdcrush.net/releases).  
 *Available for **windows** only.*
 
 
 ## What is it
 
-![CDCRUSH LOGO](images/logo.png)
+![CDCRUSH LOGO](images/logo.png)  
 
-**CDCrush** is a tool that can `[ compress / convert / restore ]` **CD based games** that include audio tracks (**CD-DA**) (PS1, PC-Engine, PC, etc). It can use a variety of **Audio Codecs** to compress the audio tracks of a CD, and then put everything into an **compressed** archive, resulting in **great size reduction**. Ideal for **storage/sharing**.
+**Cdcrush** is a tool that can highly compress **CD based games**, *(PS1, PC-Engine, PC, etc.)*. Reduces size of data and audio tracks. Ideal for **storage/sharing**.  
+Then it can **restore** a compressed archive back to a CD Image `.cue/.bin`. Also you can use a **lossless audio codec** to store/restore a `1:1` ,byte to byte, copy of a CD Image.
 
-Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.bin`. Also you can use a **loseless audio codec** to be able to store/restore a `1:1` byte to byte copy of a CD Image.
+:hammer_and_wrench: **In Detail**:  
+
+- Applies **ECM tools** to DATA tracks. This removes redundant data *(Error Correction/Detection Codes)* from the CD sectors. This data can then be reconstructed
+- Encodes **CDDA** audio tracks with lossy or lossless codecs *(Vorbis, Opus, FLAC, TAK)*
+- Puts everything into an archive *(7zip, FreeArc)*
+- Then the process can be reversed and the original **.bin/.cue** file is reconstructed
 
 
 ### Use cases
@@ -28,18 +34,17 @@ Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.
 - **Highly Compress** your personal collection of CD games for storage. You can choose a lossy audio codec to greatly reduce the filesize of some games that feature many audio tracks. The audio will still sound great because modern audio codecs do a decent job at compressing audio.
 - **Convert** CD images that include multiple audio tracks to **.cue/.bin + encoded audio tracks**, using an audio codec of your choosing. Some emulators *like mednafen* support loading these type of `.cue` files.
 
+### :chart: Compression comparisons of some games:
 
-### Compression comparisons of some games:
-| Name | .Raw Size | 7-zip <sup>0</sup> | CDCRUSH Lossless <sup>1</sup>| CDCRUSH Lossy <sup>2</su>
-|------|-----------|--------------------------|-----------------|-------------------|
-| Wipeout XL| 680MB | 567MB | **407MB** | **72MB**
-| Tomb Raider | 505MB | 306MB | **275MB** | **169MB**
-| PO'ed | 139MB | 50MB | **39MB** | **18MB**
+| Name        | Raw Size | 7-zip <sup>0</sup> | CDCRUSH Lossless <sup>1</sup> | CDCRUSH Lossy <sup>2</sup> |
+| ----------- | -------- | ------------------ | ----------------------------- | -------------------------- |
+| Wipeout XL  | 680MB    | 567MB              | **407MB**                     | **72MB**                   |
+| Tomb Raider | 505MB    | 306MB              | **275MB**                     | **169MB**                  |
+| PO'ed       | 139MB    | 50MB               | **39MB**                      | **18MB**                   |
 
-
-<sup>**0**: Direct compression of the CD Image with 7zip. Profile : Maximum Compression</sup>\
-<sup>**1**: Audio : TAK , Archive : Freearch High </sup>\
-<sup>**2**: Audio : Ogg Vorbis 64k , Archive : Freearch High </sup>
+<sup>**0**: Direct compression of the CD Image with 7zip. Profile : Maximum Compression</sup>  
+<sup>**1**: Audio : TAK , Archive : FreeArc High </sup>  
+<sup>**2**: Audio : Ogg Vorbis 64k , Archive : FreeArc High </sup>
 
 
 ![Convert to encoded audio/cue Example](images/convert_example.png)
@@ -48,7 +53,7 @@ Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.
 
 ## USAGE
 
-### General Info and FEATURES
+### :paperclip: General Info and Features
 
 - **cdcrush** is only compatible with `.cue/.bin` type CD images. Some programs that allow you to rip your CDs to this format are:
 	- [cdrtfe](https://cdrtfe.sourceforge.io/cdrtfe/index_en.html), open source
@@ -59,7 +64,7 @@ Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.
 - :scroll: Logging. You can click the `log` button on the bottom right of the window to open the main log. It's an advanced feature, use it in case something goes wrong to get more detailed info.
 - When **BACKING UP**, cdcrush will use **ECM Tools** to the data tracks. A small program that removes unnecessary error recovery data, resulting in even smaller archives. *(The error data can then be recovered)*
 - **Audio Codecs Supported** : Ogg Vorbis, Ogg Opus, Mp3, FLAC *lossless*, TAK *lossless*
-- **Archive Types Supported** : FreeArc, 7zip, zip
+- **Archive Types Supported** : FreeArc, 7zip, Zip
 - **TIPS**
 	- **FreeArc** offers the best compression results, *for cold storage*
 	- **ZIP** is the most compatible for mounting and the fastest to extract.
@@ -69,7 +74,7 @@ Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.
 
 ## :cd: Crushing a CD (*Compressing* )
 
-![Crushing a CD](images/tab_compress.png)
+![Crushing a CD](images/tab_compress.png)  
 - Select an input file `.cue`. You can **drop it** in the window or click the `[...]` button to select one
 - Optionally set an **Destination folder**, the final archive  will be created there, auto-named after the CD title
 - Optionally set a cover image by dropping a **.jpg** file in the window, or by clicking on the image placeholder
@@ -84,10 +89,10 @@ Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.
 
 ## :arrows_clockwise: Restoring a CD
 
-![Restoring a CD](images/tab_restore.png)
+![Restoring a CD](images/tab_restore.png)  
 
 - Select a previously **BACKED UP** archive `.arc .zip .7z` to be restored. You can **drop it** in the window or click the `[...]` button to select one.
-- Optionally set a **Destionation Folder**, the files will be created there, auto-named after the CD title
+- Optionally set a **Destination Folder**, the files will be created there, auto-named after the CD title
 - **Create Subfolder** - If you tick this, a new folder in `destination folder` will be created and files will be put there
 - **METHOD**
 	- **Restore** - This is a normal restore. Will restore an archive back to a full `.cue/.bin`
@@ -96,7 +101,7 @@ Then **cdcrush** can **restore** a compressed archive back to a CD Image `.cue/.
 
 ## :wrench: Settings tab
 
-![Settings tab](images/tab_settings.png)
+![Settings tab](images/tab_settings.png)  
 
 **Temp Folder** :
  You can set a custom temporary folder for the various background processes like FFmpeg. Useful if you have a RAMDRIVE. \
@@ -115,19 +120,19 @@ See [`CHANGELOG.MD`](CHANGELOG.MD)
 
 ## :clipboard: Q&A
 
-**Q** : Why?\
-**A** : I wanted to save space on my hard drive and I think it's a decent way to store CD images, better than just compressing with 7zip or Rar. Also It was a good programming practice.
+**Q** : Why?  
+ **A** : I wanted to save space on my hard drive and I think  it's a decent way to store CD images, better than just compressing with  7zip or Rar. Also It was a good programming practice.
 
-**Q** : Does it support games from SegaCD, Jaguar, 3DO, X, Y?\
-**A** : Theoretically it should support all valid **.cue/.bin** files, try it out.
+**Q** : Does it support games from Sega CD, Jaguar, 3DO, X, Y?  
+ **A** : Theoretically it should support all valid **.cue/.bin** files, try it out.
 
-**Q** : I am worried about the audio quality.\
-**A** : Vorbis and Opus can produce very good results even at 96kbps. If you just want to keep the games for personal use it is fine. **However** if you don't want any compressed audio you can select the **FLAC** or **TAK** codecs, which are lossless.
+**Q** : I am worried about the audio quality.  
+ **A** : Vorbis and Opus can produce very good results even at 96kbps. If you just want to keep the games for personal use it is fine. **However** if you don't want any compressed audio you can select the **FLAC** or **TAK** codecs, which are lossless.
 
-**Q**: Is storing the entire CD with FLAC/TAK really lossless? I am worried about byte integrity.\
-**A**: YES, to the last byte. The filesize and checksums of the restored tracks are the same as the original ones. (data&audio). You can check for yourself by calculating the checksums of restored files vs original source.
+**Q**: Is storing the entire CD with FLAC/TAK really lossless? I am worried about byte integrity.  
+ **A**: YES, to the last byte. The filesize and checksums of  the restored tracks are the same as the original ones.  (data&audio).
 
-**Q** : Why there are two versions of the program?\
+**Q** : Why there are two versions of the program?  
 **A** : FFmpeg.exe is a small beast ( *around 36 megabytes*) and in some cases users already have it on their pc. So I am publishing a version with and a version without it.
 
 
@@ -135,17 +140,15 @@ See [`CHANGELOG.MD`](CHANGELOG.MD)
 
 This project is a continuation of [**cdcrush nodeJS**](https://www.npmjs.com/package/cdcrush).  
 
-**NEW DECEMBER 2018** : The nodeJS version **IS NOT COMPATIBLE** with the TAK codec and 7zip/zip backups made with this version. Probably will update it in the future.
+**NEW MAY 2019** : The NodeJS version is now **FULLY COMPATIBLE** with the .Net version. So archives made with one version can be processed by the other.
 
-> :stars: **nodejs** version support **batches** , so you can restore/compress multiple CD with one command.
+> :stars: NodeJS**** version support **batches** , so you can restore/compress multiple CD with one command.
 
-You can checkout **nodejs** version over at NPM : https://www.npmjs.com/package/cdcrush
+You can checkout **NodeJS** version over at NPM : https://www.npmjs.com/package/cdcrush
 
-## About
+## :triangular_flag_on_post: Finally
 
-Feel free to provide feedback and contact me on social media and email. Donations are always welcome! :smile:
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/johndimi)
-
-Thanks for checking this out,\
+Feel free to provide feedback for this project   
+donations are always welcome! [https://www.paypal.me/johndimi](https://www.paypal.me/johndimi)  
+Thanks for checking this out,  
 John.
