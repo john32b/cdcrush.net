@@ -2,7 +2,6 @@
  * CueReader.cs
  * CD .cue file parser and saver
  * -----------------------
- * Author : John Dimi
  *
  * ATTENTION: 
  * ----------

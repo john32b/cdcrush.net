@@ -1,6 +1,5 @@
 ﻿/**
  * LOG.cs
- * Author: John Dimi 2017
  * ----------------------------------------------
  * Provide basic and simple tracing and logging
  */

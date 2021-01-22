@@ -1,15 +1,15 @@
 # CDCRUSH dot NET
 
 **Name**: CDCRUSH, *Highly compress cd-image games*  
-**Author:** John Dimi :computer:, <johndimi@outlook (.) com> *twitter*: [@jondmt](https://twitter.com/jondmt)  
-**Project Page and Sources:** [https://github.com/johndimi/cdcrush.net](https://github.com/johndimi/cdcrush.net)  
+**Author:** John32B,
+**Project Page and Sources:** [https://github.com/john32b/cdcrush.net](https://github.com/john32b/cdcrush.net)  
 **Language:** C# .NET 4.5, **Licence:** MIT  
 **Version:** 1.5 **Platform:** Windows  
 **Sister Project** : [cdcrush nodejs](https://www.npmjs.com/package/cdcrush)
 
 ## Download
 
-To get the latest version check [the releases page here on github](https://github.com/johndimi/cdcrush.net/releases).  
+To get the latest version check [the releases page here on github](https://github.com/john32b/cdcrush.net/releases).  
 *Available for **windows** only.*
 
 
@@ -146,9 +146,7 @@ This project is a continuation of [**cdcrush nodeJS**](https://www.npmjs.com/pac
 
 You can checkout **NodeJS** version over at NPM : https://www.npmjs.com/package/cdcrush
 
-## :triangular_flag_on_post: Finally
+## :triangular_flag_on_post: Final Notes
 
-Feel free to provide feedback for this project   
-donations are always welcome! [https://www.paypal.me/johndimi](https://www.paypal.me/johndimi)  
-Thanks for checking this out,  
-John.
+- This project is no longer in development and is currently frozen.
+- The contact information from within the program is wrong, as I had a username change, and the program uses my old name and url. *( I am too lazy to build it again )*

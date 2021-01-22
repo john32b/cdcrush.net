@@ -131,7 +131,7 @@
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(53, 13);
 			label5.TabIndex = 1;
-			label5.Text = "John Dimi";
+			label5.Text = "John32B";
 			// 
 			// label7
 			// 

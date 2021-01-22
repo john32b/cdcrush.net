@@ -35,10 +35,10 @@ The tool executables are fetched from the root repo folder `/tools/`. All the to
 ### `cdinfos.dll`
 
 
-This file was build using **HAXE**, compiled code from [**cdcrush nodejs**](https://github.com/johndimi/cdcrush) version. 
+This file was build using **HAXE**, compiled code from [**cdcrush nodejs**](https://github.com/john32b/cdcrush) version. 
 Basically it's 2 classes, `CDInfo` and `CDTrack` compiled into a DLL so that I can have a single codebase for the CueParse for both cdcursh versions
 
-You can find the [source code for there files here.](https://github.com/johndimi/cdcrush/tree/master/src/cd)
+You can find the [source code for there files here.](https://github.com/john32b/cdcrush/tree/master/src/cd)
 
 > :warning: You don't really have to build it yourself, you can just grab `cdinfos.dll` that is inside the project folder.
 

@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("cdcrush")]
 [assembly: AssemblyDescription("Highy compress cd-image games")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("John Dimi")]
+[assembly: AssemblyCompany("John32B")]
 [assembly: AssemblyProduct("cdcrush")]
-[assembly: AssemblyCopyright("John Dimitriadis 2018, under the MIT Open Source License")]
+[assembly: AssemblyCopyright("John32B, under the MIT Open Source License")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -16,12 +16,12 @@ namespace cdcrush.prog
 	static class CDCRUSH
 	{
 		// -- Program Infos
-		public const string AUTHORNAME = "John Dimi";
+		public const string AUTHORNAME = "John32B";
 		public const string PROGRAM_NAME = "cdcrush";
 		public const string PROGRAM_VERSION = "1.5";
 		public const string PROGRAM_SHORT_DESC = "Highy compress cd-image games";
 		public const string LINK_DONATE = "https://www.paypal.me/johndimi";
-		public const string LINK_SOURCE = "https://github.com/johndimi/cdcrush.net";
+		public const string LINK_SOURCE = "https://github.com/john32b/cdcrush.net";
 		public const string CDCRUSH_SETTINGS = "crushdata.json";
 		public const string CDCRUSH_COVER = "cover.jpg";
 		public static readonly string[] CDCRUSH_EXTENSIONS = new [] {".zip",".7z",".arc"};
