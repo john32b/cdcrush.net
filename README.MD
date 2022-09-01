@@ -1,3 +1,13 @@
+# Closed Forever
+
+I am no longer working with C# or Visual Studio. I just can't.  
+Checkout these Instead:
+- **cdcrush for nodejs** : https://github.com/john32b/cdcrush  
+- **CBAE** : https://github.com/john32b/cbae 
+
+I think that storing CDImages in cold storage is deprecated, as to why, read the CBAE [readme file](https://github.com/john32b/cbae )
+
+
 # CDCRUSH dot NET
 
 **Name**: CDCRUSH, *Highly compress cd-image games*  
